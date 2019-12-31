@@ -6,25 +6,27 @@
       :before-close="handleClose"
       width="35%"
     >
-      <div>
-        <h3>编目组</h3>
-        <div style="padding: 10px">
-          <p>创建人：钱多多</p>
-          <p>创建时间：2019年11月28日17:54</p>
-        </div>
+      <div class="gpinfo">
+        <ul>
+          <h3>编目组</h3>
+          <li class="mg-b">
+            <span>创建人：</span>
+            <div class="">钱多多</div>
+          </li>
+          <li>
+            <span>创建时间：</span>
+            <div style="width: calc(100% - 70px);">2019年11月28日17:54</div>
+          </li>
+        </ul>
       </div>
       <div>
-        <h3>所属用户</h3>
-        <div
-          class="ownerAccount"
-          style="padding: 10px"
-        >
+        <div class="ownerAccount">
           <OperateGroup mode="移除"></OperateGroup>
         </div>
       </div>
       <div>
         <h3>组织关系</h3>
-        <div style="padding: 10px">
+        <div style="padding: 10px;text-align:left">
           <p>角色1</p>
           <div>
             <p>功能权限</p>
@@ -40,7 +42,7 @@
         <el-button
           type="primary"
           @click="handleSave"
-          class="confirm"
+          id="confirm"
         >保 存</el-button>
       </span>
     </el-dialog>
@@ -85,6 +87,30 @@ export default {
 .ownerAccount {
   .group-list {
     width: 100%;
+  }
+}
+
+.gpinfo {
+  height: 115px;
+  li {
+    height: 30px;
+    line-height: 30px;
+    span {
+      display: inline-block;
+      vertical-align: middle;
+      height: 30px;
+      line-height: 30px;
+      margin-top: -10px;
+    }
+    div {
+      border: 2px solid #e4e4e4;
+      display: inline-block;
+      width: calc(100% - 56px);
+      height: 30px;
+      line-height: 30px;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
   }
 }
 </style>

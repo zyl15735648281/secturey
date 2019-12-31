@@ -13,7 +13,6 @@ export function show (content, config, mode) {
 
     if (mode === "del") {
       // 删除
-      console.log(222);
       store.state.wholeDialog.isShowDelConfirm = true;
     } else if (mode === "role") {
       // 新增用户里面的新增明细
@@ -21,6 +20,9 @@ export function show (content, config, mode) {
     } else if (mode === "roleDetail") {
       // 明细角色
       store.state.wholeDialog.isShowRoleDetailConfirm = true;
+    } else if (mode === "childDel") {
+      // 子组件删除
+      store.state.wholeDialog.isShowChildRoleDetailConfirm = true;
     } else {
       // 默认为删除弹出框
       store.state.wholeDialog.isShowDelConfirm = true;
@@ -38,6 +40,9 @@ export function hidden (mode) {
   } else if (mode === "roleDetail") {
     // 明细角色
     store.state.wholeDialog.isShowRoleDetailConfirm = false;
+  } else if (mode === "childDel") {
+    // 子组件删除
+    store.state.wholeDialog.isShowChildRoleDetailConfirm = false;
   } else {
     // 默认为删除弹出框
     store.state.wholeDialog.isShowDelConfirm = false;

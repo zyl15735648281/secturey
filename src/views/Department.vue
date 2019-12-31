@@ -102,7 +102,7 @@
             width="350"
             align="center"
           >
-            <template>
+            <template slot-scope="scope">
               <a
                 href="javascript:void(0);"
                 class="mg-r"
@@ -111,7 +111,7 @@
               <a
                 href="javascript:void(0);"
                 class="mg-r"
-                @click="handleDelDep"
+                @click="handleDelDep(scope.row)"
               >删除</a>
               <a
                 href="javascript:void(0);"
@@ -134,7 +134,7 @@
       :visible="depEditVisible"
       @closed="handleCloseEdit"
     ></Edit>
-    <Dialog></Dialog>
+    <Dialog @userBehavior="handleRelDelDep"></Dialog>
   </div>
 
 </template>
@@ -181,14 +181,25 @@ export default {
       this.mode = "编辑部门";
     },
     // 删除部门
-    handleDelDep () {
+    handleDelDep (row) {
       show("您确定要删除这个部门吗？", {
         type: "confirm",
         cancleText: "取消",
         confirmText: "确定",
         titleText: "删除提示",
-        data: ""
+        data: row
       }, "del");
+      console.log(row);
+    },
+    // 真正的删除
+    handleRelDelDep(type, data) {
+      console.log(data);
+      // if(res.status === 200){
+      this.$message({
+        type: "success",
+        message: "祝贺你，删除成功！"
+      });
+      // }
     },
     // 新增部门
     handleAddDep () {

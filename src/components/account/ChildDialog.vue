@@ -2,7 +2,7 @@
   <transition name="confirm-fade">
     <div
       class="my-confirm"
-      v-if="$store.state.wholeDialog.isShowDelConfirm"
+      v-if="$store.state.wholeDialog.isShowChildRoleDetailConfirm"
       @click.stop="clickFun('clickCancle')"
     >
       <div
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { show, hidden } from "@/js/dialog.js";
+import { hidden } from "@/js/dialog.js";
 
 export default {
   name: "",
@@ -41,19 +41,13 @@ export default {
     };
   },
   methods: {
-    show(content, config, mode) {
-      show(content, config, mode);
-    },
-    hidden(mode) {
-      hidden(mode);
-    },
     clickFun (type) {
       if (type === "clickCancle") {
-        hidden("del");
+        hidden("childDel");
       } else {
+        console.log(1111);
         this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
-
-        hidden("del");
+        hidden("childDel");
       }
     }
   }

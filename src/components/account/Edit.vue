@@ -28,7 +28,10 @@
             class="dep-sel"
           ></DepList>
         </el-form-item>
-        <el-form-item label="角色">
+        <el-form-item
+          label="角色"
+          id="norequired"
+        >
           <!-- <el-input v-model="formLabelAlign.type"></el-input> -->
           <a
             href="javascript:void(0);"
@@ -38,7 +41,10 @@
         <el-form-item label="手机号">
           <el-input v-model="formLabelAlign.type"></el-input>
         </el-form-item>
-        <el-form-item label="Email">
+        <el-form-item
+          label="Email"
+          id="norequired"
+        >
           <el-input v-model="formLabelAlign.type"></el-input>
         </el-form-item>
         <el-form-item label="状态">
@@ -113,7 +119,7 @@ export default {
       this.depValue = e;
     },
     switchRoleValue (type, data) {
-      // console.log(e);
+      // console.log(data);
     },
     // 添加角色
     handleAddRole () {
@@ -121,7 +127,8 @@ export default {
         type: "confirm",
         confirmText: "选好了",
         cancelText: "取消",
-        titleText: "请为该用户添加/编辑角色"
+        titleText: "请为该用户添加/编辑角色",
+        data: "woshi11"
       }, "role");
     }
   },
@@ -129,6 +136,27 @@ export default {
 </script>
 
 <style lang="less" scope>
+#norequired {
+  display: flex;
+
+  .el-form-item__label {
+    letter-spacing: 0.5px;
+    text-align-last: justify;
+    width: 110px;
+  }
+
+  .el-form-item__content {
+    width: calc(100% - 110px);
+    margin-left: 0;
+  }
+}
+
+#norequired::before {
+  content: " ";
+  width: 14px;
+  height: 40px;
+  line-height: 40px;
+}
 .dep-sel {
   .el-select {
     width: 100%;

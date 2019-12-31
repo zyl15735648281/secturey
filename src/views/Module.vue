@@ -44,24 +44,8 @@
           label="系统名称"
           width="120"
           align="center"
+          prop="name"
         >
-          <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              placement="top"
-            >
-              <p>点我查看相关角色</p>
-              <div
-                slot="reference"
-                class="name-wrapper"
-              >
-                <a
-                  href="javascript:void(0);"
-                  @click="SeeMdRole"
-                >{{scope.row.name}}</a>
-              </div>
-            </el-popover>
-          </template>
         </el-table-column>
 
         <el-table-column
@@ -291,10 +275,6 @@ export default {
     },
     handleCloseMd () {
       this.mdVisible = false;
-    },
-    // 查看相关明细
-    SeeMdRole () {
-
     },
     // 切换姓名
     handleSwitchName (e) {

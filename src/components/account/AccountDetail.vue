@@ -46,11 +46,13 @@
               <span>{{item.label}}</span>
               <a
                 class="fr"
-                @click="delRole"
+                @click="delRole(item)"
+                href="javascript:void(0);"
               >删除</a>
               <a
                 class="fr mg-r"
-                @click="seeRoleDetail"
+                @click="seeRoleDetail(item)"
+                href="javascript:void(0);"
               >角色明细</a></p>
           </div>
           <li>
@@ -69,37 +71,45 @@
               <span>{{item.label}}</span>
               <a
                 class="fr"
-                @click="delRole"
+                @click="delRole(item)"
+                href="javascript:void(0);"
               >删除</a>
               <a
                 class="fr mg-r"
-                @click="seeRoleDetail"
-              >角色明细</a></p>
+                @click="seeRoleDetail(item)"
+                href="javascript:void(0);"
+              >角色明细</a>
+            </p>
           </div>
         </ul>
       </div>
-      <div>
+      <div class="info">
         <ul>
           <h3>个人信息</h3>
-          <li>
+          <li class="mg-b">
             <span>手机号：</span>
+            <div class=""></div>
           </li>
           <li>
             <span>Email：</span>
+            <div style="width: calc(100% - 50px);"></div>
           </li>
         </ul>
-
       </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleClose">关闭</el-button>
+        <el-button @click="handleClose">关 闭</el-button>
+        <el-button
+          @click="handleClose"
+          id="confirm"
+        >保 存</el-button>
       </span>
     </el-dialog>
     <RoleDetailDailog @userBehavior="handleInfo"></RoleDetailDailog>
 
-    <Dialog @userBehavior="handleDel"></Dialog>
+    <ChildDialog @userBehavior="handleRelDelRole"></ChildDialog>
 
   </div>
 </template>
@@ -107,19 +117,18 @@
 <script>
 import { roleDataset } from "@/js/dataset";
 import RoleDetailDailog from "./RoleDetailDaliog";
-import Dialog from "@/components/Dialog";
+import ChildDialog from "@/components/account/ChildDialog";
 import { show } from "@/js/dialog";
 
 export default {
   name: "",
   components: {
     RoleDetailDailog,
-    Dialog
+    ChildDialog
   },
   data () {
     return {
-      codeGroup: "编码组",
-      currentMode: ""
+      codeGroup: "编码组"
     };
   },
   props: {
@@ -137,6 +146,7 @@ export default {
     handleClose () {
       this.$emit("closed");
     },
+    // 保存明细内容
     handleInfo (type, data) {
       // console.log(data);
     },
@@ -156,11 +166,15 @@ export default {
         cancleText: "取消",
         confirmText: "确定",
         titleText: "删除提示",
-        data: "456"
-      }, "del");
+        data: "row"
+      }, "childDel");
     },
-    handleDel (type, data) {
-      // console.log(data);
+    // 真正的删除角色
+    handleRelDelRole (type, data) {
+      this.$message({
+        type: "success",
+        message: "祝贺你，删除成功！,哈哈,傻子，我成功l"
+      });
     }
   },
 };
@@ -174,7 +188,7 @@ export default {
     overflow: auto;
   }
   .account-detail {
-    height: 150px;
+    height: 125px;
     ul {
       width: 100%;
       display: flex;
@@ -182,10 +196,10 @@ export default {
       flex-direction: row;
       li {
         width: 28%;
-        border: 1px solid #e4e4e4;
+        border: 2px solid #e4e4e4;
         margin-right: 10px;
-        height: 40px;
-        line-height: 40px;
+        height: 30px;
+        line-height: 30px;
         margin-bottom: 10px;
         padding: 0 10px;
       }
@@ -194,18 +208,18 @@ export default {
   .membership {
     height: 260px;
     .me-list {
-      height: calc(100% - 40px);
+      height: calc(100% - 35px);
       overflow: auto;
     }
     li {
-      height: 40px;
-      line-height: 40px;
+      height: 30px;
+      line-height: 30px;
       margin-bottom: 10px;
     }
     .place {
       display: inline-block;
-      width: calc(100% - 64px);
-      border: 1px solid #e4e4e4;
+      width: calc(100% - 68px);
+      border: 2px solid #e4e4e4;
       padding: 0 10px;
     }
     .role-span {
@@ -217,7 +231,7 @@ export default {
       height: 100px;
       overflow: auto;
       padding: 0 10px;
-      border: 1px solid #e4e4e4;
+      border: 2px solid #e4e4e4;
       box-sizing: border-box;
       p {
         text-align: left;
@@ -228,9 +242,31 @@ export default {
     }
     .place-group {
       display: inline-block;
-      width: calc(100% - 78px);
-      border: 1px solid #e4e4e4;
+      width: calc(100% - 82px);
+      border: 2px solid #e4e4e4;
       padding: 0 10px;
+    }
+  }
+  .info {
+    li {
+      height: 30px;
+      line-height: 30px;
+      span {
+        display: inline-block;
+        vertical-align: middle;
+        height: 30px;
+        line-height: 30px;
+        margin-top: -20px;
+      }
+      div {
+        border: 2px solid #e4e4e4;
+        display: inline-block;
+        width: calc(100% - 56px);
+        height: 30px;
+        line-height: 30px;
+        box-sizing: border-box;
+        padding: 0 10px;
+      }
     }
   }
 }

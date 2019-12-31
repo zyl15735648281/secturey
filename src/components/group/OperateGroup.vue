@@ -14,8 +14,8 @@
       class="rel-header"
       v-if="mode === '移除'"
     >
-      <h3>已有成员项</h3>
-      <span>3个</span>
+      <h3>所属用户</h3>
+      <span>已有3个</span>
     </div>
     <div
       class="gl"
@@ -107,6 +107,7 @@ export default {
       float: right;
       font-size: 16px;
       font-weight: 600;
+      color: #fa9933;
     }
   }
   ul {

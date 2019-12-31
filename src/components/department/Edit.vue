@@ -20,7 +20,10 @@
         <el-form-item label="部门首字母拼音">
           <el-input></el-input>
         </el-form-item>
-        <el-form-item label="上级部门">
+        <el-form-item
+          label="上级部门"
+          id="norequired"
+        >
           <DepList
             :value="depValue"
             @onChange="switchDep"
@@ -31,7 +34,10 @@
           <el-radio label="0">正常</el-radio>
           <el-radio label="1">禁用</el-radio>
         </el-form-item>
-        <el-form-item label="电话">
+        <el-form-item
+          label="电话"
+          id="norequired"
+        >
           <el-input></el-input>
         </el-form-item>
         <el-form-item label="备注">

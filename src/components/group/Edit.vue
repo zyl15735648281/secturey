@@ -11,7 +11,12 @@
           <el-input></el-input>
         </el-form-item>
         <el-form-item label="上级组">
-          <el-input></el-input>
+          <!-- <el-input></el-input> -->
+          <OverGroup
+            :value="overDepValue"
+            @onChange="switchOverDep"
+            id="overgroup"
+          ></OverGroup>
         </el-form-item>
         <el-form-item
           label="组成员"
@@ -68,15 +73,18 @@
 import OperateGroup from "@/components/group/OperateGroup";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
+import OverGroup from "@/components/group/OverGroup";
 
 export default {
   name: "",
   components: {
     OperateGroup,
-    RoleDialog
+    RoleDialog,
+    OverGroup
   },
   data () {
     return {
+      overDepValue: "",
     };
   },
   props: {
@@ -94,6 +102,9 @@ export default {
   methods: {
     switchRoleValue () {
 
+    },
+    switchOverDep(e) {
+      this.overDepValue = e;
     },
     handleClose () {
       this.$emit("closed");
@@ -114,6 +125,11 @@ export default {
 .re-list {
   width: 48%;
   .group-list {
+    width: 100%;
+  }
+}
+#overgroup {
+  .el-select {
     width: 100%;
   }
 }

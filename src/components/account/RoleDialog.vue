@@ -10,6 +10,7 @@
         @click.stop
       >
         <div class="ccw-header">
+
           <p class="mg-b confirm-title">{{$store.state.wholeDialog.titleText}}</p>
           <h3>角色</h3>
           <el-button
@@ -27,14 +28,11 @@
           <template v-for="item in roleList">
             <li :key="item.value">
               <div class="mg-b">
-                {{item.label}}
-                <el-checkbox
-                  v-model="checked"
-                  class="mg-l role-isEver"
-                >角色有效性</el-checkbox>
+                <el-checkbox class="mg-l">{{item.label}}</el-checkbox>
+                <el-checkbox class="mg-l role-isEver">角色有效性</el-checkbox>
               </div>
               <div class="mg-b">
-                开始时间
+                <span>开始时间：</span>
                 <el-date-picker
                   v-model="item.startTime"
                   type="date"
@@ -42,7 +40,7 @@
                   class="mg-r"
                 >
                 </el-date-picker>
-                截止时间
+                <span>截止时间：</span>
                 <el-date-picker
                   v-model="item.endTime"
                   type="date"
@@ -149,6 +147,9 @@ export default {
       line-height: 40px;
       display: inline-block;
       vertical-align: middle;
+    }
+    span {
+      font-size: 14px;
     }
   }
 }

@@ -145,8 +145,9 @@
           label="操作"
           width="180"
           align="center"
+          fixed="right"
         >
-          <template>
+          <template slot-scope="scope">
             <a
               href="javascript:void(0);"
               @click="handleEditAccount"
@@ -154,10 +155,13 @@
             >编辑</a>
             <a
               href="javascript:void(0);"
-              @click="handleDelAccount"
+              @click="handleDelAccount(scope.row)"
               class="mg-r"
             >删除</a>
-            <a href="javascript:void(0);">启用</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleStartUsing"
+            >启用</a>
           </template>
         </el-table-column>
       </el-table>
@@ -173,7 +177,7 @@
       :visible="detailVisible"
       @closed="handleCloseDetail"
     ></AccountDetail>
-    <Dialog></Dialog>
+    <Dialog @userBehavior="handleRelDelAccount"></Dialog>
   </div>
 </template>
 
@@ -232,14 +236,29 @@ export default {
       this.mode = "编辑用户";
     },
     // 删除用户
-    handleDelAccount () {
+    handleDelAccount (row) {
       show("您确定要删除这个部门吗？", {
         type: "confirm",
         cancleText: "取消",
         confirmText: "确定",
         titleText: "删除提示",
-        data: ""
+        data: row
       }, "del");
+    },
+    // 启用
+    handleStartUsing() {
+
+    },
+    // 真正的删除用户
+    handleRelDelAccount(type, data) {
+      // console.log(data);
+      // 请求数据
+      // if(res.status === 200){
+      this.$message({
+        type: "success",
+        message: "祝贺你，删除成功！,哈哈"
+      });
+      // }
     },
     // 关闭弹窗
     handleClose () {

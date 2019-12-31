@@ -22,7 +22,8 @@ import {
   Checkbox,
   DatePicker,
   Popover,
-  Upload
+  Upload,
+  Message
 } from "element-ui";
 
 const originalPush = Router.prototype.push;
@@ -52,6 +53,8 @@ Vue.use(Checkbox);
 Vue.use(DatePicker);
 Vue.use(Popover);
 Vue.use(Upload);
+
+Vue.prototype.$message = Message;
 
 new Vue({
   router,
