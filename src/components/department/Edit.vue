@@ -9,16 +9,19 @@
       <el-form
         ref="form"
         id="adddep"
+        :model="childDePInfo"
       >
-        <!-- :model="formLabelAlign" -->
         <el-form-item label="部门名称">
-          <el-input maxlength="20"></el-input>
+          <el-input
+            v-model="childDePInfo.Name"
+            maxlength="20"
+          ></el-input>
         </el-form-item>
         <el-form-item label="部门代码">
-          <el-input></el-input>
+          <el-input v-model="childDePInfo.DepCode"></el-input>
         </el-form-item>
         <el-form-item label="部门首字母拼音">
-          <el-input></el-input>
+          <el-input v-model="childDePInfo.PinyinShort"></el-input>
         </el-form-item>
         <el-form-item
           label="上级部门"
@@ -38,10 +41,11 @@
           label="电话"
           id="norequired"
         >
-          <el-input></el-input>
+          <el-input v-model="childDePInfo.Phone"></el-input>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
+            v-model="childDePInfo.Note"
             type="textarea"
             maxlength="500"
           ></el-input>
@@ -54,7 +58,7 @@
         <el-button @click="handleClose">取 消</el-button>
         <el-button
           type="primary"
-          @click="handleClose"
+          @click="handleConfirm"
           id="confirm"
         >确 定</el-button>
       </span>
@@ -64,6 +68,7 @@
 
 <script>
 import DepList from "@/components/DepList";
+import { requestBaseDepartment } from "@/js/api.js";
 
 export default {
   name: "",
@@ -83,11 +88,54 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    childDePInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   created () {
   },
   methods: {
+    // 编辑或者修改
+    async handleConfirm() {
+      const params = {
+        id: "",
+        parentId: "string",
+        depCode: this.childDePInfo.DepCode,
+        name: this.childDePInfo.Name,
+        note: this.childDePInfo.Note,
+        phone: this.childDePInfo.Phone,
+        pinyinShort: this.childDePInfo.PinyinShort,
+        isEnable: true,
+        createUserId: "string",
+        createUserName: "string",
+        createTime: "2019-12-31T10:46:14.998Z",
+      };
+      if (this.title === "编辑部门") {
+        params.id = this.childDePInfo.Id;
+      }
+      const res = await requestBaseDepartment(params);
+      if (this.title === "新增部门") {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，添加成功"
+          });
+          this.$emit("addGp");
+          this.handleClose();
+        }
+      } else {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，编辑成功"
+          });
+          this.$emit("editGp");
+          this.handleClose();
+        }
+      }
+    },
     handleClose () {
       this.$emit("closed");
     },

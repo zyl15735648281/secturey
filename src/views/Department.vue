@@ -34,7 +34,7 @@
           ></State>
         </li>
         <li>
-          <el-button>查询</el-button>
+          <el-button @click="handleSearch">查询</el-button>
         </li>
       </ul>
       <div class="info-table">
@@ -107,7 +107,7 @@
               <a
                 href="javascript:void(0);"
                 class="mg-r"
-                @click="handleEditDep"
+                @click="handleEditDep(scope.row)"
               >编辑</a>
               <a
                 href="javascript:void(0);"
@@ -133,6 +133,9 @@
     <Edit
       :title="mode"
       :visible="depEditVisible"
+      :childDePInfo="childDePInfo"
+      @addGp="handleAddGp"
+      @editGp="handleEditGp"
       @closed="handleCloseEdit"
     ></Edit>
     <Dialog @userBehavior="handleRelDelDep"></Dialog>
@@ -147,7 +150,7 @@ import Paging from "@/components/Paging";
 import Edit from "@/components/department/Edit";
 import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
-import { requestGetBaseDepartmentList } from "@/js/api.js";
+import { requestGetBaseDepartmentList, requestDeleteBaseDepartment, requestGetBaseDepartment } from "@/js/api.js";
 import { fmtStatus } from "@/js/format.js";
 
 export default {
@@ -161,6 +164,7 @@ export default {
   data () {
     return {
       depList: [],
+      childDePInfo: {},
       nameValue: "", // 姓名
       status: "全部", // 状态
       loading: false,
@@ -182,9 +186,14 @@ export default {
     this.getBaseDepList();
   },
   methods: {
+    async handleSearch() {
+      const res = await requestGetBaseDepartment({ id: 1,
+        depName: this.depName,
+        status: this.status });
+      console.log(res);
+    },
     // 获取部门数据列表
     async getBaseDepList() {
-      console.log(111);
       const res = await requestGetBaseDepartmentList({
         name: "",
         state: 2
@@ -193,10 +202,23 @@ export default {
         this.depList = res.data;
       }
     },
+    // 新增部门
+    handleAddDep () {
+      this.depEditVisible = true;
+      this.mode = "新增部门";
+      this.childDePInfo = {};
+    },
     // 编辑部门
-    handleEditDep () {
+    handleEditDep (row) {
       this.depEditVisible = true;
       this.mode = "编辑部门";
+      this.childDePInfo = row;
+    },
+    handleAddGp() {
+      this.getBaseDepList();
+    },
+    handleEditGp() {
+      this.getBaseDepList();
     },
     // 删除部门
     handleDelDep (row) {
@@ -207,22 +229,17 @@ export default {
         titleText: "删除提示",
         data: row
       }, "del");
-      console.log(row);
     },
     // 真正的删除
-    handleRelDelDep(type, data) {
-      console.log(data);
-      // if(res.status === 200){
-      this.$message({
-        type: "success",
-        message: "祝贺你，删除成功！"
-      });
-      // }
-    },
-    // 新增部门
-    handleAddDep () {
-      this.depEditVisible = true;
-      this.mode = "新增部门";
+    async handleRelDelDep(type, data) {
+      const res = await requestDeleteBaseDepartment({ id: data.Id });
+      if (res.status === 200 && res.data === true) {
+        this.$message({
+          type: "success",
+          message: "祝贺你，删除成功！"
+        });
+        this.getBaseDepList();
+      }
     },
     // 新增平级部门
     handleAddPeers () {
