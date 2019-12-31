@@ -62,21 +62,21 @@
 </template>
 
 <script>
-import { roleDataset } from '@/js/dataset';
-import { hidden } from '@/js/dialog.js';
+import { roleDataset } from "@/js/dataset";
+import { hidden } from "@/js/dialog.js";
 export default {
-  name: '',
+  name: "",
   data () {
     return {
       checked: false,
-      startTime: '',
-      endTime: ''
+      startTime: "",
+      endTime: ""
     };
   },
   props: {
     currentMode: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   computed: {
@@ -86,11 +86,11 @@ export default {
   },
   methods: {
     clickFun (type) {
-      if (type === 'clickCancle') {
-        hidden('role');
+      if (type === "clickCancle") {
+        hidden("role");
       } else {
-        this.$emit('userBehavior', type, this.$store.state.wholeDialog.receivedData);
-        hidden('role');
+        this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
+        hidden("role");
       }
     }
   }

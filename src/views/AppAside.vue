@@ -26,7 +26,7 @@
 <script>
 
 export default {
-  name: '',
+  name: "",
   components: {
 
   },
@@ -45,37 +45,37 @@ export default {
 
 <style lang="less" scope>
 @base: #285b91;
-.aside{
+.aside {
   width: 220px;
   height: 100%;
-  background-color:#e4e4e4;
+  background-color: #e4e4e4;
   li {
-      padding-left: 10px;
-      cursor: pointer;
-      font-size: 17px;
-      font-weight: 500;
-      height: 50px;
-      line-height: 50px;
-      border-left: 3px solid rgb(241, 241, 241);
-      border-bottom: 1px dashed rgb(201, 201, 203);
-    }
-    li:hover {
-      color: @base;
-    }
-    .active {
-      border-left: 3px solid @base;
-      background-color: rgb(214, 210, 210);
-      position: relative;
-    }
-    .active::after{
-      content: '';
-      display: block;
-      position: absolute;
-      right: 0;
-      top: 12px;
-      border: 8px solid transparent;
-      border-width: 14px 10px;
-      border-right-color: @base;
-    }
+    padding-left: 10px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 500;
+    height: 50px;
+    line-height: 50px;
+    border-left: 3px solid rgb(241, 241, 241);
+    border-bottom: 1px dashed rgb(201, 201, 203);
+  }
+  li:hover {
+    color: @base;
+  }
+  .active {
+    border-left: 3px solid @base;
+    background-color: rgb(214, 210, 210);
+    position: relative;
+  }
+  .active::after {
+    content: "";
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 12px;
+    border: 8px solid transparent;
+    border-width: 14px 10px;
+    border-right-color: @base;
+  }
 }
 </style>

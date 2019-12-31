@@ -178,17 +178,17 @@
 </template>
 
 <script>
-import AccountNameList from '@/components/AccountNameList.vue';
-import State from '@/components/State';
-import { tableList } from '@/js/dataset';
-import Paging from '@/components/Paging';
-import Edit from '@/components/account/Edit';
-import AccountDetail from '@/components/account/AccountDetail';
-import { show } from '@/js/dialog';
-import Dialog from '@/components/Dialog';
+import AccountNameList from "@/components/AccountNameList.vue";
+import State from "@/components/State";
+import { tableList } from "@/js/dataset";
+import Paging from "@/components/Paging";
+import Edit from "@/components/account/Edit";
+import AccountDetail from "@/components/account/AccountDetail";
+import { show } from "@/js/dialog";
+import Dialog from "@/components/Dialog";
 
 export default {
-  name: 'account',
+  name: "account",
   components: {
     AccountNameList,
     State,
@@ -199,11 +199,11 @@ export default {
   },
   data () {
     return {
-      nameValue: '', // 姓名
-      status: '全部', // 状态
+      nameValue: "", // 姓名
+      status: "全部", // 状态
       loading: false,
       visible: false,
-      mode: '', // 新增/编辑
+      mode: "", // 新增/编辑
       detailVisible: false
     };
   },
@@ -224,22 +224,22 @@ export default {
     // 新增用户
     handleAddAccount () {
       this.visible = true;
-      this.mode = '新增用户';
+      this.mode = "新增用户";
     },
     // 编辑用户
     handleEditAccount () {
       this.visible = true;
-      this.mode = '编辑用户';
+      this.mode = "编辑用户";
     },
     // 删除用户
     handleDelAccount () {
-      show('您确定要删除这个部门吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: ''
-      }, 'del');
+      show("您确定要删除这个部门吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: ""
+      }, "del");
     },
     // 关闭弹窗
     handleClose () {
@@ -257,7 +257,7 @@ export default {
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
-        return 'warning-row';
+        return "warning-row";
       }
     },
   },

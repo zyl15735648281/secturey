@@ -70,12 +70,12 @@
 </template>
 
 <script>
-import DepList from '@/components/DepList';
-import RoleDialog from '@/components/account/RoleDialog';
-import { show } from '@/js/dialog';
+import DepList from "@/components/DepList";
+import RoleDialog from "@/components/account/RoleDialog";
+import { show } from "@/js/dialog";
 
 export default {
-  name: '',
+  name: "",
   components: {
     DepList,
     RoleDialog
@@ -83,11 +83,11 @@ export default {
   data () {
     return {
       formLabelAlign: {
-        name: '',
-        region: '',
-        type: ''
+        name: "",
+        region: "",
+        type: ""
       },
-      depValue: ''
+      depValue: ""
     };
   },
   props: {
@@ -97,14 +97,14 @@ export default {
     },
     mode: {
       type: String,
-      default: '新增用户'
+      default: "新增用户"
     }
   },
   created () {
   },
   methods: {
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     },
     handleConfirm () {
       this.handleClose();
@@ -117,12 +117,12 @@ export default {
     },
     // 添加角色
     handleAddRole () {
-      show('', {
-        type: 'confirm',
-        confirmText: '选好了',
-        cancelText: '取消',
-        titleText: '请为该用户添加/编辑角色'
-      }, 'role');
+      show("", {
+        type: "confirm",
+        confirmText: "选好了",
+        cancelText: "取消",
+        titleText: "请为该用户添加/编辑角色"
+      }, "role");
     }
   },
 };

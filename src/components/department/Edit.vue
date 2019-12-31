@@ -57,22 +57,22 @@
 </template>
 
 <script>
-import DepList from '@/components/DepList';
+import DepList from "@/components/DepList";
 
 export default {
-  name: '',
+  name: "",
   components: {
     DepList
   },
   data () {
     return {
-      depValue: ''
+      depValue: ""
     };
   },
   props: {
     title: {
       type: String,
-      default: ''
+      default: ""
     },
     visible: {
       type: Boolean,
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     },
     switchDep (e) {
       this.depValue = e;

@@ -197,17 +197,17 @@
 </template>
 
 <script>
-import State from '@/components/State';
-import { tableList } from '@/js/dataset';
-import Paging from '@/components/Paging';
-import SysNameList from '@/components/SysNameList';
-import MenuNameList from '@/components/MenuNameList';
-import Edit from '@/components/module/Edit';
-import { show } from '@/js/dialog';
-import Dialog from '@/components/Dialog';
+import State from "@/components/State";
+import { tableList } from "@/js/dataset";
+import Paging from "@/components/Paging";
+import SysNameList from "@/components/SysNameList";
+import MenuNameList from "@/components/MenuNameList";
+import Edit from "@/components/module/Edit";
+import { show } from "@/js/dialog";
+import Dialog from "@/components/Dialog";
 
 export default {
-  name: 'account',
+  name: "account",
   components: {
     State,
     Paging,
@@ -218,12 +218,12 @@ export default {
   },
   data () {
     return {
-      nameValue: '', // 姓名
-      status: '全部', // 状态
+      nameValue: "", // 姓名
+      status: "全部", // 状态
       loading: false,
-      system: '',
-      menu: '',
-      mode: '',
+      system: "",
+      menu: "",
+      mode: "",
       mdVisible: false,
       expands: []
     };
@@ -235,7 +235,7 @@ export default {
   },
   methods: {
     rowClick (row, event, column) { // 控制展开行
-      var NoIndex = column.type.indexOf('expand');
+      var NoIndex = column.type.indexOf("expand");
       if (NoIndex === 0 && row.child.length <= 0) {
         this.expands = [];
         return;
@@ -262,32 +262,32 @@ export default {
     // 新增模块
     handleAddMd () {
       this.mdVisible = true;
-      this.mode = '新增模块';
+      this.mode = "新增模块";
     },
     // 编辑模块
     handleEditMd () {
       this.mdVisible = true;
-      this.mode = '编辑模块';
+      this.mode = "编辑模块";
     },
     // 删除模块
     handleDelMd () {
-      show('您确定要删除这个模块吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: ''
-      }, 'del');
+      show("您确定要删除这个模块吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: ""
+      }, "del");
     },
     // 新增平级
     handleAddPeer () {
       this.mdVisible = true;
-      this.mode = '新增模块';
+      this.mode = "新增模块";
     },
     // 新增子级
     handleAddCollar () {
       this.mdVisible = true;
-      this.mode = '新增模块';
+      this.mode = "新增模块";
     },
     handleCloseMd () {
       this.mdVisible = false;
@@ -314,7 +314,7 @@ export default {
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
-        return 'warning-row';
+        return "warning-row";
       }
     },
   },

@@ -91,26 +91,26 @@
 </template>
 
 <script>
-import SysNameList from '@/components/SysNameList';
-import OverMenu from '@/components/module/OverMenu';
+import SysNameList from "@/components/SysNameList";
+import OverMenu from "@/components/module/OverMenu";
 
 export default {
-  name: '',
+  name: "",
   components: {
     SysNameList,
     OverMenu
   },
   data () {
     return {
-      system: '',
-      menuValue: '',
+      system: "",
+      menuValue: "",
       numValue: 1
     };
   },
   props: {
     mode: {
       type: String,
-      default: ''
+      default: ""
     },
     visible: {
       type: Boolean,
@@ -146,7 +146,7 @@ export default {
       this.system = e;
     },
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     },
     handleupload () {
 

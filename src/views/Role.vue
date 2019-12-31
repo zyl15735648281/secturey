@@ -156,17 +156,17 @@
 </template>
 
 <script>
-import State from '@/components/State';
-import { tableList } from '@/js/dataset';
-import Paging from '@/components/Paging';
-import Edit from '@/components/role/Edit';
-import Dialog from '@/components/Dialog';
-import { show } from '@/js/dialog';
-import RoleDetail from '@/components/role/RoleDetail';
-import AllocationAccount from '@/components/role/AllocationAccount';
+import State from "@/components/State";
+import { tableList } from "@/js/dataset";
+import Paging from "@/components/Paging";
+import Edit from "@/components/role/Edit";
+import Dialog from "@/components/Dialog";
+import { show } from "@/js/dialog";
+import RoleDetail from "@/components/role/RoleDetail";
+import AllocationAccount from "@/components/role/AllocationAccount";
 
 export default {
-  name: 'account',
+  name: "account",
   components: {
     State,
     Paging,
@@ -177,12 +177,12 @@ export default {
   },
   data () {
     return {
-      nameValue: '', // 姓名
-      status: '全部', // 状态
+      nameValue: "", // 姓名
+      status: "全部", // 状态
       loading: false,
-      roleName: '', // 角色名称
+      roleName: "", // 角色名称
       roleVisible: false,
-      mode: '',
+      mode: "",
       roleDelVisible: false,
       aocAccVis: false
     };
@@ -212,22 +212,22 @@ export default {
     // 新增角色
     handleAddRole () {
       this.roleVisible = true;
-      this.mode = '新增角色';
+      this.mode = "新增角色";
     },
     // 编辑角色
     handleEditRole () {
       this.roleVisible = true;
-      this.mode = '编辑角色';
+      this.mode = "编辑角色";
     },
     // 删除角色
     handleDelRole () {
-      show('您确定要删除这个角色吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: ''
-      }, 'del');
+      show("您确定要删除这个角色吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: ""
+      }, "del");
     },
     // 关闭编辑/新增弹框
     handleCloseRole () {
@@ -245,7 +245,7 @@ export default {
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
-        return 'warning-row';
+        return "warning-row";
       }
     },
   },

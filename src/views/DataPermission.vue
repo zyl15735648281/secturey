@@ -135,16 +135,16 @@
 </template>
 
 <script>
-import State from '@/components/State';
-import { tableList } from '@/js/dataset';
-import Paging from '@/components/Paging';
-import Edit from '@/components/dataPermission/Edit';
-import { show } from '@/js/dialog';
-import Dialog from '@/components/Dialog';
-import DpRoleDetail from '@/components/dataPermission/DpRoleDetail';
+import State from "@/components/State";
+import { tableList } from "@/js/dataset";
+import Paging from "@/components/Paging";
+import Edit from "@/components/dataPermission/Edit";
+import { show } from "@/js/dialog";
+import Dialog from "@/components/Dialog";
+import DpRoleDetail from "@/components/dataPermission/DpRoleDetail";
 
 export default {
-  name: 'account',
+  name: "account",
   components: {
     State,
     Paging,
@@ -154,12 +154,12 @@ export default {
   },
   data () {
     return {
-      nameValue: '', // 姓名
-      status: '全部', // 状态
+      nameValue: "", // 姓名
+      status: "全部", // 状态
       loading: false,
-      authorName: '', // 权限名称
+      authorName: "", // 权限名称
       dpVisible: false,
-      mode: '',
+      mode: "",
       dpDetailVisible: false
     };
   },
@@ -172,22 +172,22 @@ export default {
     // 新增数据权限
     handleAddDp () {
       this.dpVisible = true;
-      this.mode = '新增数据权限';
+      this.mode = "新增数据权限";
     },
     // 编辑数据权限
     handleEditDp () {
       this.dpVisible = true;
-      this.mode = '编辑数据权限';
+      this.mode = "编辑数据权限";
     },
     // 删除数据权限
     handleDelDp () {
-      show('您确定要删除这条数据吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: ''
-      }, 'del');
+      show("您确定要删除这条数据吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: ""
+      }, "del");
     },
     // 查看相关角色
     SeeDPRole () {
@@ -211,7 +211,7 @@ export default {
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
-        return 'warning-row';
+        return "warning-row";
       }
     },
   },

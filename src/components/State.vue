@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import { statusDataset } from '@/js/dataset';
+import { statusDataset } from "@/js/dataset";
 
 export default {
   props: {
     value: {
       type: String,
-      default: '2'
+      default: "2"
     }
   },
   computed: {
@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     handleChange (e) {
-      this.$emit('onChange', e);
+      this.$emit("onChange", e);
     }
   }
 };

@@ -140,15 +140,15 @@
 </template>
 
 <script>
-import State from '@/components/State';
-import { tableList, dataList } from '@/js/dataset';
-import Paging from '@/components/Paging';
-import Edit from '@/components/department/Edit';
-import Dialog from '@/components/Dialog';
-import { show } from '@/js/dialog';
+import State from "@/components/State";
+import { tableList, dataList } from "@/js/dataset";
+import Paging from "@/components/Paging";
+import Edit from "@/components/department/Edit";
+import Dialog from "@/components/Dialog";
+import { show } from "@/js/dialog";
 
 export default {
-  name: 'account',
+  name: "account",
   components: {
     State,
     Paging,
@@ -157,13 +157,13 @@ export default {
   },
   data () {
     return {
-      nameValue: '', // 姓名
-      status: '全部', // 状态
+      nameValue: "", // 姓名
+      status: "全部", // 状态
       loading: false,
-      depName: '',
-      depValue: '',
+      depName: "",
+      depValue: "",
       depEditVisible: false,
-      mode: '' // 新增部门 / 编辑部门
+      mode: "" // 新增部门 / 编辑部门
     };
   },
   computed: {
@@ -178,32 +178,32 @@ export default {
     // 编辑部门
     handleEditDep () {
       this.depEditVisible = true;
-      this.mode = '编辑部门';
+      this.mode = "编辑部门";
     },
     // 删除部门
     handleDelDep () {
-      show('您确定要删除这个部门吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: ''
-      }, 'del');
+      show("您确定要删除这个部门吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: ""
+      }, "del");
     },
     // 新增部门
     handleAddDep () {
       this.depEditVisible = true;
-      this.mode = '新增部门';
+      this.mode = "新增部门";
     },
     // 新增平级部门
     handleAddPeers () {
       this.depEditVisible = true;
-      this.mode = '新增部门';
+      this.mode = "新增部门";
     },
     // 新增下级部门
     handleCollarPeers () {
       this.depEditVisible = true;
-      this.mode = '新增部门';
+      this.mode = "新增部门";
     },
     handleCloseEdit () {
       this.depEditVisible = false;
@@ -220,7 +220,7 @@ export default {
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
-        return 'warning-row';
+        return "warning-row";
       }
     },
     // 左侧节点

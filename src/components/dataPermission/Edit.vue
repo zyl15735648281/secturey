@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  name: '',
+  name: "",
   components: {
   },
   data () {
@@ -54,7 +54,7 @@ export default {
   props: {
     mode: {
       type: String,
-      default: ''
+      default: ""
     },
     visible: {
       type: Boolean,
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     }
   },
 };

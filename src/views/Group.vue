@@ -138,16 +138,16 @@
 </template>
 
 <script>
-import State from '@/components/State';
-import { tableList } from '@/js/dataset';
-import Paging from '@/components/Paging';
-import Edit from '@/components/group/Edit';
-import { show } from '@/js/dialog';
-import Dialog from '@/components/Dialog';
-import GroupDetail from '@/components/group/GroupDetail';
+import State from "@/components/State";
+import { tableList } from "@/js/dataset";
+import Paging from "@/components/Paging";
+import Edit from "@/components/group/Edit";
+import { show } from "@/js/dialog";
+import Dialog from "@/components/Dialog";
+import GroupDetail from "@/components/group/GroupDetail";
 
 export default {
-  name: 'account',
+  name: "account",
   components: {
     State,
     Paging,
@@ -157,12 +157,12 @@ export default {
   },
   data () {
     return {
-      nameValue: '', // 姓名
-      status: '全部', // 状态
+      nameValue: "", // 姓名
+      status: "全部", // 状态
       loading: false,
-      groupName: '', // 组名称
+      groupName: "", // 组名称
       groupVisible: false,
-      mode: '',
+      mode: "",
       groupDetailVisible: false
     };
   },
@@ -183,22 +183,22 @@ export default {
     // 新增组
     handleAddGroup () {
       this.groupVisible = true;
-      this.mode = '新增组';
+      this.mode = "新增组";
     },
     // 修改组
     handleEditGroup () {
       this.groupVisible = true;
-      this.mode = '删除组';
+      this.mode = "删除组";
     },
     // 删除组
     handleDelGroup () {
-      show('您确定要删除这个分组吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: ''
-      }, 'del');
+      show("您确定要删除这个分组吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: ""
+      }, "del");
     },
     hadleCloseGroup () {
       this.groupVisible = false;
@@ -215,7 +215,7 @@ export default {
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
-        return 'warning-row';
+        return "warning-row";
       }
     },
   },

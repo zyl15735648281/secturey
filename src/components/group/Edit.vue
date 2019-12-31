@@ -65,12 +65,12 @@
 </template>
 
 <script>
-import OperateGroup from '@/components/group/OperateGroup';
-import RoleDialog from '@/components/account/RoleDialog';
-import { show } from '@/js/dialog';
+import OperateGroup from "@/components/group/OperateGroup";
+import RoleDialog from "@/components/account/RoleDialog";
+import { show } from "@/js/dialog";
 
 export default {
-  name: '',
+  name: "",
   components: {
     OperateGroup,
     RoleDialog
@@ -82,7 +82,7 @@ export default {
   props: {
     mode: {
       type: String,
-      default: ''
+      default: ""
     },
     visible: {
       type: Boolean,
@@ -96,15 +96,15 @@ export default {
 
     },
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     },
     handleAddRole () {
-      show('', {
-        type: 'confirm',
-        confirmText: '选好了',
-        cancelText: '取消',
-        titleText: '请为该用户添加/编辑角色'
-      }, 'role');
+      show("", {
+        type: "confirm",
+        confirmText: "选好了",
+        cancelText: "取消",
+        titleText: "请为该用户添加/编辑角色"
+      }, "role");
     }
   },
 };

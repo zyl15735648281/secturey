@@ -48,9 +48,9 @@
 </template>
 
 <script>
-import OperateGroup from '@/components/group/OperateGroup';
+import OperateGroup from "@/components/group/OperateGroup";
 export default {
-  name: '',
+  name: "",
   components: {
     OperateGroup
   },
@@ -61,7 +61,7 @@ export default {
   props: {
     mode: {
       type: String,
-      default: ''
+      default: ""
     },
     visible: {
       type: Boolean,
@@ -75,7 +75,7 @@ export default {
 
     },
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     }
   },
 };

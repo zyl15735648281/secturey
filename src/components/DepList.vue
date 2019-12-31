@@ -17,13 +17,13 @@
 </template>
 
 <script>
-import { systemDataset } from '@/js/dataset';
+import { systemDataset } from "@/js/dataset";
 
 export default {
   props: {
     value: {
       type: String,
-      default: '2'
+      default: "2"
     }
   },
   computed: {
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     handleChange (e) {
-      this.$emit('onChange', e);
+      this.$emit("onChange", e);
     }
   }
 };

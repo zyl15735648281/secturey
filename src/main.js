@@ -1,16 +1,16 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store/index';
-import '@/style/common.less';
-import '@/style/content.less';
-import '@/style/animation.less';
-import '@/style/dialog.less';
-import '@/assets/iconfont/iconfont.css';
-import 'element-ui/lib/theme-chalk/index.css';
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store/index";
+import "@/style/common.less";
+import "@/style/content.less";
+import "@/style/animation.less";
+import "@/style/dialog.less";
+import "@/assets/iconfont/iconfont.css";
+import "element-ui/lib/theme-chalk/index.css";
 
 // 解决因为版本问题造成的路由错误
-import Router from 'vue-router';
+import Router from "vue-router";
 
 import {
   Select, Option, Button, Table,
@@ -23,7 +23,7 @@ import {
   DatePicker,
   Popover,
   Upload
-} from 'element-ui';
+} from "element-ui";
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push (location, onResolve, onReject) {
@@ -57,4 +57,4 @@ new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app');
+}).$mount("#app");

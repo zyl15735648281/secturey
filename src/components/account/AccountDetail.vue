@@ -105,21 +105,21 @@
 </template>
 
 <script>
-import { roleDataset } from '@/js/dataset';
-import RoleDetailDailog from './RoleDetailDaliog';
-import Dialog from '@/components/Dialog';
-import { show } from '@/js/dialog';
+import { roleDataset } from "@/js/dataset";
+import RoleDetailDailog from "./RoleDetailDaliog";
+import Dialog from "@/components/Dialog";
+import { show } from "@/js/dialog";
 
 export default {
-  name: '',
+  name: "",
   components: {
     RoleDetailDailog,
     Dialog
   },
   data () {
     return {
-      codeGroup: '编码组',
-      currentMode: ''
+      codeGroup: "编码组",
+      currentMode: ""
     };
   },
   props: {
@@ -135,29 +135,29 @@ export default {
   },
   methods: {
     handleClose () {
-      this.$emit('closed');
+      this.$emit("closed");
     },
     handleInfo (type, data) {
       // console.log(data);
     },
     // 查看明细
     seeRoleDetail () {
-      show('', {
-        type: 'alert',
-        confirmText: '关闭',
-        titleText: '角色详情',
-        data: '123'
-      }, 'roleDetail');
+      show("", {
+        type: "alert",
+        confirmText: "关闭",
+        titleText: "角色详情",
+        data: "123"
+      }, "roleDetail");
     },
     // 删除角色
     delRole () {
-      show('您确定要删除这个角色吗？', {
-        type: 'confirm',
-        cancleText: '取消',
-        confirmText: '确定',
-        titleText: '删除提示',
-        data: '456'
-      }, 'del');
+      show("您确定要删除这个角色吗？", {
+        type: "confirm",
+        cancleText: "取消",
+        confirmText: "确定",
+        titleText: "删除提示",
+        data: "456"
+      }, "del");
     },
     handleDel (type, data) {
       // console.log(data);

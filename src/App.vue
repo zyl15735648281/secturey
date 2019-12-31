@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import AppHeader from '@/views/AppHeader';
-import AppAside from '@/views/AppAside';
-import AppContent from '@/views/AppContent';
+import AppHeader from "@/views/AppHeader";
+import AppAside from "@/views/AppAside";
+import AppContent from "@/views/AppContent";
 
 export default {
   components: {

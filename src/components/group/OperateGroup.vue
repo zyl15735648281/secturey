@@ -17,7 +17,10 @@
       <h3>已有成员项</h3>
       <span>3个</span>
     </div>
-    <div class="gl" v-if="mode === '添加' || mode === '移除'">
+    <div
+      class="gl"
+      v-if="mode === '添加' || mode === '移除'"
+    >
       <ul class="glh">
         <li>
           <span style="border-left: 1px solid #e4e4e4;">姓名</span>
@@ -45,7 +48,10 @@
       </div>
     </div>
 
-    <div class="gl" v-if="mode === 'selfRemove'">
+    <div
+      class="gl"
+      v-if="mode === 'selfRemove'"
+    >
       <ul class="glh">
         <li>
           <span style="border-left: 1px solid #e4e4e4;">姓名</span>
@@ -59,9 +65,7 @@
             <span style="border-left: 1px solid #e4e4e4;">钱多多</span>
             <span>耳鼻喉</span>
             <span>
-              <a
-                href="javascript:void(0);"
-              >移除</a>
+              <a href="javascript:void(0);">移除</a>
             </span>
           </li>
         </ul>
@@ -73,7 +77,7 @@
 
 <script>
 export default {
-  name: '',
+  name: "",
   components: {
   },
   data () {
@@ -83,7 +87,7 @@ export default {
   props: {
     mode: {
       type: String,
-      default: '添加'
+      default: "添加"
     }
   },
   created () {

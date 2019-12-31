@@ -32,21 +32,21 @@
 </template>
 
 <script>
-import { hidden } from '@/js/dialog.js';
+import { hidden } from "@/js/dialog.js";
 
 export default {
-  name: '',
+  name: "",
   data () {
     return {
     };
   },
   methods: {
     clickFun (type) {
-      if (type === 'clickCancle') {
-        hidden('del');
+      if (type === "clickCancle") {
+        hidden("del");
       } else {
-        this.$emit('userBehavior', type, this.$store.state.wholeDialog.receivedData);
-        hidden('del');
+        this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
+        hidden("del");
       }
     }
   }
