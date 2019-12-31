@@ -46,14 +46,14 @@
           >新增部门</el-button>
         </div>
         <el-table
-          :data="tableData"
+          :data="depList"
           :row-class-name="tabRowClassName"
           style="width: 100%"
           height="calc(100% - 70px)"
           v-loading="loading"
         >
           <el-table-column
-            prop="name"
+            prop="Name"
             label="部门名称"
             width="150"
             align="center"
@@ -61,7 +61,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="PinyinShort"
             label="部门首字母"
             width="110"
             align="center"
@@ -75,21 +75,22 @@
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="IsEnable"
             label="状态"
             width="110"
             align="center"
+            :formatter="fmtState"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="CreateUserName"
             label="操作人"
             width="130"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="CreateTime"
             label="操作时间"
             width="150"
             align="center"
@@ -146,6 +147,8 @@ import Paging from "@/components/Paging";
 import Edit from "@/components/department/Edit";
 import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
+import { requestGetBaseDepartmentList } from "@/js/api.js";
+import { fmtStatus } from "@/js/format.js";
 
 export default {
   name: "account",
@@ -157,6 +160,7 @@ export default {
   },
   data () {
     return {
+      depList: [],
       nameValue: "", // 姓名
       status: "全部", // 状态
       loading: false,
@@ -174,7 +178,21 @@ export default {
       return dataList;
     }
   },
+  mounted() {
+    this.getBaseDepList();
+  },
   methods: {
+    // 获取部门数据列表
+    async getBaseDepList() {
+      console.log(111);
+      const res = await requestGetBaseDepartmentList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        this.depList = res.data;
+      }
+    },
     // 编辑部门
     handleEditDep () {
       this.depEditVisible = true;
@@ -237,6 +255,10 @@ export default {
     // 左侧节点
     handleNodeClick (e) {
       console.log(e);
+    },
+    // 格式化状态
+    fmtState(row, coloum, cellValue) {
+      return fmtStatus(cellValue);
     }
   },
 };

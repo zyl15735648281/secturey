@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 // create an axios instance
 const instance = axios.create({
@@ -28,7 +28,7 @@ axios.interceptors.response.use(function (response) {
 
 export const createAPI = (url, method, data) => {
   let config = {};
-  if (method === 'get') {
+  if (method === "get") {
     config.params = data;
   } else {
     config.data = data;

@@ -217,6 +217,7 @@ export default {
       return tableList;
     }
   },
+
   methods: {
     rowClick (row, event, column) { // 控制展开行
       var NoIndex = column.type.indexOf("expand");
