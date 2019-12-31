@@ -1,0 +1,56 @@
+/* 进入和出去的动画 */
+.confirm-fade-enter-active {
+  animation: opacity 0.3s;
+}
+
+.confirm-fade-enter-active .confirm-content-wrap {
+  animation: scale 0.3s;
+}
+
+.confirm-fade-enter-active .confirm-content-wrap-other {
+  animation: scale 0.3s;
+}
+
+.confirm-fade-enter-active .confirm-content-wrap-roleDetail {
+  animation: scale 0.3s;
+}
+
+.confirm-fade-leave-active {
+  animation: outOpacity 0.2s;
+}
+
+/* 进来的动画 */
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 出去的动画 */
+@keyframes outOpacity {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

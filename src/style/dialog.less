@@ -1,0 +1,79 @@
+// 全局的dialog样式
+.dialogStyle {
+  height: 100%;
+
+  .el-dialog__title {
+    font-weight: 600;
+  }
+
+  .el-dialog__body {
+    height  : 350px;
+    overflow: auto;
+    color   : #111;
+
+    .el-form-item {
+      display: flex;
+
+      .el-form-item__label {
+        letter-spacing : 0.5px;
+        text-align-last: justify;
+        width          : 110px;
+      }
+
+      .el-form-item__content {
+        width      : calc(100% - 110px);
+        margin-left: 0;
+      }
+
+      .el-input {
+        width: 100%;
+      }
+
+      .el-textarea {
+        width: 100%;
+      }
+    }
+
+    .el-form-item::before {
+      content    : "*";
+      color      : #ff4949;
+      width      : 14px;
+      height     : 40px;
+      line-height: 40px;
+    }
+
+    .el-form-item:last-child::before {
+      content    : " ";
+      width      : 14px;
+      height     : 40px;
+      line-height: 40px;
+    }
+  }
+
+  .el-radio__input.is-checked .el-radio__inner {
+    border-color: #285b91;
+    background  : #285b91;
+  }
+
+  .el-radio__input.is-checked+.el-radio__label {
+    color: #285b91;
+  }
+}
+
+#confirm {
+  background-color: rgb(50, 92, 147);
+  color           : white;
+}
+
+#confirm:hover {
+  background-color: rgb(50, 92, 147);
+  color           : white;
+}
+
+.el-button:focus,
+.el-button:hover {
+  color           : #285b91;
+  border-color    : #285b91;
+  background-color: #285b91;
+  color           : white;
+}
