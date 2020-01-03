@@ -13,7 +13,7 @@
         ></State>
       </li>
       <li>
-        <el-button>查询</el-button>
+        <el-button @click="handleSearch">查询</el-button>
       </li>
     </ul>
     <div class="info-table">
@@ -25,7 +25,7 @@
         >新增权限</el-button>
       </div>
       <el-table
-        :data="tableData"
+        :data="cacheDperList"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
@@ -35,34 +35,18 @@
           label="名称"
           width="120"
           align="center"
+          prop="Name"
         >
-          <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              placement="top"
-            >
-              <p>点我查看相关角色</p>
-              <div
-                slot="reference"
-                class="name-wrapper"
-              >
-                <a
-                  href="javascript:void(0);"
-                  @click="SeeDPRole"
-                >{{scope.row.name}}</a>
-              </div>
-            </el-popover>
-          </template>
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="Type"
           label="类型"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Value"
           label="值"
           width="150"
           align="center"
@@ -71,29 +55,31 @@
         </el-table-column>
 
         <el-table-column
-          prop="name"
+          prop="IsEnable"
           label="状态"
           width="110"
           align="center"
+          :formatter="fmtState"
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="CreateUserName"
           label="操作人"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="CreateTime"
           label="操作时间"
           width="150"
           align="center"
+          :formatter="fmtDate"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Memo"
           label="备注"
           align="center"
           :show-overflow-tooltip="true"
@@ -104,15 +90,15 @@
           width="180"
           align="center"
         >
-          <template>
+          <template slot-scope="scope">
             <a
               href="javascript:void(0);"
               class="mg-r"
-              @click="handleEditDp"
+              @click="handleEditDp(scope.row)"
             >编辑</a>
             <a
               href="javascript:void(0);"
-              @click="handleDelDp"
+              @click="handleDelDp(scope.row)"
             >删除</a>
 
           </template>
@@ -121,14 +107,22 @@
       <Edit
         :mode="mode"
         :visible="dpVisible"
+        :dperInfo="dperInfo"
+        :dperList="dperList"
         @closed="handleCloseDp"
+        @addDper="handleaddDper"
+        @editDper="handleeditDper"
       ></Edit>
       <DpRoleDetail
         :visible="dpDetailVisible"
         @closed="handleCloseDpDetail"
       ></DpRoleDetail>
-      <Dialog></Dialog>
-      <Paging></Paging>
+      <Dialog @userBehavior="handleRelDelDper"></Dialog>
+      <Paging
+        :tableList="dperList"
+        :totalCount="dperList.length"
+        @TogglePagingData="handleTogglePagingData"
+      ></Paging>
 
     </div>
   </div>
@@ -142,6 +136,9 @@ import Edit from "@/components/dataPermission/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import DpRoleDetail from "@/components/dataPermission/DpRoleDetail";
+import { requestGetBaseScopeList, requestDeleteBaseScope } from "@/js/api";
+import { fmtStatus, formatterDate } from "@/js/format.js";
+import { pageData } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -154,13 +151,17 @@ export default {
   },
   data () {
     return {
+      dperList: [],
+      cacheDperList: [],
+      dperInfo: {},
       nameValue: "", // 姓名
       status: "全部", // 状态
       loading: false,
       authorName: "", // 权限名称
       dpVisible: false,
       mode: "",
-      dpDetailVisible: false
+      dpDetailVisible: false,
+      perPage: 10
     };
   },
   computed: {
@@ -168,26 +169,64 @@ export default {
       return tableList;
     }
   },
+  mounted() {
+    this.getDperList();
+  },
   methods: {
+    handleSearch() {},
+    // 分页数据
+    handleTogglePagingData(e) {
+      this.cacheDperList = pageData(this.dperList, this.cacheDperList, e, this.perPage);
+    },
+    // 获取场景数据列表
+    async getDperList() {
+      const res = await requestGetBaseScopeList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        this.dperList = res.data;
+        this.cacheDperList = this.dperList.slice(0, this.perPage);
+      }
+    },
     // 新增数据权限
     handleAddDp () {
       this.dpVisible = true;
       this.mode = "新增数据权限";
+      this.dperInfo = {};
     },
     // 编辑数据权限
-    handleEditDp () {
+    handleEditDp (row) {
       this.dpVisible = true;
       this.mode = "编辑数据权限";
+      this.dperInfo = row;
+    },
+    handleaddDper() {
+      this.getDperList();
+    },
+    handleeditDper() {
+      this.getDperList();
     },
     // 删除数据权限
-    handleDelDp () {
+    handleDelDp (row) {
       show("您确定要删除这条数据吗？", {
         type: "confirm",
         cancleText: "取消",
         confirmText: "确定",
         titleText: "删除提示",
-        data: ""
+        data: row
       }, "del");
+    },
+    // 真正的删除
+    async handleRelDelDper(type, data) {
+      const res = await requestDeleteBaseScope({ id: data.ScopeId });
+      if (res.status === 200) {
+        this.$message({
+          type: "success",
+          message: "祝贺你，删除成功!"
+        });
+        this.getDperList();
+      }
     },
     // 查看相关角色
     SeeDPRole () {
@@ -198,10 +237,6 @@ export default {
     },
     handleCloseDpDetail () {
       this.dpDetailVisible = false;
-    },
-    // 切换姓名
-    handleSwitchName (e) {
-      this.nameValue = e;
     },
     // 切换状态
     handleSwitchStatus (e) {
@@ -214,6 +249,14 @@ export default {
         return "warning-row";
       }
     },
+    // 格式化状态
+    fmtState(row, coloum, cellValue) {
+      return fmtStatus(cellValue);
+    },
+    // 格式化时间
+    fmtDate(row, coloum, cellValue) {
+      return formatterDate(cellValue);
+    }
   },
 };
 </script>

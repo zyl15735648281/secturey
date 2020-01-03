@@ -21,17 +21,28 @@ export const reqGetBaseDepartmentListByPid = data => createAPI("/GetBaseDepartme
 // 用户管理添加 / 修改
 export const requestBaseUser = data => createAPI("/BaseUser", "post", data);
 // 用户管理查询
-export const requestGetBaseUser = data => createAPI("/GetBaseUser", "post", data);
+export const requestGetBaseUser = data => createAPI("/GetBaseUser", "get", data);
 // 用户管理删除
 export const requestDeleteBaseUser = data => createAPI("/DeleteBaseUser", "post", data);
 // 用户管理获取列表
 export const requestGetBaseUserList = data => createAPI("/GetBaseUserList", "post", data);
 
+// 场景管理相关接口
 // 场景管理的添加/修改
 export const requestBaseScope = data => createAPI("/BaseScope", "post", data);
 // 场景管理查询
-export const requestGetBaseScope = data => createAPI("/GetBaseScope", "post", data);
+export const requestGetBaseScope = data => createAPI("/GetBaseScope", "get", data);
 // 场景管理删除
 export const requestDeleteBaseScope = data => createAPI("/DeleteBaseScope", "post", data);
 // 场景管理获取列表
 export const requestGetBaseScopeList = data => createAPI("/GetBaseScopeList", "post", data);
+
+// 分组管理相关接口
+// 分组管理的添加/修改
+export const requestBaseGroup = data => createAPI("/BaseGroup", "post", data);
+// 分组管理查询
+export const requestGetBaseGroup = data => createAPI("/GetBaseGroup", "get", data);
+// 分组管理删除
+export const requestDeleteBaseGroup = data => createAPI("/DeleteBaseGroup", "post", data);
+// 分组管理获取列表
+export const requestGetBaseGroupList = data => createAPI("/GetBaseGroupList", "post", data);

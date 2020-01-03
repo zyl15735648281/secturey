@@ -100,7 +100,7 @@
             label="操作时间"
             width="150"
             align="center"
-            :formatter="fmtDtae"
+            :formatter="fmtDate"
             :show-overflow-tooltip="true"
           >
           </el-table-column>
@@ -369,7 +369,8 @@ export default {
     fmtState(row, coloum, cellValue) {
       return fmtStatus(cellValue);
     },
-    fmtDtae(row, coloum, cellValue) {
+    // 格式化时间
+    fmtDate(row, coloum, cellValue) {
       return formatterDate(cellValue);
     }
   },

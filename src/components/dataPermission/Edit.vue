@@ -6,24 +6,37 @@
       :before-close="handleClose"
       class="dialogStyle"
     >
-      <el-form>
+      <el-form :model="dperInfo">
         <el-form-item label="名称">
-          <el-input maxlength="50"></el-input>
+          <el-input
+            maxlength="50"
+            v-model="dperInfo.Name"
+          ></el-input>
         </el-form-item>
         <el-form-item label="值">
-          <el-input maxlength="500"></el-input>
+          <el-input
+            maxlength="500"
+            v-model="dperInfo.Value"
+          ></el-input>
         </el-form-item>
         <el-form-item label="类型">
-          <el-input></el-input>
+          <el-input v-model="dperInfo.Type"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio label="0">正常</el-radio>
-          <el-radio label="1">禁用</el-radio>
+          <el-radio
+            v-model="dperInfo.IsEnable"
+            label="true"
+          >正常</el-radio>
+          <el-radio
+            v-model="dperInfo.IsEnable"
+            label="false"
+          >禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             type="textarea"
             maxlength="500"
+            v-model="dperInfo.Memo"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -34,7 +47,7 @@
         <el-button @click="handleClose">取 消</el-button>
         <el-button
           type="primary"
-          @click="handleClose"
+          @click="handleConfirm"
           id="confirm"
         >确 定</el-button>
       </span>
@@ -43,6 +56,8 @@
 </template>
 
 <script>
+import { requestBaseScope } from "@/js/api.js";
+
 export default {
   name: "",
   components: {
@@ -59,13 +74,123 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    dperInfo: {
+      type: Object,
+      default: () => {}
+    },
+    dperList: {
+      type: Array,
+      default: () => []
     }
   },
   created () {
   },
+  watch: {
+    dperInfo (val) {
+      if (val.IsEnable === undefined) {
+        return;
+      }
+      val.IsEnable = val.IsEnable.toString();
+    }
+  },
+
   methods: {
     handleClose () {
       this.$emit("closed");
+    },
+    // 点击确定
+    async handleConfirm() {
+      // 做一些必要的验证
+      if (!this.verify()) {
+        return;
+      }
+
+      const params = {
+        scopeId: "",
+        name: this.dperInfo.Name,
+        type: this.dperInfo.Type,
+        value: this.dperInfo.Value,
+        enable: false,
+        isEnable: this.dperInfo.IsEnable,
+        createUserId: "",
+        createUserName: "",
+        memo: this.dperInfo.Memo
+      };
+      console.log(params);
+
+      if (this.mode === "编辑数据权限") {
+        params.scopeId = this.dperInfo.ScopeId;
+      }
+
+      const res = await requestBaseScope(params);
+      if (this.mode === "新增数据权限") {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，添加成功"
+          });
+          this.$emit("addDper");
+          this.handleClose();
+        }
+      } else {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，编辑成功"
+          });
+          this.$emit("editDper");
+          this.handleClose();
+        }
+      }
+    },
+    verify() {
+      if (this.dperInfo.Name === undefined || this.dperInfo.Name === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入名称"
+        });
+        return false;
+      }
+      if (this.mode === "添加数据权限") {
+        if (this.dperList.length > 0) {
+          const arr = [];
+          this.dperList.forEach(element => {
+            if (element.Name === this.childDePInfo.Name) {
+              arr.push(element);
+            }
+          });
+          if (arr.length > 0) {
+            this.$message({
+              type: "waring",
+              message: "部门名称不能重复"
+            });
+            return false;
+          }
+        }
+      }
+      if (this.dperInfo.Value === undefined || this.dperInfo.Value === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入值"
+        });
+        return false;
+      }
+      if (this.dperInfo.Type === undefined || this.dperInfo.Type === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入类型"
+        });
+        return false;
+      }
+      if (this.dperInfo.IsEnable === undefined || this.dperInfo.IsEnable === "") {
+        this.$message({
+          type: "waring",
+          message: "请选择状态"
+        });
+        return false;
+      }
+      return true;
     }
   },
 };

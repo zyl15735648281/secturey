@@ -134,8 +134,8 @@ export default {
         createUserId: "string",
         createUserName: "string"
       };
-      console.log(params);
       this.depList.forEach(element => {
+        console.log(element);
         if (this.childDePInfo.ParentName === element.Name) {
           params.parentId = element.Id;
         }

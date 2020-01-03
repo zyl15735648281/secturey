@@ -15,7 +15,7 @@
         ></State>
       </li>
       <li>
-        <el-button>查询</el-button>
+        <el-button @click="handleSearch">查询</el-button>
       </li>
     </ul>
     <div class="info-table">
@@ -58,7 +58,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="UserCode"
+          prop="EmployeeId"
           label="工号"
           width="130"
           align="center"
@@ -73,7 +73,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop=""
           label="所属分组"
           width="130"
           align="center"
@@ -105,7 +105,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop=""
           label="角色"
           width="130"
           align="center"
@@ -116,6 +116,7 @@
           label="状态"
           width="110"
           align="center"
+          :formatter="fmtState"
         >
         </el-table-column>
         <el-table-column
@@ -138,6 +139,7 @@
           label="创建时间"
           width="150"
           align="center"
+          :formatter="fmtDate"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
@@ -150,7 +152,7 @@
           <template slot-scope="scope">
             <a
               href="javascript:void(0);"
-              @click="handleEditAccount"
+              @click="handleEditAccount(scope.row)"
               class="mg-r"
             >编辑</a>
             <a
@@ -160,18 +162,26 @@
             >删除</a>
             <a
               href="javascript:void(0);"
-              @click="handleStartUsing"
+              @click="handleStartUsing(scope.row)"
             >启用</a>
           </template>
         </el-table-column>
       </el-table>
-      <Paging></Paging>
+      <Paging
+        :tableList="accountList"
+        :totalCount="accountList.length"
+        @TogglePagingData="handleTogglePagingData"
+      ></Paging>
     </div>
 
     <Edit
       :visible="visible"
       :mode="mode"
+      :depList="depList"
+      :accountInfo="accountInfo"
       @closed="handleClose"
+      @addAccount="handleAddAcc"
+      @editAccount="handleEditAcc"
     ></Edit>
     <AccountDetail
       :visible="detailVisible"
@@ -189,7 +199,9 @@ import Edit from "@/components/account/Edit";
 import AccountDetail from "@/components/account/AccountDetail";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
-import { requestGetBaseUserList } from "@/js/api.js";
+import { requestGetBaseUserList, requestDeleteBaseUser, requestGetBaseDepartmentList } from "@/js/api.js";
+import { fmtStatus, formatterDate } from "@/js/format.js";
+import { pageData } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -205,13 +217,15 @@ export default {
     return {
       accountList: [],
       cacheAccountList: [],
+      accountInfo: {},
       nameValue: "", // 姓名
-      status: "全部", // 状态
+      status: "2", // 状态
       loading: false,
       visible: false,
       mode: "", // 新增/编辑
       detailVisible: false,
-      perPage: 10
+      perPage: 10,
+      depList: []
     };
   },
   computed: {
@@ -220,6 +234,29 @@ export default {
     this.getAccountList();
   },
   methods: {
+    // 分页数据
+    handleTogglePagingData(e) {
+      this.cacheAccountList = pageData(this.accountList, this.cacheAccountList, e, this.perPage);
+    },
+    async handleSearch() {
+      const res = await requestGetBaseUserList({
+        name: this.nameValue,
+        state: this.status
+      });
+      console.log(res);
+      this.accountList = res.data;
+      this.cacheAccountList = this.accountList.slice(0, this.perPage);
+    },
+    // 获取组列表
+    async getDepList() {
+      const res = await requestGetBaseDepartmentList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        this.depList = res.data;
+      }
+    },
     // 获取用户管理列表
     async getAccountList() {
       const res = await requestGetBaseUserList({
@@ -242,11 +279,21 @@ export default {
     handleAddAccount () {
       this.visible = true;
       this.mode = "新增用户";
+      this.accountInfo = {};
+      this.getDepList();
     },
     // 编辑用户
-    handleEditAccount () {
+    handleEditAccount (row) {
       this.visible = true;
       this.mode = "编辑用户";
+      this.getDepList();
+      this.accountInfo = row;
+    },
+    handleAddAcc() {
+      this.getAccountList();
+    },
+    handleEditAcc() {
+      this.getAccountList();
     },
     // 删除用户
     handleDelAccount (row) {
@@ -258,20 +305,21 @@ export default {
         data: row
       }, "del");
     },
+    // 真正的删除用户
+    async handleRelDelAccount(type, data) {
+      console.log(data);
+      const res = await requestDeleteBaseUser({ id: data.UserId });
+      if (res.status === 200) {
+        this.$message({
+          type: "success",
+          message: "祝贺你，删除成功!"
+        });
+        this.getAccountList();
+      }
+    },
     // 启用
     handleStartUsing() {
 
-    },
-    // 真正的删除用户
-    handleRelDelAccount(type, data) {
-      // console.log(data);
-      // 请求数据
-      // if(res.status === 200){
-      this.$message({
-        type: "success",
-        message: "祝贺你，删除成功！,哈哈"
-      });
-      // }
     },
     // 关闭弹窗
     handleClose () {
@@ -292,6 +340,14 @@ export default {
         return "warning-row";
       }
     },
+    // 格式化状态
+    fmtState(row, coloum, cellValue) {
+      return fmtStatus(cellValue);
+    },
+    // 格式化时间
+    fmtDate(row, coloum, cellValue) {
+      return formatterDate(cellValue);
+    }
   },
 };
 </script>

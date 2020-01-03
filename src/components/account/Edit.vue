@@ -7,24 +7,30 @@
       class="dialogStyle"
     >
       <!-- <span>新增用户</span> -->
-      <el-form :model="formLabelAlign">
+      <el-form :model="accountInfo">
         <el-form-item label="姓名">
           <el-input
-            v-model="formLabelAlign.name"
+            v-model="accountInfo.Name"
+            maxlength="20"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="用户名">
+          <el-input
+            v-model="accountInfo.UserName"
             maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="工号">
           <el-input
-            v-model="formLabelAlign.region"
+            v-model="accountInfo.EmployeeId"
             maxlength="20"
           ></el-input>
         </el-form-item>
         <el-form-item label="部门">
           <!-- <el-input v-model="formLabelAlign.type"></el-input> -->
           <DepList
-            :value="depValue"
-            @onChange="switchDep"
+            :depList="depList"
+            v-model="accountInfo.DefaultDepName"
             class="dep-sel"
           ></DepList>
         </el-form-item>
@@ -39,22 +45,29 @@
           >添加</a>
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input v-model="formLabelAlign.type"></el-input>
+          <el-input v-model="accountInfo.Mobile"></el-input>
         </el-form-item>
         <el-form-item
           label="Email"
           id="norequired"
         >
-          <el-input v-model="formLabelAlign.type"></el-input>
+          <el-input v-model="accountInfo.Email"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio label="1">开启</el-radio>
-          <el-radio label="0">禁用</el-radio>
+          <el-radio
+            label="true"
+            v-model="accountInfo.IsEnable"
+          >开启</el-radio>
+          <el-radio
+            label="false"
+            v-model="accountInfo.IsEnable"
+          >禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             type="textarea"
             maxlength="500"
+            v-model="accountInfo.Note"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -79,6 +92,7 @@
 import DepList from "@/components/DepList";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
+import { requestBaseScope } from "@/js/api";
 
 export default {
   name: "",
@@ -88,11 +102,6 @@ export default {
   },
   data () {
     return {
-      formLabelAlign: {
-        name: "",
-        region: "",
-        type: ""
-      },
       depValue: ""
     };
   },
@@ -104,16 +113,79 @@ export default {
     mode: {
       type: String,
       default: "新增用户"
+    },
+    depList: {
+      type: Array,
+      default: () => []
+    },
+    accountInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   created () {
+  },
+  watch: {
+    accountInfo (val) {
+      if (val.IsEnable === undefined) {
+        return;
+      }
+      val.IsEnable = val.IsEnable.toString();
+    }
   },
   methods: {
     handleClose () {
       this.$emit("closed");
     },
-    handleConfirm () {
-      this.handleClose();
+    // 编辑/添加
+    async handleConfirm () {
+      const params = {
+        userId: "",
+        userCode: "",
+        name: this.accountInfo.Name,
+        userName: this.accountInfo.UserName,
+        employeeId: this.accountInfo.EmployeeId,
+        isEnable: this.accountInfo.IsEnable,
+        email: this.accountInfo.Email,
+        mobile: this.accountInfo.Mobile,
+        note: this.accountInfo.Note,
+        defaultDepName: this.accountInfo.DefaultDepName,
+        createUserId: "",
+        createUserName: "",
+        baseUserRoleList: [],
+      };
+
+      this.depList.forEach(element => {
+        if (this.accountInfo.DefaultDepName === element.Name) {
+          params.DefaultDepCode = element.DepCode;
+        }
+      });
+
+      if (this.mode === "编辑用户") {
+        params.userId = this.accountInfo.UserId;
+      }
+
+      const res = await requestBaseScope(params);
+      console.log(res);
+      if (this.mode === "新增用户") {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，添加成功"
+          });
+          this.$emit("addAccount");
+          this.handleClose();
+        }
+      } else {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，编辑成功"
+          });
+          this.$emit("editAccount");
+          this.handleClose();
+        }
+      }
     },
     switchDep (e) {
       this.depValue = e;
