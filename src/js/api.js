@@ -46,3 +46,23 @@ export const requestGetBaseGroup = data => createAPI("/GetBaseGroup", "get", dat
 export const requestDeleteBaseGroup = data => createAPI("/DeleteBaseGroup", "post", data);
 // 分组管理获取列表
 export const requestGetBaseGroupList = data => createAPI("/GetBaseGroupList", "post", data);
+
+// 角色管理相关接口
+// 角色管理添加/修改
+export const requestBaseRole = data => createAPI("/BaseRole", "post", data);
+// 角色管理查询
+export const requestGetBaseRole = data => createAPI("/GetBaseRole", "get", data);
+// 角色管理删除
+export const requestDeleteBaseRole = data => createAPI("/DeleteBaseRole", "post", data);
+// 角色管理获取列表
+export const requestGetBaseRoleList = data => createAPI("/GetBaseRoleList", "post", data);
+
+// 模块管理相关接口
+// 模块管理添加/修改
+export const requestBaseModule = data => createAPI("/BaseModule", "post", data);
+// 模块管理查询
+export const requestGetBaseModule = data => createAPI("/GetBaseModule", "get", data);
+// 模块管理删除
+export const requestDeleteBaseModule = data => createAPI("/DeleteBaseModule", "post", data);
+// 模块管理获取列表
+export const requestGetBaseModuleList = data => createAPI("/GetBaseModuleList", "post", data);

@@ -34,7 +34,7 @@
         >新增菜单</el-button>
       </div>
       <el-table
-        :data="tableData"
+        :data="cacheModuleList"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
@@ -44,7 +44,7 @@
           label="系统名称"
           width="120"
           align="center"
-          prop="name"
+          prop="SystemName"
         >
         </el-table-column>
 
@@ -106,28 +106,28 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="Sort"
           label="排序"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="IsEnable"
           label="状态"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="CreateUserName"
           label="操作人"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Description"
           label="备注"
           align="center"
           :show-overflow-tooltip="true"
@@ -135,10 +135,11 @@
         </el-table-column>
 
         <el-table-column
-          prop="name"
+          prop="CreateTime"
           label="操作时间"
           width="150"
           align="center"
+          :show-overflow-tooltip="true"
         >
         </el-table-column>
         <el-table-column
@@ -182,13 +183,13 @@
 
 <script>
 import State from "@/components/State";
-import { tableList } from "@/js/dataset";
 import Paging from "@/components/Paging";
 import SysNameList from "@/components/SysNameList";
 import MenuNameList from "@/components/MenuNameList";
 import Edit from "@/components/module/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
+import { requestGetBaseModuleList } from "@/js/api.js";
 
 export default {
   name: "account",
@@ -202,8 +203,11 @@ export default {
   },
   data () {
     return {
+      moudleList: [],
+      cacheModuleList: [],
+      perPage: 10,
       nameValue: "", // 姓名
-      status: "全部", // 状态
+      status: "2", // 状态
       loading: false,
       system: "",
       menu: "",
@@ -213,12 +217,23 @@ export default {
     };
   },
   computed: {
-    tableData () {
-      return tableList;
-    }
+  },
+  mounted() {
+    this.getModuleList();
   },
 
   methods: {
+    // 获取模块数据列表
+    async getModuleList() {
+      const res = await requestGetBaseModuleList({
+        name: this.nameValue,
+        state: this.status
+      });
+      if (res.status === 200) {
+        this.moudleList = res.data;
+        this.cacheModuleList = this.moudleList.slice(0, this.perPage);
+      }
+    },
     rowClick (row, event, column) { // 控制展开行
       var NoIndex = column.type.indexOf("expand");
       if (NoIndex === 0 && row.child.length <= 0) {

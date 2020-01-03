@@ -36,11 +36,11 @@
         <el-form-item label="状态">
           <el-radio
             v-model="childDePInfo.IsEnable"
-            label="true"
+            :label="true"
           >正常</el-radio>
           <el-radio
             v-model="childDePInfo.IsEnable"
-            label="false"
+            :label="false"
           >禁用</el-radio>
         </el-form-item>
         <el-form-item
@@ -103,14 +103,6 @@ export default {
       default: () => []
     }
   },
-  watch: {
-    childDePInfo (val) {
-      if (val.IsEnable === undefined) {
-        return;
-      }
-      val.IsEnable = val.IsEnable.toString();
-    }
-  },
   created () {
   },
   mounted() {
@@ -124,18 +116,17 @@ export default {
       }
       const params = {
         id: "",
-        parentName: this.childDePInfo.ParentName || "",
+        parentName: this.childDePInfo.ParentName || 0,
         depCode: this.childDePInfo.DepCode,
         name: this.childDePInfo.Name,
         note: this.childDePInfo.Note || "",
         phone: this.childDePInfo.Phone,
         pinyinShort: this.childDePInfo.PinyinShort,
         isEnable: this.childDePInfo.IsEnable,
-        createUserId: "string",
-        createUserName: "string"
+        createUserId: "",
+        createUserName: ""
       };
       this.depList.forEach(element => {
-        console.log(element);
         if (this.childDePInfo.ParentName === element.Name) {
           params.parentId = element.Id;
         }

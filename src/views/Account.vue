@@ -3,7 +3,9 @@
     <ul class="retrieval-header acc-header">
       <li>
         <AccountNameList
+          :accountList="accountList"
           v-model="nameValue"
+          @input="handleFilterName"
           @switchName="handleSwitchName"
         ></AccountNameList>
       </li>
@@ -169,6 +171,7 @@
       </el-table>
       <Paging
         :tableList="accountList"
+        :currentPage="currentPage"
         :totalCount="accountList.length"
         @TogglePagingData="handleTogglePagingData"
       ></Paging>
@@ -201,7 +204,7 @@ import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import { requestGetBaseUserList, requestDeleteBaseUser, requestGetBaseDepartmentList } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
-import { pageData } from "@/js/utils.js";
+import { pageData, frzzyQuery } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -225,7 +228,8 @@ export default {
       mode: "", // 新增/编辑
       detailVisible: false,
       perPage: 10,
-      depList: []
+      depList: [],
+      currentPage: 1
     };
   },
   computed: {
@@ -234,18 +238,20 @@ export default {
     this.getAccountList();
   },
   methods: {
+    // 姓名列表模糊查询
+    handleFilterName() {
+      if (this.nameValue === "") return this.getAccountList();
+      this.accountList = frzzyQuery(this.nameValue, this.accountList);
+    },
+
     // 分页数据
     handleTogglePagingData(e) {
+      this.currentPage = e;
       this.cacheAccountList = pageData(this.accountList, this.cacheAccountList, e, this.perPage);
     },
+    // 查询
     async handleSearch() {
-      const res = await requestGetBaseUserList({
-        name: this.nameValue,
-        state: this.status
-      });
-      console.log(res);
-      this.accountList = res.data;
-      this.cacheAccountList = this.accountList.slice(0, this.perPage);
+      this.getAccountList();
     },
     // 获取组列表
     async getDepList() {
@@ -260,10 +266,9 @@ export default {
     // 获取用户管理列表
     async getAccountList() {
       const res = await requestGetBaseUserList({
-        name: "",
-        state: 2
+        name: this.nameValue || "",
+        state: this.status
       });
-      console.log(res);
       this.accountList = res.data;
       this.cacheAccountList = this.accountList.slice(0, this.perPage);
     },
@@ -290,9 +295,15 @@ export default {
       this.accountInfo = row;
     },
     handleAddAcc() {
+      if (this.currentPage !== 1) {
+        this.currentPage = 1;
+      }
       this.getAccountList();
     },
     handleEditAcc() {
+      if (this.currentPage !== 1) {
+        this.currentPage = 1;
+      }
       this.getAccountList();
     },
     // 删除用户
@@ -307,13 +318,15 @@ export default {
     },
     // 真正的删除用户
     async handleRelDelAccount(type, data) {
-      console.log(data);
       const res = await requestDeleteBaseUser({ id: data.UserId });
       if (res.status === 200) {
         this.$message({
           type: "success",
           message: "祝贺你，删除成功!"
         });
+        if (this.currentPage !== 1) {
+          this.currentPage = 1;
+        }
         this.getAccountList();
       }
     },

@@ -20,7 +20,6 @@ export default {
   },
   data () {
     return {
-      currentPage: 1
     };
   },
   created () {
@@ -33,12 +32,14 @@ export default {
     tableList: {
       type: Array,
       default: () => []
+    },
+    currentPage: {
+      type: Number,
+      default: 1
     }
   },
   methods: {
     handleCurrentChange(val) {
-      console.log(val);
-      this.currentPage = val;
       this.$emit("TogglePagingData", val);
     }
   },

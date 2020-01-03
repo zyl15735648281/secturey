@@ -25,19 +25,18 @@
         >新增角色</el-button>
       </div>
       <el-table
-        :data="tableData"
+        :data="cacheRoleList"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
       >
         <el-table-column
-          prop="name"
           label="角色名称"
           width="120"
           align="center"
         >
-        <template slot-scope="scope">
+          <template slot-scope="scope">
             <el-popover
               trigger="hover"
               placement="top"
@@ -50,62 +49,28 @@
                 <a
                   href="javascript:void(0);"
                   @click="SeeRoleDetail"
-                >{{scope.row.name}}</a>
+                >{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
         </el-table-column>
-
         <el-table-column
-          prop="address"
-          label="功能权限"
-          width="130"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="数据权限"
-          width="130"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="所属用户"
-          width="150"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="所属组"
-          width="150"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="name"
+          prop="IsEnable"
           label="状态"
           width="110"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="CreateUserName"
           label="操作人"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Description"
           label="备注"
-          width="140"
           align="center"
           :show-overflow-tooltip="true"
         >
@@ -149,21 +114,27 @@
       @closed="handleCloseRole"
     ></Edit>
     <Dialog></Dialog>
-    <RoleDetail :visible="roleDelVisible" @closed="handleCloseRoleDetail"></RoleDetail>
-    <AllocationAccount :visible="aocAccVis" @closed="handleCloseAocAcc"></AllocationAccount>
+    <RoleDetail
+      :visible="roleDelVisible"
+      @closed="handleCloseRoleDetail"
+    ></RoleDetail>
+    <AllocationAccount
+      :visible="aocAccVis"
+      @closed="handleCloseAocAcc"
+    ></AllocationAccount>
 
   </div>
 </template>
 
 <script>
 import State from "@/components/State";
-import { tableList } from "@/js/dataset";
 import Paging from "@/components/Paging";
 import Edit from "@/components/role/Edit";
 import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
 import RoleDetail from "@/components/role/RoleDetail";
 import AllocationAccount from "@/components/role/AllocationAccount";
+import { requestGetBaseRoleList } from "@/js/api";
 
 export default {
   name: "account",
@@ -177,22 +148,36 @@ export default {
   },
   data () {
     return {
-      nameValue: "", // 姓名
-      status: "全部", // 状态
+      roleList: [],
+      cacheRoleList: [],
+      status: "2", // 状态
       loading: false,
       roleName: "", // 角色名称
       roleVisible: false,
       mode: "",
       roleDelVisible: false,
-      aocAccVis: false
+      aocAccVis: false,
+      perPage: 1,
+      currentPage: 1
     };
   },
   computed: {
-    tableData () {
-      return tableList;
-    }
+  },
+  mounted() {
+    this.getRoleList();
   },
   methods: {
+    // 获取角色数据列表
+    async getRoleList() {
+      const res = await requestGetBaseRoleList({
+        name: this.roleName,
+        state: this.status
+      });
+      if (res.status === 200) {
+        this.roleList = res.data;
+        this.cacheRoleList = this.roleList.slice(0, this.perPage);
+      }
+    },
     //   关闭分配用户
     handleCloseAocAcc () {
       this.aocAccVis = false;
@@ -232,10 +217,6 @@ export default {
     // 关闭编辑/新增弹框
     handleCloseRole () {
       this.roleVisible = false;
-    },
-    // 切换姓名
-    handleSwitchName (e) {
-      this.nameValue = e;
     },
     // 切换状态
     handleSwitchStatus (e) {

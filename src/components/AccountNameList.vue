@@ -9,10 +9,10 @@
       @change="switchOptions"
     >
       <el-option
-        v-for="item in nameList"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
+        v-for="item in accountList"
+        :key="item.UserId"
+        :label="item.Name"
+        :value="item.Name"
       >
       </el-option>
     </el-select>
@@ -20,10 +20,9 @@
 </template>
 
 <script>
-import { nameDataset } from '@/js/dataset.js';
 
 export default {
-  name: '',
+  name: "",
   components: {
   },
   data () {
@@ -34,17 +33,16 @@ export default {
   props: {
     value: {
       type: String,
-      default: ''
-    }
-  },
-  computed: {
-    nameList () {
-      return nameDataset;
+      default: ""
+    },
+    accountList: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
     switchOptions () {
-      this.$emit('switchName', this.nameValue);
+      this.$emit("switchName", this.nameValue);
     }
   },
   watch: {
@@ -54,7 +52,7 @@ export default {
     },
     nameValue (val, oldVal) {
       if (val !== oldVal) {
-        this.$emit('input', val);
+        this.$emit("input", val);
       }
     }
   },

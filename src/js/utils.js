@@ -22,3 +22,27 @@ export function pageData (list, cachList, currentPage, perPage) {
   }
   return cachList;
 }
+
+// 模糊查询的方法
+
+export function frzzyQuery (searchText, list) {
+  if (searchText) {
+    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+    list = list.filter(v => {
+      let sq;
+      let text;
+      let eq = false;
+      let flag = false;
+      sq = v.Name.trim().toUpperCase();
+      text = searchText.trim().toUpperCase();
+
+      eq = sq === text;
+      if (!eq) {
+        flag = sq.includes(text);
+      }
+      return eq || flag;
+    });
+  }
+
+  return list;
+}

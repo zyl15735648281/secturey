@@ -3,7 +3,10 @@
     <ul class="retrieval-header dp-header">
       <li>
         <span>名称：</span>
-        <el-input v-model="authorName"></el-input>
+        <el-input
+          v-model="authorName"
+          @input="filter"
+        ></el-input>
       </li>
 
       <li>
@@ -113,13 +116,11 @@
         @addDper="handleaddDper"
         @editDper="handleeditDper"
       ></Edit>
-      <DpRoleDetail
-        :visible="dpDetailVisible"
-        @closed="handleCloseDpDetail"
-      ></DpRoleDetail>
+
       <Dialog @userBehavior="handleRelDelDper"></Dialog>
       <Paging
         :tableList="dperList"
+        :currentPage="currentPage"
         :totalCount="dperList.length"
         @TogglePagingData="handleTogglePagingData"
       ></Paging>
@@ -135,10 +136,9 @@ import Paging from "@/components/Paging";
 import Edit from "@/components/dataPermission/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
-import DpRoleDetail from "@/components/dataPermission/DpRoleDetail";
 import { requestGetBaseScopeList, requestDeleteBaseScope } from "@/js/api";
 import { fmtStatus, formatterDate } from "@/js/format.js";
-import { pageData } from "@/js/utils.js";
+import { pageData, frzzyQuery } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -146,22 +146,20 @@ export default {
     State,
     Paging,
     Edit,
-    Dialog,
-    DpRoleDetail
+    Dialog
   },
   data () {
     return {
       dperList: [],
       cacheDperList: [],
       dperInfo: {},
-      nameValue: "", // 姓名
-      status: "全部", // 状态
+      status: "2", // 状态
       loading: false,
       authorName: "", // 权限名称
       dpVisible: false,
       mode: "",
-      dpDetailVisible: false,
-      perPage: 10
+      perPage: 10,
+      currentPage: 1
     };
   },
   computed: {
@@ -173,16 +171,25 @@ export default {
     this.getDperList();
   },
   methods: {
-    handleSearch() {},
+    // 点击查询
+    handleSearch() {
+      this.getDperList();
+    },
+    // 模糊查询
+    filter() {
+      if (this.authorName === "") return this.getDperList();
+      this.cacheDperList = frzzyQuery(this.authorName, this.dperList);
+    },
     // 分页数据
     handleTogglePagingData(e) {
+      this.currentPage = e;
       this.cacheDperList = pageData(this.dperList, this.cacheDperList, e, this.perPage);
     },
     // 获取场景数据列表
     async getDperList() {
       const res = await requestGetBaseScopeList({
-        name: "",
-        state: 2
+        name: this.authorName || "",
+        state: this.status
       });
       if (res.status === 200) {
         this.dperList = res.data;
@@ -202,9 +209,15 @@ export default {
       this.dperInfo = row;
     },
     handleaddDper() {
+      if (this.currentPage !== 1) {
+        this.currentPage = 1;
+      }
       this.getDperList();
     },
     handleeditDper() {
+      if (this.currentPage !== 1) {
+        this.currentPage = 1;
+      }
       this.getDperList();
     },
     // 删除数据权限
@@ -225,18 +238,14 @@ export default {
           type: "success",
           message: "祝贺你，删除成功!"
         });
+        if (this.currentPage !== 1) {
+          this.currentPage = 1;
+        }
         this.getDperList();
       }
     },
-    // 查看相关角色
-    SeeDPRole () {
-      this.dpDetailVisible = true;
-    },
     handleCloseDp () {
       this.dpVisible = false;
-    },
-    handleCloseDpDetail () {
-      this.dpDetailVisible = false;
     },
     // 切换状态
     handleSwitchStatus (e) {

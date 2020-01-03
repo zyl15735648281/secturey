@@ -135,6 +135,7 @@
         </el-table>
         <Paging
           :tableList="depList"
+          :currentPage="currentPage"
           :totalCount="depList.length"
           @TogglePagingData="handleTogglePagingData"
         ></Paging>
@@ -163,7 +164,7 @@ import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
 import { requestGetBaseDepartmentList, requestDeleteBaseDepartment, requestGetDicDepartment, reqGetBaseDepartmentListByPid } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
-import { pageData } from "@/js/utils.js";
+import { pageData, frzzyQuery } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -186,6 +187,7 @@ export default {
       depEditVisible: false,
       mode: "", // 新增部门 / 编辑部门
       perPage: 10,
+      currentPage: 1,
       defaultProps: {
         label: "name",
         children: "treeChildren"
@@ -238,45 +240,23 @@ export default {
     },
     // 分页数据
     handleTogglePagingData(e) {
+      this.currentPage = e;
       this.cacheDepList = pageData(this.depList, this.cacheDepList, e, this.perPage);
     },
     // 模糊查询
     handleFilter() {
       if (this.depName === "") return this.getBaseDepList();
-      if (this.depName) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.cacheDepList = this.depList.filter(v => {
-          let sq;
-          let text;
-          let eq = false;
-          let flag = false;
-          sq = v.Name.trim().toUpperCase();
-          text = this.depName.trim().toUpperCase();
-
-          eq = sq === text;
-          if (!eq) {
-            flag = sq.includes(text);
-          }
-          return eq || flag;
-        });
-      }
-      return this.cacheDepList;
+      this.cacheDepList = frzzyQuery(this.depName, this.depList);
     },
     // 查询
     async handleSearch() {
-      const res = await requestGetBaseDepartmentList({
-        name: this.depName,
-        state: this.status });
-      if (res.status === 200) {
-        this.depList = res.data;
-        this.cacheDepList = this.depList.slice(0, this.perPage);
-      }
+      this.getBaseDepList();
     },
     // 获取部门数据列表
     async getBaseDepList() {
       const res = await requestGetBaseDepartmentList({
-        name: "",
-        state: 2
+        name: this.depName || "",
+        state: this.status
       });
       if (res.status === 200) {
         this.depList = res.data;
@@ -298,10 +278,16 @@ export default {
       this.getBaseDepList();
     },
     handleAddGp() {
+      if (this.currentPage !== 1) {
+        this.currentPage = 1;
+      }
       this.getBaseDepList();
       this.getDepLevelList();
     },
     handleEditGp() {
+      if (this.currentPage !== 1) {
+        this.currentPage = 1;
+      }
       this.getBaseDepList();
       this.getDepLevelList();
     },
@@ -323,6 +309,9 @@ export default {
           type: "success",
           message: "祝贺你，删除成功！"
         });
+        if (this.currentPage !== 1) {
+          this.currentPage = 1;
+        }
         this.getBaseDepList();
         this.getDepLevelList();
       }

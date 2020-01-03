@@ -25,14 +25,13 @@
         >新增组</el-button>
       </div>
       <el-table
-        :data="tableData"
+        :data="cacheGroupList"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
       >
         <el-table-column
-          prop="name"
           label="组名称"
           width="130"
           align="center"
@@ -50,13 +49,13 @@
                 <a
                   href="javascript:void(0);"
                   @click="SeeGroup"
-                >{{scope.row.name}}</a>
+                >{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="baseUserGroupModels"
           label="组成员"
           width="280"
           align="center"
@@ -64,7 +63,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="baseGroupRoleModels"
           label="角色"
           width="150"
           align="center"
@@ -72,7 +71,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="IsEnable"
           label="状态"
           width="120"
           align="center"
@@ -80,7 +79,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="CreateUserName"
           label="操作人"
           width="130"
           align="center"
@@ -88,7 +87,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Memo"
           label="备注"
           width="200"
           align="center"
@@ -96,7 +95,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="CreateTime"
           label="操作时间"
           width="150"
           align="center"
@@ -139,12 +138,12 @@
 
 <script>
 import State from "@/components/State";
-import { tableList } from "@/js/dataset";
 import Paging from "@/components/Paging";
 import Edit from "@/components/group/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import GroupDetail from "@/components/group/GroupDetail";
+import { requestGetBaseGroupList } from "@/js/api.js";
 
 export default {
   name: "account",
@@ -157,21 +156,33 @@ export default {
   },
   data () {
     return {
-      nameValue: "", // 姓名
-      status: "全部", // 状态
+      groupList: [],
+      cacheGroupList: [],
+      status: "2", // 状态
       loading: false,
       groupName: "", // 组名称
       groupVisible: false,
       mode: "",
-      groupDetailVisible: false
+      groupDetailVisible: false,
+      perPage: 10,
+      currentPage: 1
     };
   },
-  computed: {
-    tableData () {
-      return tableList;
-    }
+  mounted() {
+    this.getGroupList();
   },
   methods: {
+    // 获取组管理列表
+    async getGroupList() {
+      const res = await requestGetBaseGroupList({
+        name: this.groupName,
+        state: this.status
+      });
+      if (res.status === 200) {
+        this.groupList = res.data;
+        this.cacheGroupList = this.groupList.slice(0, this.perPage);
+      }
+    },
     // 查看详情
     SeeGroup () {
       this.groupDetailVisible = true;
@@ -202,10 +213,6 @@ export default {
     },
     hadleCloseGroup () {
       this.groupVisible = false;
-    },
-    // 切换姓名
-    handleSwitchName (e) {
-      this.nameValue = e;
     },
     // 切换状态
     handleSwitchStatus (e) {

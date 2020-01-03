@@ -6,7 +6,6 @@
       :before-close="handleClose"
       class="dialogStyle"
     >
-      <!-- <span>新增用户</span> -->
       <el-form :model="accountInfo">
         <el-form-item label="姓名">
           <el-input
@@ -27,7 +26,6 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <!-- <el-input v-model="formLabelAlign.type"></el-input> -->
           <DepList
             :depList="depList"
             v-model="accountInfo.DefaultDepName"
@@ -38,7 +36,6 @@
           label="角色"
           id="norequired"
         >
-          <!-- <el-input v-model="formLabelAlign.type"></el-input> -->
           <a
             href="javascript:void(0);"
             @click="handleAddRole"
@@ -55,12 +52,12 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-radio
-            label="true"
             v-model="accountInfo.IsEnable"
-          >开启</el-radio>
+            :label="true"
+          >正常</el-radio>
           <el-radio
-            label="false"
             v-model="accountInfo.IsEnable"
+            :label="false"
           >禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
@@ -92,7 +89,7 @@
 import DepList from "@/components/DepList";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
-import { requestBaseScope } from "@/js/api";
+import { requestBaseUser } from "@/js/api";
 
 export default {
   name: "",
@@ -102,7 +99,6 @@ export default {
   },
   data () {
     return {
-      depValue: ""
     };
   },
   props: {
@@ -124,14 +120,6 @@ export default {
     }
   },
   created () {
-  },
-  watch: {
-    accountInfo (val) {
-      if (val.IsEnable === undefined) {
-        return;
-      }
-      val.IsEnable = val.IsEnable.toString();
-    }
   },
   methods: {
     handleClose () {
@@ -164,9 +152,7 @@ export default {
       if (this.mode === "编辑用户") {
         params.userId = this.accountInfo.UserId;
       }
-
-      const res = await requestBaseScope(params);
-      console.log(res);
+      const res = await requestBaseUser(params);
       if (this.mode === "新增用户") {
         if (res.status === 200) {
           this.$message({
@@ -186,9 +172,6 @@ export default {
           this.handleClose();
         }
       }
-    },
-    switchDep (e) {
-      this.depValue = e;
     },
     switchRoleValue (type, data) {
       // console.log(data);

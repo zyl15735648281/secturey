@@ -25,11 +25,11 @@
         <el-form-item label="状态">
           <el-radio
             v-model="dperInfo.IsEnable"
-            label="true"
+            :label="true"
           >正常</el-radio>
           <el-radio
             v-model="dperInfo.IsEnable"
-            label="false"
+            :label="false"
           >禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
@@ -85,14 +85,6 @@ export default {
     }
   },
   created () {
-  },
-  watch: {
-    dperInfo (val) {
-      if (val.IsEnable === undefined) {
-        return;
-      }
-      val.IsEnable = val.IsEnable.toString();
-    }
   },
 
   methods: {
