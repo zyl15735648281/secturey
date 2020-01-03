@@ -27,7 +27,7 @@ export const statusDataset = [{
   value: "2"
 },
 {
-  label: "开启",
+  label: "正常",
   value: "1"
 },
 {

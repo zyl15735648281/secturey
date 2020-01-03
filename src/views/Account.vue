@@ -27,7 +27,7 @@
         >新增用户</el-button>
       </div>
       <el-table
-        :data="tableData"
+        :data="cacheAccountList"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
@@ -52,20 +52,20 @@
                 <a
                   href="javascript:void(0);"
                   @click="SeeAccountDetail"
-                >{{scope.row.name}}</a>
+                >{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="UserCode"
           label="工号"
           width="130"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="DefaultDepName"
           label="部门"
           width="130"
           align="center"
@@ -81,7 +81,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="baseUserRoleList"
           label="组角色"
           width="130"
           align="center"
@@ -89,7 +89,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Mobile"
           label="手机号"
           width="130"
           align="center"
@@ -97,7 +97,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Email"
           label="Email"
           width="140"
           align="center"
@@ -112,14 +112,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="IsEnable"
           label="状态"
           width="110"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="Note"
           label="备注"
           width="160"
           align="center"
@@ -127,14 +127,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="CreateUserName"
           label="创建人"
           width="120"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="CreateTime"
           label="创建时间"
           width="150"
           align="center"
@@ -184,12 +184,12 @@
 <script>
 import AccountNameList from "@/components/AccountNameList.vue";
 import State from "@/components/State";
-import { tableList } from "@/js/dataset";
 import Paging from "@/components/Paging";
 import Edit from "@/components/account/Edit";
 import AccountDetail from "@/components/account/AccountDetail";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
+import { requestGetBaseUserList } from "@/js/api.js";
 
 export default {
   name: "account",
@@ -203,20 +203,33 @@ export default {
   },
   data () {
     return {
+      accountList: [],
+      cacheAccountList: [],
       nameValue: "", // 姓名
       status: "全部", // 状态
       loading: false,
       visible: false,
       mode: "", // 新增/编辑
-      detailVisible: false
+      detailVisible: false,
+      perPage: 10
     };
   },
   computed: {
-    tableData () {
-      return tableList;
-    }
+  },
+  mounted() {
+    this.getAccountList();
   },
   methods: {
+    // 获取用户管理列表
+    async getAccountList() {
+      const res = await requestGetBaseUserList({
+        name: "",
+        state: 2
+      });
+      console.log(res);
+      this.accountList = res.data;
+      this.cacheAccountList = this.accountList.slice(0, this.perPage);
+    },
     // 查看明细
     SeeAccountDetail () {
       this.detailVisible = true;

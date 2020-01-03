@@ -7,14 +7,17 @@
         suffix-icon="el-icon-search"
         v-model="depValue"
         class="mg-b"
+        @input="filterChange"
       >
       </el-input>
 
       <el-tree
-        :data="data"
+        ref="depTree"
+        :data="deepTreeList"
+        :props="defaultProps"
         node-key="id"
-        ref="tree"
         highlight-current
+        :filter-node-method="filter"
         @node-click="handleNodeClick"
       >
       </el-tree>
@@ -24,7 +27,10 @@
       <ul class="retrieval-header dep-header">
         <li>
           <span>部门名称：</span>
-          <el-input v-model="depName"></el-input>
+          <el-input
+            v-model="depName"
+            @input="handleFilter"
+          ></el-input>
         </li>
 
         <li>
@@ -46,7 +52,7 @@
           >新增部门</el-button>
         </div>
         <el-table
-          :data="depList"
+          :data="cacheDepList"
           :row-class-name="tabRowClassName"
           style="width: 100%"
           height="calc(100% - 70px)"
@@ -68,7 +74,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="ParentName"
             label="上级部门"
             align="center"
             :show-overflow-tooltip="true"
@@ -94,6 +100,7 @@
             label="操作时间"
             width="150"
             align="center"
+            :formatter="fmtDtae"
             :show-overflow-tooltip="true"
           >
           </el-table-column>
@@ -117,16 +124,20 @@
               <a
                 href="javascript:void(0);"
                 class="mg-r"
-                @click="handleAddPeers"
+                @click="handleAddPeers(scope.row)"
               >新增平级部门</a>
               <a
                 href="javascript:void(0);"
-                @click="handleCollarPeers"
+                @click="handleCollarPeers(scope.row)"
               >新增下级部门</a>
             </template>
           </el-table-column>
         </el-table>
-        <Paging></Paging>
+        <Paging
+          :tableList="depList"
+          :totalCount="depList.length"
+          @TogglePagingData="handleTogglePagingData"
+        ></Paging>
       </div>
     </div>
 
@@ -134,6 +145,7 @@
       :title="mode"
       :visible="depEditVisible"
       :childDePInfo="childDePInfo"
+      :depList="depList"
       @addGp="handleAddGp"
       @editGp="handleEditGp"
       @closed="handleCloseEdit"
@@ -145,13 +157,13 @@
 
 <script>
 import State from "@/components/State";
-import { tableList, dataList } from "@/js/dataset";
 import Paging from "@/components/Paging";
 import Edit from "@/components/department/Edit";
 import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
-import { requestGetBaseDepartmentList, requestDeleteBaseDepartment, requestGetBaseDepartment } from "@/js/api.js";
-import { fmtStatus } from "@/js/format.js";
+import { requestGetBaseDepartmentList, requestDeleteBaseDepartment, requestGetDicDepartment, reqGetBaseDepartmentListByPid } from "@/js/api.js";
+import { fmtStatus, formatterDate } from "@/js/format.js";
+import { pageData } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -164,33 +176,101 @@ export default {
   data () {
     return {
       depList: [],
+      cacheDepList: [],
+      deepTreeList: [],
       childDePInfo: {},
-      nameValue: "", // 姓名
-      status: "全部", // 状态
+      status: "2", // 状态
       loading: false,
       depName: "",
       depValue: "",
       depEditVisible: false,
-      mode: "" // 新增部门 / 编辑部门
+      mode: "", // 新增部门 / 编辑部门
+      perPage: 10,
+      defaultProps: {
+        label: "name",
+        children: "treeChildren"
+      },
+      filterText: ""
     };
   },
   computed: {
-    tableData () {
-      return tableList;
-    },
-    data () {
-      return dataList;
+  },
+  watch: {
+    depValue: function(val) {
+      var arr = document.querySelectorAll(".el-tree-node .is-focusable .el-tree-node__content span:nth-child(2)");
+      for (var i = 0; i < arr.length; i++) {
+        var values = document.querySelector(arr[i]).html();
+        document.querySelector(arr[i]).html(values.split("<span style=\"color: red;\">").join("").split("</span>").join(""));
+        document.querySelector(arr[i]).html(values);
+      }
+      this.$refs.depTree.filter(val);
     }
   },
   mounted() {
     this.getBaseDepList();
+    this.getDepLevelList();
   },
   methods: {
+    filter(value, data) {
+      console.log(data);
+      if (!value) return true;
+      return data.treeChildren.indexOf(value) !== -1;
+    },
+    filterChange() {
+      setTimeout(() => {
+        var val = this.filterText;
+        if (val !== null && val !== "") {
+          var arr = document.querySelectorAll(".el-tree-node .is-focusable .el-tree-node__content span:nth-child(2)");
+          for (var i = 0; i < arr.length; i++) {
+            var values = document.querySelector(arr[i]).html();
+            var reg = new RegExp(val, "g");
+            document.querySelector(arr[i]).html(values.replace(reg, "<span style=\"color: red;\">" + val + "</span>"));
+          }
+        }
+      }, 100);
+    },
+    // 获取部门字典数据
+    async getDepLevelList() {
+      const res = await requestGetDicDepartment();
+      if (res.status === 200) {
+        this.deepTreeList = res.data;
+      }
+    },
+    // 分页数据
+    handleTogglePagingData(e) {
+      this.cacheDepList = pageData(this.depList, this.cacheDepList, e, this.perPage);
+    },
+    // 模糊查询
+    handleFilter() {
+      if (this.depName === "") return this.getBaseDepList();
+      if (this.depName) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.cacheDepList = this.depList.filter(v => {
+          let sq;
+          let text;
+          let eq = false;
+          let flag = false;
+          sq = v.Name.trim().toUpperCase();
+          text = this.depName.trim().toUpperCase();
+
+          eq = sq === text;
+          if (!eq) {
+            flag = sq.includes(text);
+          }
+          return eq || flag;
+        });
+      }
+      return this.cacheDepList;
+    },
+    // 查询
     async handleSearch() {
-      const res = await requestGetBaseDepartment({ id: 1,
-        depName: this.depName,
-        status: this.status });
-      console.log(res);
+      const res = await requestGetBaseDepartmentList({
+        name: this.depName,
+        state: this.status });
+      if (res.status === 200) {
+        this.depList = res.data;
+        this.cacheDepList = this.depList.slice(0, this.perPage);
+      }
     },
     // 获取部门数据列表
     async getBaseDepList() {
@@ -200,6 +280,7 @@ export default {
       });
       if (res.status === 200) {
         this.depList = res.data;
+        this.cacheDepList = this.depList.slice(0, this.perPage);
       }
     },
     // 新增部门
@@ -207,18 +288,22 @@ export default {
       this.depEditVisible = true;
       this.mode = "新增部门";
       this.childDePInfo = {};
+      this.getBaseDepList();
     },
     // 编辑部门
     handleEditDep (row) {
       this.depEditVisible = true;
       this.mode = "编辑部门";
       this.childDePInfo = row;
+      this.getBaseDepList();
     },
     handleAddGp() {
       this.getBaseDepList();
+      this.getDepLevelList();
     },
     handleEditGp() {
       this.getBaseDepList();
+      this.getDepLevelList();
     },
     // 删除部门
     handleDelDep (row) {
@@ -239,24 +324,25 @@ export default {
           message: "祝贺你，删除成功！"
         });
         this.getBaseDepList();
+        this.getDepLevelList();
       }
     },
     // 新增平级部门
-    handleAddPeers () {
+    handleAddPeers (row) {
       this.depEditVisible = true;
       this.mode = "新增部门";
+      this.childDePInfo = {};
+      this.childDePInfo.ParentName = row.ParentName;
     },
     // 新增下级部门
-    handleCollarPeers () {
+    handleCollarPeers (row) {
       this.depEditVisible = true;
       this.mode = "新增部门";
+      this.childDePInfo = {};
+      this.childDePInfo.ParentName = row.Name;
     },
     handleCloseEdit () {
       this.depEditVisible = false;
-    },
-    // 切换姓名
-    handleSwitchName (e) {
-      this.nameValue = e;
     },
     // 切换状态
     handleSwitchStatus (e) {
@@ -269,13 +355,22 @@ export default {
         return "warning-row";
       }
     },
-    // 左侧节点
-    handleNodeClick (e) {
-      console.log(e);
+    // 左侧节点数据
+    async handleNodeClick (e) {
+      const res = await reqGetBaseDepartmentListByPid({
+        parentID: e.id
+      });
+      if (res.status === 200) {
+        this.depList = res.data;
+        this.cacheDepList = this.depList.slice(0, this.perPage);
+      }
     },
     // 格式化状态
     fmtState(row, coloum, cellValue) {
       return fmtStatus(cellValue);
+    },
+    fmtDtae(row, coloum, cellValue) {
+      return formatterDate(cellValue);
     }
   },
 };

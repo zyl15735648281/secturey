@@ -4,12 +4,13 @@
       :value="value"
       placeholder="请选择"
       @change="handleChange"
+      clearable
     >
       <el-option
-        v-for="item in sysList"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
+        v-for="item in depList"
+        :key="item.Id"
+        :label="item.Name"
+        :value="item.Name"
       >
       </el-option>
     </el-select>
@@ -17,23 +18,28 @@
 </template>
 
 <script>
-import { systemDataset } from "@/js/dataset";
+// import { requestGetBaseDepartmentList } from "@/js/api";
 
 export default {
+  data() {
+    return {
+    };
+  },
   props: {
     value: {
       type: String,
-      default: "2"
+      default: ""
+    },
+    depList: {
+      type: Array,
+      default: () => []
     }
   },
-  computed: {
-    sysList () {
-      return systemDataset;
-    }
+  mounted() {
   },
   methods: {
     handleChange (e) {
-      this.$emit("onChange", e);
+      this.$emit("input", e);
     }
   }
 };

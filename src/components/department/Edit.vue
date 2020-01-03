@@ -25,21 +25,27 @@
         </el-form-item>
         <el-form-item
           label="上级部门"
-          id="norequired"
+          id="depnorequired"
         >
           <DepList
-            :value="depValue"
-            @onChange="switchDep"
+            :depList="depList"
+            v-model="childDePInfo.ParentName"
             class="dep-sel"
           ></DepList>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio label="0">正常</el-radio>
-          <el-radio label="1">禁用</el-radio>
+          <el-radio
+            v-model="childDePInfo.IsEnable"
+            label="true"
+          >正常</el-radio>
+          <el-radio
+            v-model="childDePInfo.IsEnable"
+            label="false"
+          >禁用</el-radio>
         </el-form-item>
         <el-form-item
           label="电话"
-          id="norequired"
+          id="depnorequired"
         >
           <el-input v-model="childDePInfo.Phone"></el-input>
         </el-form-item>
@@ -77,7 +83,6 @@ export default {
   },
   data () {
     return {
-      depValue: ""
     };
   },
   props: {
@@ -92,26 +97,50 @@ export default {
     childDePInfo: {
       type: Object,
       default: () => {}
+    },
+    depList: {
+      type: Array,
+      default: () => []
+    }
+  },
+  watch: {
+    childDePInfo (val) {
+      if (val.IsEnable === undefined) {
+        return;
+      }
+      val.IsEnable = val.IsEnable.toString();
     }
   },
   created () {
   },
+  mounted() {
+  },
   methods: {
     // 编辑或者修改
     async handleConfirm() {
+      // 做一些必要的验证
+      if (!this.verify()) {
+        return;
+      }
       const params = {
         id: "",
-        parentId: "string",
+        parentName: this.childDePInfo.ParentName || "",
         depCode: this.childDePInfo.DepCode,
         name: this.childDePInfo.Name,
-        note: this.childDePInfo.Note,
+        note: this.childDePInfo.Note || "",
         phone: this.childDePInfo.Phone,
         pinyinShort: this.childDePInfo.PinyinShort,
-        isEnable: true,
+        isEnable: this.childDePInfo.IsEnable,
         createUserId: "string",
-        createUserName: "string",
-        createTime: "2019-12-31T10:46:14.998Z",
+        createUserName: "string"
       };
+      console.log(params);
+      this.depList.forEach(element => {
+        if (this.childDePInfo.ParentName === element.Name) {
+          params.parentId = element.Id;
+        }
+      });
+
       if (this.title === "编辑部门") {
         params.id = this.childDePInfo.Id;
       }
@@ -136,11 +165,60 @@ export default {
         }
       }
     },
+    verify() {
+      if (this.childDePInfo.Name === undefined || this.childDePInfo.Name === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入部门名称"
+        });
+        return false;
+      }
+
+      if (this.title === "新增部门") {
+        // 部门名称不能重复
+        if (this.depList.length > 0) {
+          const arr = [];
+          this.depList.forEach(element => {
+            if (element.Name === this.childDePInfo.Name) {
+              arr.push(element);
+            }
+          });
+          if (arr.length > 0) {
+            this.$message({
+              type: "waring",
+              message: "部门名称不能重复"
+            });
+            return false;
+          }
+        }
+      }
+      if (this.childDePInfo.DepCode === undefined || this.childDePInfo.DepCode === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入部门代码"
+        });
+        return false;
+      }
+
+      if (this.childDePInfo.PinyinShort === undefined || this.childDePInfo.PinyinShort === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入部门首字母拼音"
+        });
+        return false;
+      }
+      if (this.childDePInfo.IsEnable === undefined || this.childDePInfo.IsEnable === "") {
+        this.$message({
+          type: "waring",
+          message: "请选择状态"
+        });
+        return false;
+      }
+
+      return true;
+    },
     handleClose () {
       this.$emit("closed");
-    },
-    switchDep (e) {
-      this.depValue = e;
     }
   },
 };
@@ -154,6 +232,32 @@ export default {
   .el-form-item__content {
     width: calc(100% - 120px);
   }
+}
+.dep-sel {
+  .el-select {
+    width: 100%;
+  }
+}
+#depnorequired {
+  display: flex;
+
+  .el-form-item__label {
+    letter-spacing: 0.5px;
+    text-align-last: justify;
+    width: 110px;
+  }
+
+  .el-form-item__content {
+    width: calc(100% - 110px);
+    margin-left: 0;
+  }
+}
+
+#depnorequired::before {
+  content: " ";
+  width: 14px;
+  height: 40px;
+  line-height: 40px;
 }
 .dep-sel {
   .el-select {
