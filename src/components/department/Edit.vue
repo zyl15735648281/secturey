@@ -27,11 +27,11 @@
           label="上级部门"
           id="depnorequired"
         >
-          <DepList
-            :depList="depList"
+          <SelectTree
+            :selectList="deepTreeList"
+            @selectData="handleSelectData"
             v-model="childDePInfo.ParentName"
-            class="dep-sel"
-          ></DepList>
+          ></SelectTree>
         </el-form-item>
         <el-form-item label="状态">
           <el-radio
@@ -73,13 +73,13 @@
 </template>
 
 <script>
-import DepList from "@/components/DepList";
+import SelectTree from "@/components/SelectTree";
 import { requestBaseDepartment } from "@/js/api.js";
 
 export default {
   name: "",
   components: {
-    DepList
+    SelectTree
   },
   data () {
     return {
@@ -101,6 +101,10 @@ export default {
     depList: {
       type: Array,
       default: () => []
+    },
+    deepTreeList: {
+      type: Array,
+      default: () => []
     }
   },
   created () {
@@ -108,6 +112,9 @@ export default {
   mounted() {
   },
   methods: {
+    handleSelectData(e) {
+      console.log(e);
+    },
     // 编辑或者修改
     async handleConfirm() {
       // 做一些必要的验证

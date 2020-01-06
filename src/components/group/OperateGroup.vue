@@ -3,96 +3,72 @@
     <el-input
       placeholder="请搜索"
       class=" mg-b"
-      v-if="mode === '添加'"
     >
       <i
         slot="suffix"
         class="el-input__icon el-icon-search"
       ></i>
     </el-input>
-    <div
-      class="rel-header"
-      v-if="mode === '移除'"
-    >
-      <h3>所属用户</h3>
-      <span>已有3个</span>
-    </div>
-    <div
-      class="gl"
-      v-if="mode === '添加' || mode === '移除'"
-    >
+    <div class="gl">
       <ul class="glh">
         <li>
           <span style="border-left: 1px solid #e4e4e4;">姓名</span>
           <span>部门</span>
           <span>操作</span>
+          <span style="width:17px"></span>
         </li>
       </ul>
       <div class="glc">
         <ul>
-          <li class="gl">
-            <span style="border-left: 1px solid #e4e4e4;">钱多多</span>
-            <span>耳鼻喉</span>
+          <li
+            class="gl"
+            :key="item.UserId"
+            v-for="item in userList"
+          >
+            <span style="border-left: 1px solid #e4e4e4;">{{item.Name}}</span>
+            <span>{{item.DefaultDepName}}</span>
             <span>
               <a
                 href="javascript:void(0);"
-                v-if="mode === '添加'"
+                @click="handleAdd"
               >添加</a>
-              <a
-                href="javascript:void(0);"
-                v-if="mode === '移除'"
-              >移除</a>
             </span>
           </li>
         </ul>
       </div>
     </div>
-
-    <div
-      class="gl"
-      v-if="mode === 'selfRemove'"
-    >
-      <ul class="glh">
-        <li>
-          <span style="border-left: 1px solid #e4e4e4;">姓名</span>
-          <span>部门</span>
-          <span>操作</span>
-        </li>
-      </ul>
-      <div class="glc">
-        <ul>
-          <li class="gl">
-            <span style="border-left: 1px solid #e4e4e4;">钱多多</span>
-            <span>耳鼻喉</span>
-            <span>
-              <a href="javascript:void(0);">移除</a>
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
   </div>
 </template>
 
 <script>
+import { requestGetBaseUserList } from "@/js/api";
+
 export default {
   name: "",
   components: {
   },
   data () {
     return {
+      userList: []
     };
   },
-  props: {
-    mode: {
-      type: String,
-      default: "添加"
-    }
-  },
   created () {
+    this.getUserList();
   },
   methods: {
+    async getUserList() {
+      const res = await requestGetBaseUserList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        this.userList = res.data;
+      }
+    },
+    handleAdd(data) {
+      console.log(data);
+      this.$emit("addUsser", data);
+    }
   },
 };
 </script>
@@ -100,16 +76,7 @@ export default {
 <style scope lang="less">
 .group-list {
   width: 48%;
-  height: 120px;
-  .rel-header {
-    margin-bottom: 5px;
-    span {
-      float: right;
-      font-size: 16px;
-      font-weight: 600;
-      color: #fa9933;
-    }
-  }
+  height: 140px;
   ul {
     width: 100%;
     li {
@@ -122,9 +89,13 @@ export default {
         width: 33%;
         border-right: 1px solid #e4e4e4;
         border-bottom: 1px solid #e4e4e4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
+
   .gl {
     height: calc(100% - 50px);
     .glh {
@@ -133,7 +104,7 @@ export default {
       }
     }
     .glc {
-      height: 100%;
+      height: calc(100% - 30px);
       overflow: auto;
     }
   }

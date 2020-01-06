@@ -147,6 +147,7 @@
       :visible="depEditVisible"
       :childDePInfo="childDePInfo"
       :depList="depList"
+      :deepTreeList="deepTreeList"
       @addGp="handleAddGp"
       @editGp="handleEditGp"
       @closed="handleCloseEdit"

@@ -36,10 +36,31 @@
           label="角色"
           id="norequired"
         >
-          <a
-            href="javascript:void(0);"
-            @click="handleAddRole"
-          >添加</a>
+          <div class="roleDiv">
+            <ul>
+              <li>角色1<i
+                  class="el-icon-circle-close fr"
+                  style="margin-top:13px;margin-right:3px"
+                ></i></li>
+              <li>角色2<i
+                  class="el-icon-circle-close fr"
+                  style="margin-top:13px;margin-right:3px"
+                ></i></li>
+            </ul>
+            <a
+              href="javascript:void(0);"
+              @click="handleAddRole"
+              class="fr"
+              v-if="mode === '新增用户'"
+            >添加</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleEditRole"
+              class="fr"
+              v-if="mode === '编辑用户'"
+            >修改</a>
+          </div>
+
         </el-form-item>
         <el-form-item label="手机号">
           <el-input v-model="accountInfo.Mobile"></el-input>
@@ -80,7 +101,10 @@
         >确 定</el-button>
       </span>
     </el-dialog>
-    <RoleDialog @userBehavior="switchRoleValue"></RoleDialog>
+    <RoleDialog
+      @userBehavior="switchRoleValue"
+      :roleList="roleList"
+    ></RoleDialog>
   </div>
 
 </template>
@@ -90,6 +114,7 @@ import DepList from "@/components/DepList";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
 import { requestBaseUser } from "@/js/api";
+import { requestGetBaseRoleList } from "@/js/api.js";
 
 export default {
   name: "",
@@ -99,6 +124,7 @@ export default {
   },
   data () {
     return {
+      roleList: []
     };
   },
   props: {
@@ -176,13 +202,34 @@ export default {
     switchRoleValue (type, data) {
       // console.log(data);
     },
+    async getRoleList() {
+      const res = await requestGetBaseRoleList({
+        name: "",
+        state: 2
+      });
+      console.log(res);
+      if (res.status === 200) {
+        this.roleList = res.data;
+      }
+    },
     // 添加角色
     handleAddRole () {
+      this.getRoleList();
       show("", {
         type: "confirm",
         confirmText: "选好了",
         cancelText: "取消",
-        titleText: "请为该用户添加/编辑角色",
+        titleText: "请为该用户添加角色",
+        data: "woshi11"
+      }, "role");
+    },
+    // 修改角色
+    handleEditRole() {
+      show("", {
+        type: "confirm",
+        confirmText: "选好了",
+        cancelText: "取消",
+        titleText: "编辑该用户角色",
         data: "woshi11"
       }, "role");
     }
@@ -191,6 +238,19 @@ export default {
 </script>
 
 <style lang="less" scope>
+.roleDiv {
+  // width: calc(100);
+  ul {
+    width: calc(100% - 40px);
+    li {
+      width: 70px;
+      float: left;
+      border: 1px solid #e4e4e4;
+      margin-right: 6px;
+      border-radius: 5px;
+    }
+  }
+}
 #norequired {
   display: flex;
 

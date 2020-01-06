@@ -55,9 +55,17 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="baseUserGroupModels"
+          prop=""
+          label="上级组"
+          width="130"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="baseUserGroupModels.length"
           label="组成员"
-          width="280"
+          width="120"
           align="center"
           :show-overflow-tooltip="true"
         >
@@ -65,7 +73,6 @@
         <el-table-column
           prop="baseGroupRoleModels"
           label="角色"
-          width="150"
           align="center"
           :show-overflow-tooltip="true"
         >
@@ -75,6 +82,7 @@
           label="状态"
           width="120"
           align="center"
+          :formatter="fmtState"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
@@ -99,6 +107,7 @@
           label="操作时间"
           width="150"
           align="center"
+          :formatter="fmtDate"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
@@ -107,27 +116,32 @@
           width="180"
           align="center"
         >
-          <template>
+          <template slot-scope="scope">
             <a
               href="javascript:void(0);"
               class="mg-r"
-              @click="handleEditGroup"
+              @click="handleEditGroup(scope.row)"
             >编辑</a>
             <a
               href="javascript:void(0);"
-              @click="handleDelGroup"
+              @click="handleDelGroup(scope.row)"
             >删除</a>
           </template>
         </el-table-column>
       </el-table>
-      <Paging></Paging>
+      <Paging
+        :tableList="groupList"
+        :currentPage="currentPage"
+        :totalCount="groupList.length"
+        @TogglePagingData="handleTogglePagingData"
+      ></Paging>
     </div>
     <Edit
       :visible="groupVisible"
       :mode="mode"
       @closed="hadleCloseGroup"
     ></Edit>
-    <Dialog></Dialog>
+    <Dialog @userBehavior="handleRelDelGroup"></Dialog>
     <GroupDetail
       :visible="groupDetailVisible"
       @closed="handleCloseGDetail"
@@ -143,7 +157,9 @@ import Edit from "@/components/group/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import GroupDetail from "@/components/group/GroupDetail";
-import { requestGetBaseGroupList } from "@/js/api.js";
+import { requestGetBaseGroupList, requestDeleteBaseGroup } from "@/js/api.js";
+import { fmtStatus, formatterDate } from "@/js/format.js";
+import { pageData } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -172,12 +188,18 @@ export default {
     this.getGroupList();
   },
   methods: {
+    // 分页数据
+    handleTogglePagingData(e) {
+      this.currentPage = e;
+      this.cacheGroupList = pageData(this.groupList, this.cacheGroupList, e, this.perPage);
+    },
     // 获取组管理列表
     async getGroupList() {
       const res = await requestGetBaseGroupList({
         name: this.groupName,
         state: this.status
       });
+      console.log(res.data);
       if (res.status === 200) {
         this.groupList = res.data;
         this.cacheGroupList = this.groupList.slice(0, this.perPage);
@@ -197,19 +219,30 @@ export default {
       this.mode = "新增组";
     },
     // 修改组
-    handleEditGroup () {
+    handleEditGroup (row) {
       this.groupVisible = true;
       this.mode = "删除组";
     },
     // 删除组
-    handleDelGroup () {
+    handleDelGroup (row) {
       show("您确定要删除这个分组吗？", {
         type: "confirm",
         cancleText: "取消",
         confirmText: "确定",
         titleText: "删除提示",
-        data: ""
+        data: row
       }, "del");
+    },
+    // 真正的删除组
+    async handleRelDelGroup(type, data) {
+      const res = await requestDeleteBaseGroup({ id: data.Id });
+      if (res.status === 200) {
+        this.$message({
+          type: "waring",
+          message: "删除成功！"
+        });
+        this.getGroupList();
+      }
     },
     hadleCloseGroup () {
       this.groupVisible = false;
@@ -225,6 +258,14 @@ export default {
         return "warning-row";
       }
     },
+    // 格式化状态
+    fmtState(row, coloum, cellValue) {
+      return fmtStatus(cellValue);
+    },
+    // 格式化时间
+    fmtDate(row, coloum, cellValue) {
+      return formatterDate(cellValue);
+    }
   },
 };
 </script>

@@ -59,6 +59,7 @@
           label="状态"
           width="110"
           align="center"
+          :formatter="fmtState"
         >
         </el-table-column>
         <el-table-column
@@ -80,6 +81,7 @@
           label="操作时间"
           width="110"
           align="center"
+          :formatter="fmtDate"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
@@ -135,6 +137,7 @@ import { show } from "@/js/dialog";
 import RoleDetail from "@/components/role/RoleDetail";
 import AllocationAccount from "@/components/role/AllocationAccount";
 import { requestGetBaseRoleList } from "@/js/api";
+import { fmtStatus, formatterDate } from "@/js/format.js";
 
 export default {
   name: "account",
@@ -229,6 +232,14 @@ export default {
         return "warning-row";
       }
     },
+    // 格式化状态
+    fmtState(row, coloum, cellValue) {
+      return fmtStatus(cellValue);
+    },
+    // 格式化时间
+    fmtDate(row, coloum, cellValue) {
+      return formatterDate(cellValue);
+    }
   },
 };
 </script>

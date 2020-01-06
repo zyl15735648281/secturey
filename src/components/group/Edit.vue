@@ -10,31 +10,23 @@
         <el-form-item label="组名称">
           <el-input></el-input>
         </el-form-item>
-        <el-form-item label="上级组">
-          <!-- <el-input></el-input> -->
-          <OverGroup
-            :value="overDepValue"
-            @onChange="switchOverDep"
-            id="overgroup"
-          ></OverGroup>
+        <el-form-item
+          label="上级组"
+          id="group-norequired"
+        >
+          <SelectTree id="overgroup"></SelectTree>
         </el-form-item>
         <el-form-item
           label="组成员"
           style="margin-bottom:10px;"
         >
-          <OperateGroup
-            mode="添加"
-            class="fl"
-          ></OperateGroup>
-          <OperateGroup
-            mode="移除"
-            style="width='100%'"
-            class="fr"
-          ></OperateGroup>
+          <OperateGroup class="fl"></OperateGroup>
+          <CommonGroupUser class="fr"></CommonGroupUser>
 
         </el-form-item>
         <el-form-item
           label="角色"
+          id="group-norequired"
           style="margin-bottom:10px;"
         >
           <a
@@ -73,14 +65,16 @@
 import OperateGroup from "@/components/group/OperateGroup";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
-import OverGroup from "@/components/group/OverGroup";
+import SelectTree from "@/components/SelectTree";
+import CommonGroupUser from "@/components/CommonGroupUser";
 
 export default {
   name: "",
   components: {
     OperateGroup,
     RoleDialog,
-    OverGroup
+    SelectTree,
+    CommonGroupUser
   },
   data () {
     return {
@@ -132,5 +126,26 @@ export default {
   .el-select {
     width: 100%;
   }
+}
+#group-norequired {
+  display: flex;
+
+  .el-form-item__label {
+    letter-spacing: 0.5px;
+    text-align-last: justify;
+    width: 110px;
+  }
+
+  .el-form-item__content {
+    width: calc(100% - 110px);
+    margin-left: 0;
+  }
+}
+
+#group-norequired::before {
+  content: " ";
+  width: 14px;
+  height: 40px;
+  line-height: 40px;
 }
 </style>

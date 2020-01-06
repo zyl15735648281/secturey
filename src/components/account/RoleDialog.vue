@@ -26,9 +26,9 @@
 
         <ul class="ccw-content">
           <template v-for="item in roleList">
-            <li :key="item.value">
+            <li :key="item.Id">
               <div class="mg-b">
-                <el-checkbox class="mg-l">{{item.label}}</el-checkbox>
+                <el-checkbox class="mg-l">{{item.Name}}</el-checkbox>
                 <el-checkbox class="mg-l role-isEver">角色有效性</el-checkbox>
               </div>
               <div class="mg-b">
@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import { roleDataset } from "@/js/dataset";
 import { hidden } from "@/js/dialog.js";
+
 export default {
   name: "",
   data () {
@@ -75,12 +75,13 @@ export default {
     currentMode: {
       type: String,
       default: ""
+    },
+    roleList: {
+      type: Array,
+      default: () => []
     }
   },
-  computed: {
-    roleList () {
-      return roleDataset;
-    }
+  mounted() {
   },
   methods: {
     clickFun (type) {
