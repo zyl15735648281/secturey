@@ -25,33 +25,41 @@
         </div>
 
         <ul class="ccw-content">
-          <template v-for="item in roleList">
-            <li :key="item.Id">
-              <div class="mg-b">
-                <el-checkbox class="mg-l">{{item.Name}}</el-checkbox>
-                <el-checkbox class="mg-l role-isEver">角色有效性</el-checkbox>
-              </div>
-              <div class="mg-b">
-                <span>开始时间：</span>
-                <el-date-picker
-                  v-model="item.startTime"
-                  type="date"
-                  placeholder="选择开始时间"
-                  class="mg-r"
-                >
-                </el-date-picker>
-                <span>截止时间：</span>
-                <el-date-picker
-                  v-model="item.endTime"
-                  type="date"
-                  placeholder="选择结束时间"
-                  class="mg-r"
-                >
-                </el-date-picker>
-                <el-checkbox v-model="item.isEver">永久有效</el-checkbox>
-              </div>
-            </li>
-          </template>
+          <!-- <template slot-scope="scope"> -->
+          <li
+            v-for="(item) in roleList"
+            :key="item.Id"
+          >
+            <div class="mg-b">
+              <el-checkbox
+                class="mg-l"
+                :label="item.Name"
+                @change="handleChecked(item)"
+              >{{item.Name}}</el-checkbox>
+            </div>
+            <div class="mg-b role-limit">
+              <span class="role-isEver mg-r">角色有效性</span>
+              <el-checkbox v-model="item.isEver">永久有效</el-checkbox>
+              <span>开始时间：</span>
+              <el-date-picker
+                v-model="item.startTime"
+                type="date"
+                placeholder="选择开始时间"
+                class="mg-r"
+              >
+              </el-date-picker>
+              <span>截止时间：</span>
+              <el-date-picker
+                v-model="item.endTime"
+                type="date"
+                placeholder="选择结束时间"
+              >
+              </el-date-picker>
+
+            </div>
+          </li>
+          <!-- </template> -->
+
         </ul>
 
       </div>
@@ -68,7 +76,8 @@ export default {
     return {
       checked: false,
       startTime: "",
-      endTime: ""
+      endTime: "",
+      checkList: []
     };
   },
   props: {
@@ -88,9 +97,26 @@ export default {
       if (type === "clickCancle") {
         hidden("role");
       } else {
+        console.log(this.$store.state.wholeDialog.receivedData);
         this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
         hidden("role");
       }
+    },
+    handleChecked(e) {
+      if (this.checkList.length > 0) {
+        const idx = this.checkList.findIndex(element => {
+          // eslint-disable-next-line no-unused-expressions
+          element.Id === e.Id;
+        });
+        if (idx !== -1) {
+          this.checkList.splice(idx, 1);
+        } else {
+          this.checkList.push(e);
+        }
+      } else if (this.checkList.length === 0) {
+        this.checkList.push(e);
+      }
+      this.$store.state.wholeDialog.receivedData = this.checkList;
     }
   }
 };
@@ -144,8 +170,6 @@ export default {
       content: "*";
       color: #ff4949;
       width: 14px;
-      height: 40px;
-      line-height: 40px;
       display: inline-block;
       vertical-align: middle;
     }
@@ -153,5 +177,30 @@ export default {
       font-size: 14px;
     }
   }
+}
+.role-limit {
+  .el-input__inner {
+    height: 35px;
+    line-height: 35px;
+  }
+  .el-input__icon {
+    line-height: 35px;
+  }
+  .el-checkbox:last-of-type {
+    margin-right: 15px;
+  }
+  .el-checkbox__label {
+    padding-left: 5px;
+    color: #111;
+  }
+}
+.el-date-picker {
+  // height: 30px;
+  // line-height: 30px;
+  z-index: 99999 !important;
+}
+.el-date-editor.el-input,
+.el-date-editor.el-input__inner {
+  width: 179px;
 }
 </style>

@@ -6,23 +6,40 @@
       :before-close="handleClose"
       class="dialogStyle"
     >
-      <el-form>
+      <el-form v-model="groupInfo">
         <el-form-item label="组名称">
-          <el-input></el-input>
+          <el-input v-model="groupInfo.Name"></el-input>
         </el-form-item>
         <el-form-item
           label="上级组"
           id="group-norequired"
         >
-          <SelectTree id="overgroup"></SelectTree>
+          <SelectTree
+            id="overgroup"
+            :selectList="spTreeList"
+            v-model="groupInfo.ParentId"
+          ></SelectTree>
         </el-form-item>
         <el-form-item
           label="组成员"
           style="margin-bottom:10px;"
         >
-          <OperateGroup class="fl"></OperateGroup>
-          <CommonGroupUser class="fr"></CommonGroupUser>
-
+          <OperateGroup
+            class="fl"
+            :userList="userList"
+            target="添加"
+            @addUser="handleAddUser"
+          ></OperateGroup>
+          <div class="rel-header">
+            <h3>所属用户</h3>
+            <span>已有{{groupInfo.baseUserGroupModels !== null && groupInfo.baseUserGroupModels !== undefined ? groupInfo.baseUserGroupModels.length : '0'}}个</span>
+          </div>
+          <OperateGroup
+            class="fr"
+            target="删除"
+            :aleradyUserList="alreadyGpList"
+            @removeUser="handleRemoveUser"
+          ></OperateGroup>
         </el-form-item>
         <el-form-item
           label="角色"
@@ -35,13 +52,20 @@
           >添加</a>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio label="0">正常</el-radio>
-          <el-radio label="1">禁用</el-radio>
+          <el-radio
+            :label="true"
+            v-model="groupInfo.IsEnable"
+          >正常</el-radio>
+          <el-radio
+            :label="false"
+            v-model="groupInfo.IsEnable"
+          >禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             type="textarea"
             maxlength="500"
+            v-model="groupInfo.Memo"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -66,15 +90,13 @@ import OperateGroup from "@/components/group/OperateGroup";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
 import SelectTree from "@/components/SelectTree";
-import CommonGroupUser from "@/components/CommonGroupUser";
 
 export default {
   name: "",
   components: {
     OperateGroup,
     RoleDialog,
-    SelectTree,
-    CommonGroupUser
+    SelectTree
   },
   data () {
     return {
@@ -89,6 +111,22 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    userList: {
+      type: Array,
+      default: () => []
+    },
+    groupInfo: {
+      type: Object,
+      default: () => {}
+    },
+    spTreeList: {
+      type: Array,
+      default: () => []
+    },
+    alreadyGpList: {
+      type: Array,
+      default: () => []
     }
   },
   created () {
@@ -110,12 +148,29 @@ export default {
         cancelText: "取消",
         titleText: "请为该用户添加/编辑角色"
       }, "role");
-    }
+    },
+    handleAddUser(row) {
+      this.$emit("addUsers", row);
+    },
+    handleRemoveUser(row) {
+      this.$emit("removeUsers", row);
+    },
   },
 };
 </script>
 
 <style scope lang="less">
+.rel-header {
+  margin-bottom: 10px;
+  width: 48%;
+  float: right;
+  span {
+    float: right;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fa9933;
+  }
+}
 .re-list {
   width: 48%;
   .group-list {

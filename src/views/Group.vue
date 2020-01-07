@@ -139,7 +139,13 @@
     <Edit
       :visible="groupVisible"
       :mode="mode"
+      :userList="userList"
+      :groupInfo="groupInfo"
+      :spTreeList="spTreeList"
+      :alreadyGpList="alreadyGpList"
       @closed="hadleCloseGroup"
+      @addUsers="handleAddUsers"
+      @removeUsers="handleRemoveUsers"
     ></Edit>
     <Dialog @userBehavior="handleRelDelGroup"></Dialog>
     <GroupDetail
@@ -157,7 +163,7 @@ import Edit from "@/components/group/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import GroupDetail from "@/components/group/GroupDetail";
-import { requestGetBaseGroupList, requestDeleteBaseGroup } from "@/js/api.js";
+import { requestGetBaseGroupList, requestDeleteBaseGroup, requestGetBaseUserList, requestGetDicBaseGroup, requestGetBaseGroup } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData } from "@/js/utils.js";
 
@@ -174,6 +180,10 @@ export default {
     return {
       groupList: [],
       cacheGroupList: [],
+      userList: [],
+      groupInfo: {},
+      spTreeList: [],
+      alreadyGpList: [],
       status: "2", // 状态
       loading: false,
       groupName: "", // 组名称
@@ -188,10 +198,29 @@ export default {
     this.getGroupList();
   },
   methods: {
+
     // 分页数据
     handleTogglePagingData(e) {
       this.currentPage = e;
       this.cacheGroupList = pageData(this.groupList, this.cacheGroupList, e, this.perPage);
+    },
+    // 获取上级组的字典数据
+    async getSuperGroupList() {
+      const res = await requestGetDicBaseGroup();
+      if (res.status === 200) {
+        this.spTreeList = res.data;
+      }
+    },
+    // 获取用户数据
+    async getUserList() {
+      const res = await requestGetBaseUserList({
+        name: "",
+        state: 2
+      });
+      console.log(res);
+      if (res.status === 200) {
+        this.userList = res.data;
+      }
     },
     // 获取组管理列表
     async getGroupList() {
@@ -199,7 +228,7 @@ export default {
         name: this.groupName,
         state: this.status
       });
-      console.log(res.data);
+      console.log(res);
       if (res.status === 200) {
         this.groupList = res.data;
         this.cacheGroupList = this.groupList.slice(0, this.perPage);
@@ -217,11 +246,25 @@ export default {
     handleAddGroup () {
       this.groupVisible = true;
       this.mode = "新增组";
+      this.groupInfo = {};
+      this.alreadyGpList = [];
+      this.getUserList();
     },
     // 修改组
-    handleEditGroup (row) {
+    async handleEditGroup (row) {
       this.groupVisible = true;
-      this.mode = "删除组";
+      this.mode = "编辑组";
+      const res = await requestGetBaseGroup({ id: row.Id });
+      this.groupInfo = res.data;
+      this.alreadyGpList = this.groupInfo.baseUserGroupModels;
+      console.log(this.alreadyGpList);
+      this.getUserList();
+    },
+    handleAddUsers(row) {
+      // this.alreadyGpList.
+    },
+    handleRemoveUsers(row) {
+
     },
     // 删除组
     handleDelGroup (row) {

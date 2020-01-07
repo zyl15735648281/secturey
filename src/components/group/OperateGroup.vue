@@ -2,46 +2,81 @@
   <div class="group-list">
     <el-input
       placeholder="请搜索"
-      class=" mg-b"
+      class="mg-b"
+      v-if="target === '添加'"
     >
       <i
         slot="suffix"
         class="el-input__icon el-icon-search"
       ></i>
     </el-input>
-    <div class="gl">
-      <ul class="glh">
-        <li>
-          <span style="border-left: 1px solid #e4e4e4;">姓名</span>
-          <span>部门</span>
-          <span>操作</span>
-          <span style="width:17px"></span>
-        </li>
-      </ul>
-      <div class="glc">
-        <ul>
-          <li
-            class="gl"
-            :key="item.UserId"
-            v-for="item in userList"
-          >
-            <span style="border-left: 1px solid #e4e4e4;">{{item.Name}}</span>
-            <span>{{item.DefaultDepName}}</span>
-            <span>
-              <a
-                href="javascript:void(0);"
-                @click="handleAdd"
-              >添加</a>
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <el-table
+      :data="userList"
+      height="100%"
+      style="width: 100%"
+      border
+      v-if="target === '添加'"
+    >
+      <el-table-column
+        prop="Name"
+        label="姓名"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="DefaultDepName"
+        label="部门"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <a
+            href="javascript:void(0)"
+            @click="handleAdd(scope.row)"
+          >添加</a>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-table
+      :data="aleradyUserList"
+      height="100%"
+      style="width: 100%"
+      border
+      v-if="target === '删除'"
+    >
+      <el-table-column
+        prop="UserName"
+        label="姓名"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="GroupName"
+        label="部门"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <a
+            href="javascript:void(0)"
+            @click="handleRemove(scope.row)"
+          >删除</a>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
-import { requestGetBaseUserList } from "@/js/api";
 
 export default {
   name: "",
@@ -49,26 +84,40 @@ export default {
   },
   data () {
     return {
-      userList: []
+
     };
   },
+  props: {
+    userList: {
+      type: Array,
+      default: () => []
+    },
+    target: {
+      type: String,
+      default: ""
+    },
+    aleradyUserList: {
+      type: Array,
+      default: () => []
+    }
+
+  },
   created () {
-    this.getUserList();
+  },
+  watch: {
+    userList(val) {
+      console.log(val);
+    }
   },
   methods: {
-    async getUserList() {
-      const res = await requestGetBaseUserList({
-        name: "",
-        state: 2
-      });
-      if (res.status === 200) {
-        this.userList = res.data;
-      }
+    handleAdd(row) {
+      this.$emit("addUser", row);
+      console.log(row);
     },
-    handleAdd(data) {
-      console.log(data);
-      this.$emit("addUsser", data);
-    }
+    handleRemove(row) {
+      this.$emit("removeUser", row);
+      console.log(row);
+    },
   },
 };
 </script>
@@ -77,6 +126,15 @@ export default {
 .group-list {
   width: 48%;
   height: 140px;
+  .el-input__inner {
+    height: 35px;
+    line-height: 35px;
+  }
+  .el-table td,
+  .el-table th {
+    padding: 2px 0;
+    line-height: 10px;
+  }
   ul {
     width: 100%;
     li {

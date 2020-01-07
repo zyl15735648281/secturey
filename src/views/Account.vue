@@ -2,12 +2,12 @@
   <div class="information">
     <ul class="retrieval-header acc-header">
       <li>
-        <AccountNameList
-          :accountList="accountList"
+        <span>姓名：</span>
+        <el-input
           v-model="nameValue"
           @input="handleFilterName"
-          @switchName="handleSwitchName"
-        ></AccountNameList>
+          style="width:calc(100% - 50px)"
+        ></el-input>
       </li>
 
       <li>
@@ -69,22 +69,6 @@
         <el-table-column
           prop="DefaultDepName"
           label="部门"
-          width="130"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop=""
-          label="所属分组"
-          width="130"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="baseUserRoleList"
-          label="组角色"
           width="130"
           align="center"
           :show-overflow-tooltip="true"
@@ -165,7 +149,7 @@
             <a
               href="javascript:void(0);"
               @click="handleStartUsing(scope.row)"
-            >启用</a>
+            >{{scope.row.IsEnable === true ? '禁用' : '启用'}}</a>
           </template>
         </el-table-column>
       </el-table>
@@ -195,21 +179,19 @@
 </template>
 
 <script>
-import AccountNameList from "@/components/AccountNameList.vue";
 import State from "@/components/State";
 import Paging from "@/components/Paging";
 import Edit from "@/components/account/Edit";
 import AccountDetail from "@/components/account/AccountDetail";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
-import { requestGetBaseUserList, requestDeleteBaseUser, requestGetBaseDepartmentList } from "@/js/api.js";
+import { requestGetBaseUserList, requestDeleteBaseUser, requestGetBaseDepartmentList, requestGetBaseUser } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
 
 export default {
   name: "account",
   components: {
-    AccountNameList,
     State,
     Paging,
     Edit,
@@ -221,6 +203,7 @@ export default {
       accountList: [],
       cacheAccountList: [],
       accountInfo: {},
+      condition: "启用",
       nameValue: "", // 姓名
       status: "2", // 状态
       loading: false,
@@ -241,7 +224,7 @@ export default {
     // 姓名列表模糊查询
     handleFilterName() {
       if (this.nameValue === "") return this.getAccountList();
-      this.accountList = frzzyQuery(this.nameValue, this.accountList);
+      this.cacheAccountList = frzzyQuery(this.nameValue, this.accountList);
     },
 
     // 分页数据
@@ -288,11 +271,14 @@ export default {
       this.getDepList();
     },
     // 编辑用户
-    handleEditAccount (row) {
+    async handleEditAccount (row) {
       this.visible = true;
       this.mode = "编辑用户";
       this.getDepList();
-      this.accountInfo = row;
+      const res = await requestGetBaseUser({ id: row.UserId });
+      if (res.status === 200) {
+        this.accountInfo = res.data;
+      }
     },
     handleAddAcc() {
       if (this.currentPage !== 1) {
@@ -331,8 +317,8 @@ export default {
       }
     },
     // 启用
-    handleStartUsing() {
-
+    handleStartUsing(row) {
+      row.IsEnable = !row.IsEnable;
     },
     // 关闭弹窗
     handleClose () {

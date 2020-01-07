@@ -7,7 +7,6 @@
         suffix-icon="el-icon-search"
         v-model="depValue"
         class="mg-b"
-        @input="filterChange"
       >
       </el-input>
 
@@ -193,19 +192,12 @@ export default {
         label: "name",
         children: "treeChildren"
       },
-      filterText: ""
     };
   },
   computed: {
   },
   watch: {
-    depValue: function(val) {
-      var arr = document.querySelectorAll(".el-tree-node .is-focusable .el-tree-node__content span:nth-child(2)");
-      for (var i = 0; i < arr.length; i++) {
-        var values = document.querySelector(arr[i]).html();
-        document.querySelector(arr[i]).html(values.split("<span style=\"color: red;\">").join("").split("</span>").join(""));
-        document.querySelector(arr[i]).html(values);
-      }
+    depValue(val) {
       this.$refs.depTree.filter(val);
     }
   },
@@ -217,20 +209,7 @@ export default {
     filter(value, data) {
       console.log(data);
       if (!value) return true;
-      return data.treeChildren.indexOf(value) !== -1;
-    },
-    filterChange() {
-      setTimeout(() => {
-        var val = this.filterText;
-        if (val !== null && val !== "") {
-          var arr = document.querySelectorAll(".el-tree-node .is-focusable .el-tree-node__content span:nth-child(2)");
-          for (var i = 0; i < arr.length; i++) {
-            var values = document.querySelector(arr[i]).html();
-            var reg = new RegExp(val, "g");
-            document.querySelector(arr[i]).html(values.replace(reg, "<span style=\"color: red;\">" + val + "</span>"));
-          }
-        }
-      }, 100);
+      return data.name.indexOf(value) !== -1;
     },
     // 获取部门字典数据
     async getDepLevelList() {

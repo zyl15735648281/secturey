@@ -46,6 +46,8 @@ export const requestGetBaseGroup = data => createAPI("/GetBaseGroup", "get", dat
 export const requestDeleteBaseGroup = data => createAPI("/DeleteBaseGroup", "post", data);
 // 分组管理获取列表
 export const requestGetBaseGroupList = data => createAPI("/GetBaseGroupList", "post", data);
+// 上级分组字典查询
+export const requestGetDicBaseGroup = data => createAPI("/GetDicBaseGroup", "post", data);
 
 // 角色管理相关接口
 // 角色管理添加/修改
