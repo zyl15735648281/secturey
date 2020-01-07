@@ -68,3 +68,28 @@ export const requestGetBaseModule = data => createAPI("/GetBaseModule", "get", d
 export const requestDeleteBaseModule = data => createAPI("/DeleteBaseModule", "post", data);
 // 模块管理获取列表
 export const requestGetBaseModuleList = data => createAPI("/GetBaseModuleList", "post", data);
+
+// 获取字典数据
+// 字典的添加 / 修改;
+export const requestBaseDictionary = data => createAPI("/BaseDictionary", "post", data);
+// 字典的删除;
+export const requestDeleteBaseDictionary = data => createAPI("/DeleteBaseDictionary", "post", data);
+// 字典查询;
+export const requestGetBaseDictionaryList = data => createAPI("/GetBaseDictionaryList", "get", data);
+// 字典根据id查询字段;
+export const requestGetBaseDictionary = data => createAPI("/GetBaseDictionary", "get", data);
+
+// 删除角色场景;
+export const requestDeleteBaseRoleScope = data => createAPI("/DeleteBaseRoleScope", "post", data);
+// 删除角色模块;
+export const requestDeleteBaseRoleModule = data => createAPI("/DeleteBaseRoleModule", "post", data);
+// 删除组角色;
+export const requestDeleteBaseGroupRole = data => createAPI("/DeleteBaseGroupRole", "post", data);
+// 删除组用户;
+export const requestDeleteBaseUserGroup = data => createAPI("/DeleteBaseUserGroup", "post", data);
+// 删除用户角色;
+export const requestDeleteBaseUserRole = data => createAPI("/DeleteBaseUserRole", "post", data);
+// 用户的角色添加 / 修改;
+export const requestBaseUserRole = data => createAPI("/BaseUserRole", "post", data);
+// 获取用户角色列表;
+export const requestGetBaseUserRoleList = data => createAPI("/GetBaseUserRoleList", "post", data);
