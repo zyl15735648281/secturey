@@ -53,7 +53,7 @@
               >
                 <a
                   href="javascript:void(0);"
-                  @click="SeeAccountDetail"
+                  @click="SeeAccountDetail(scope.row)"
                 >{{scope.row.Name}}</a>
               </div>
             </el-popover>
@@ -170,10 +170,16 @@
       @addAccount="handleAddAcc"
       @editAccount="handleEditAcc"
     ></Edit>
-    <AccountDetail
+    <!-- <AccountDetail
       :visible="detailVisible"
+      :detailInfo="detailInfo"
       @closed="handleCloseDetail"
-    ></AccountDetail>
+    ></AccountDetail> -->
+    <NewAccountDetail
+      :visible="detailVisible"
+      :detailInfo="detailInfo"
+      @closed="handleCloseDetail"
+    ></NewAccountDetail>
     <Dialog @userBehavior="handleRelDelAccount"></Dialog>
   </div>
 </template>
@@ -182,12 +188,13 @@
 import State from "@/components/State";
 import Paging from "@/components/Paging";
 import Edit from "@/components/account/Edit";
-import AccountDetail from "@/components/account/AccountDetail";
+// import AccountDetail from "@/components/account/AccountDetail";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import { requestGetBaseUserList, requestDeleteBaseUser, requestGetBaseDepartmentList, requestGetBaseUser } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
+import NewAccountDetail from "@/components/account/NewAccountDetail";
 
 export default {
   name: "account",
@@ -195,14 +202,16 @@ export default {
     State,
     Paging,
     Edit,
-    AccountDetail,
-    Dialog
+    // AccountDetail,
+    Dialog,
+    NewAccountDetail
   },
   data () {
     return {
       accountList: [],
       cacheAccountList: [],
       accountInfo: {},
+      detailInfo: {},
       condition: "启用",
       nameValue: "", // 姓名
       status: "2", // 状态
@@ -256,8 +265,9 @@ export default {
       this.cacheAccountList = this.accountList.slice(0, this.perPage);
     },
     // 查看明细
-    SeeAccountDetail () {
+    SeeAccountDetail (row) {
       this.detailVisible = true;
+      this.detailInfo = row;
     },
     // 关闭明细
     handleCloseDetail () {
