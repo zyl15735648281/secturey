@@ -3,18 +3,11 @@
     <ul class="retrieval-header acc-header">
       <li>
         <span>姓名：</span>
-        <el-input
-          v-model="nameValue"
-          @input="handleFilterName"
-          style="width:calc(100% - 50px)"
-        ></el-input>
+        <el-input v-model="nameValue" @input="handleFilterName" style="width:calc(100% - 50px)"></el-input>
       </li>
 
       <li>
-        <State
-          :value="status"
-          @onChange="handleSwitchStatus"
-        ></State>
+        <State :value="status" @onChange="handleSwitchStatus"></State>
       </li>
       <li>
         <el-button @click="handleSearch">查询</el-button>
@@ -23,103 +16,78 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的用户列表</h3>
-        <el-button
-          class="fr add"
-          @click="handleAddAccount"
-        >新增用户</el-button>
+        <el-button class="fr add" @click="handleAddAccount">新增用户</el-button>
       </div>
-      <el-table
+      <!-- <el-table
         :data="cacheAccountList"
+        :row-class-name="tabRowClassName"
+        style="width: 100%"
+        height="calc(100% - 70px)"
+        v-loading="loading"
+      >-->
+      <el-table
+        :data="tabledata"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
       >
         <!-- prop="name" -->
-        <el-table-column
-          label="姓名"
-          width="120"
-          align="center"
-        >
+        <el-table-column label="姓名" width="120" align="center">
           <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              placement="top"
-            >
+            <el-popover trigger="hover" placement="top">
               <p>点我查看详情</p>
-              <div
-                slot="reference"
-                class="name-wrapper"
-              >
+              <div slot="reference" class="name-wrapper">
                 <a
                   href="javascript:void(0);"
                   @click="SeeAccountDetail(scope.row)"
                 >{{scope.row.Name}}</a>
+                <a
+                  href="javascript:void(0);"
+                  @click="SeeAccountDetail(scope.row)"
+                >{{scope.row.name}}</a>
               </div>
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="EmployeeId"
-          label="工号"
-          width="130"
-          align="center"
-        >
-        </el-table-column>
+        <el-table-column prop="EmployeeId" label="工号" width="130" align="center"></el-table-column>
         <el-table-column
           prop="DefaultDepName"
           label="部门"
           width="130"
           align="center"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           prop="Mobile"
           label="手机号"
           width="130"
           align="center"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           prop="Email"
           label="Email"
           width="140"
           align="center"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop=""
-          label="角色"
-          width="130"
-          align="center"
-        >
-        </el-table-column>
+        ></el-table-column>
+        <el-table-column prop label="角色" width="130" align="center"></el-table-column>
         <el-table-column
           prop="IsEnable"
           label="状态"
           width="110"
           align="center"
           :formatter="fmtState"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           prop="Note"
           label="备注"
           width="160"
           align="center"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="CreateUserName"
-          label="创建人"
-          width="120"
-          align="center"
-        >
-        </el-table-column>
+        ></el-table-column>
+        <el-table-column prop="CreateUserName" label="创建人" width="120" align="center"></el-table-column>
         <el-table-column
           prop="CreateTime"
           label="创建时间"
@@ -127,25 +95,11 @@
           align="center"
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="180"
-          align="center"
-          fixed="right"
-        >
+        ></el-table-column>
+        <el-table-column label="操作" width="180" align="center" fixed="right">
           <template slot-scope="scope">
-            <a
-              href="javascript:void(0);"
-              @click="handleEditAccount(scope.row)"
-              class="mg-r"
-            >编辑</a>
-            <a
-              href="javascript:void(0);"
-              @click="handleDelAccount(scope.row)"
-              class="mg-r"
-            >删除</a>
+            <a href="javascript:void(0);" @click="handleEditAccount(scope.row)" class="mg-r">编辑</a>
+            <a href="javascript:void(0);" @click="handleDelAccount(scope.row)" class="mg-r">删除</a>
             <a
               href="javascript:void(0);"
               @click="handleStartUsing(scope.row)"
@@ -174,12 +128,8 @@
       :visible="detailVisible"
       :detailInfo="detailInfo"
       @closed="handleCloseDetail"
-    ></AccountDetail> -->
-    <NewAccountDetail
-      :visible="detailVisible"
-      :detailInfo="detailInfo"
-      @closed="handleCloseDetail"
-    ></NewAccountDetail>
+    ></AccountDetail>-->
+    <NewAccountDetail :visible="detailVisible" :detailInfo="detailInfo" @closed="handleCloseDetail"></NewAccountDetail>
     <Dialog @userBehavior="handleRelDelAccount"></Dialog>
   </div>
 </template>
@@ -191,7 +141,12 @@ import Edit from "@/components/account/Edit";
 // import AccountDetail from "@/components/account/AccountDetail";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
-import { requestGetBaseUserList, requestDeleteBaseUser, requestGetBaseDepartmentList, requestGetBaseUser } from "@/js/api.js";
+import {
+  requestGetBaseUserList,
+  requestDeleteBaseUser,
+  requestGetBaseDepartmentList,
+  requestGetBaseUser
+} from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
 import NewAccountDetail from "@/components/account/NewAccountDetail";
@@ -206,7 +161,7 @@ export default {
     Dialog,
     NewAccountDetail
   },
-  data () {
+  data() {
     return {
       accountList: [],
       cacheAccountList: [],
@@ -221,11 +176,32 @@ export default {
       detailVisible: false,
       perPage: 10,
       depList: [],
-      currentPage: 1
+      currentPage: 1,
+      tableData: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1517 弄"
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1519 弄"
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1516 弄"
+        }
+      ]
     };
   },
-  computed: {
-  },
+  computed: {},
   mounted() {
     this.getAccountList();
   },
@@ -239,7 +215,12 @@ export default {
     // 分页数据
     handleTogglePagingData(e) {
       this.currentPage = e;
-      this.cacheAccountList = pageData(this.accountList, this.cacheAccountList, e, this.perPage);
+      this.cacheAccountList = pageData(
+        this.accountList,
+        this.cacheAccountList,
+        e,
+        this.perPage
+      );
     },
     // 查询
     async handleSearch() {
@@ -265,23 +246,23 @@ export default {
       this.cacheAccountList = this.accountList.slice(0, this.perPage);
     },
     // 查看明细
-    SeeAccountDetail (row) {
+    SeeAccountDetail(row) {
       this.detailVisible = true;
       this.detailInfo = row;
     },
     // 关闭明细
-    handleCloseDetail () {
+    handleCloseDetail() {
       this.detailVisible = false;
     },
     // 新增用户
-    handleAddAccount () {
+    handleAddAccount() {
       this.visible = true;
       this.mode = "新增用户";
       this.accountInfo = {};
       this.getDepList();
     },
     // 编辑用户
-    async handleEditAccount (row) {
+    async handleEditAccount(row) {
       this.visible = true;
       this.mode = "编辑用户";
       this.getDepList();
@@ -303,14 +284,18 @@ export default {
       this.getAccountList();
     },
     // 删除用户
-    handleDelAccount (row) {
-      show("您确定要删除这个部门吗？", {
-        type: "confirm",
-        cancleText: "取消",
-        confirmText: "确定",
-        titleText: "删除提示",
-        data: row
-      }, "del");
+    handleDelAccount(row) {
+      show(
+        "您确定要删除这个部门吗？",
+        {
+          type: "confirm",
+          cancleText: "取消",
+          confirmText: "确定",
+          titleText: "删除提示",
+          data: row
+        },
+        "del"
+      );
     },
     // 真正的删除用户
     async handleRelDelAccount(type, data) {
@@ -331,19 +316,19 @@ export default {
       row.IsEnable = !row.IsEnable;
     },
     // 关闭弹窗
-    handleClose () {
+    handleClose() {
       this.visible = false;
     },
     // 切换姓名
-    handleSwitchName (e) {
+    handleSwitchName(e) {
       this.nameValue = e;
     },
     // 切换状态
-    handleSwitchStatus (e) {
+    handleSwitchStatus(e) {
       this.status = e;
     },
     // 自定义stripe样式
-    tabRowClassName ({ row, rowIndex }) {
+    tabRowClassName({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
         return "warning-row";
@@ -357,15 +342,16 @@ export default {
     fmtDate(row, coloum, cellValue) {
       return formatterDate(cellValue);
     }
-  },
+  }
 };
 </script>
 
 <style lang="less" scope>
+@base: #4bc183;
 p {
   text-align: center;
 }
 .name-wrapper {
-  color: #285b91;
+  color: @base;
 }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <div class="header">
-    <img
-      class="fl"
-      src="@/assets/logo.png"
-    >
+    <img class="fl" src="@/assets/logo.png" />
     <h1 class="fl">权限管理系统</h1>
     <div class="fr right-header">
       <i class="iconfont icon-yonghu2"></i>
@@ -16,16 +13,15 @@
 <script>
 export default {
   name: "appHeader",
-  methods: {
-  }
+  methods: {}
 };
 </script>
 
 <style lang="less" scope>
-@base: #285b91;
+@base: #4bc183;
 .header {
   height: 50px;
-  line-height: 50px;
+  line-height: 49px;
   width: 100%;
   background-color: @base;
   color: white;
@@ -60,7 +56,7 @@ export default {
     }
     .ui-checkuser {
       &:hover {
-        background-color: rgb(25, 64, 105);
+        background-color: #328056;
       }
     }
   }

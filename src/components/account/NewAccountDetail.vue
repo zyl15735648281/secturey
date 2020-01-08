@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class>
     <el-dialog
       :visible.sync="visible"
       :before-close="handleClose"
@@ -55,14 +55,9 @@
           <div class="fourInfo">
             <!-- <p v-if="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无用户角色</p> -->
             <ul>
-              <li
-                v-for="roleItem in detailInfo.baseUserRoleList"
-                :key="roleItem.RoleId"
-              >{{roleItem.RoleName}}
-                <a
-                  href="javascript:void(0)"
-                  class="fr"
-                >删除</a>
+              <li v-for="roleItem in detailInfo.baseUserRoleList" :key="roleItem.RoleId">
+                {{roleItem.RoleName}}
+                <a href="javascript:void(0)" class="fr">删除</a>
                 <a
                   href="javascript:void(0)"
                   class="fr mg-r"
@@ -70,46 +65,33 @@
                 >功能权限</a>
                 <a
                   href="javascript:void(0)"
-                  class="fr  mg-r"
+                  class="fr mg-r"
                   @click="handleGetDataPer(roleItem)"
                 >数据权限</a>
               </li>
             </ul>
-
           </div>
           <div class="thirdInfo">
             <div class="feature">
               <!-- <p v-if="userFeatureV === false && detailInfo.baseUserRoleList !== undefined && detailInfo.baseUserRoleList !== null && detailInfo.baseUserRoleList.length !== 0">请点击左侧功能权限查看</p> -->
               <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0 || userFeatureList.length === 0">暂无权限数据</p> -->
               <ul>
-                <li
-                  v-for="userFItem in userFeatureList"
-                  :key="userFItem.id"
-                >场景1
-
-                  <a
-                    href="javascript:void(0)"
-                    class="fr"
-                  >删除</a>
+                <li v-for="userFItem in userFeatureList" :key="userFItem.id">
+                  场景1
+                  <a href="javascript:void(0)" class="fr">删除</a>
                 </li>
               </ul>
-
             </div>
             <div class="dataAuth">
               <!-- <p v-if="detailInfo.baseUserRoleList !== undefined && detailInfo.baseUserRoleList !== null && detailInfo.baseUserRoleList.length !== 0">请点击左侧数据权限查看</p> -->
-              <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无权限数据</!--> -->
+              <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无权限数据</!-->
+              -->
               <ul>
-                <li
-                  v-for="userDItem in userDataList"
-                  :key="userDItem.id"
-                >场景3
-                  <a
-                    href="javascript:void(0)"
-                    class="fr"
-                  >删除</a>
+                <li v-for="userDItem in userDataList" :key="userDItem.id">
+                  场景3
+                  <a href="javascript:void(0)" class="fr">删除</a>
                 </li>
               </ul>
-
             </div>
           </div>
         </div>
@@ -117,10 +99,7 @@
 
         <!-- 所属部门s -->
         <div class="items">
-          <div
-            class="firstInfo"
-            id="outside"
-          >
+          <div class="firstInfo" id="outside">
             <h2>所属部门</h2>
           </div>
           <i class="iconfont icon-yiyongfeiji"></i>
@@ -130,29 +109,17 @@
               <li
                 v-for="depItem in detailInfo.baseUserDepartmentModels"
                 :key="depItem.groupId"
-              >
-                {{depItem.groupName}}
-              </li>
+              >{{depItem.groupName}}</li>
             </ul>
           </div>
           <div class="fourInfo">
             <!-- <p v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null">暂无部门角色</p> -->
             <ul>
-              <li>病案科
-                <a
-                  href="javascript:void(0)"
-                  class="fr"
-                >删除</a>
-                <a
-                  href="javascript:void(0)"
-                  class="fr mg-r"
-                  @click="handleGetDepFeatureV"
-                >功能权限</a>
-                <a
-                  href="javascript:void(0)"
-                  class="fr  mg-r"
-                  @click="handleGetDepDataV"
-                >数据权限</a>
+              <li>
+                病案科
+                <a href="javascript:void(0)" class="fr">删除</a>
+                <a href="javascript:void(0)" class="fr mg-r" @click="handleGetDepFeatureV">功能权限</a>
+                <a href="javascript:void(0)" class="fr mg-r" @click="handleGetDepDataV">数据权限</a>
               </li>
             </ul>
           </div>
@@ -160,26 +127,20 @@
             <div class="feature">
               <!-- <p v-if="depFeatureV === false">请点击左侧功能权限查看</p> -->
               <ul>
-                <li>场景1
-                  <a
-                    href="javascript:void(0)"
-                    class="fr"
-                  >删除</a>
+                <li>
+                  场景1
+                  <a href="javascript:void(0)" class="fr">删除</a>
                 </li>
               </ul>
-
             </div>
             <div class="dataAuth">
               <!-- <p v-if="depDataV === false">请点击左侧功能权限查看</p> -->
               <ul>
-                <li>场景3
-                  <a
-                    href="javascript:void(0)"
-                    class="fr"
-                  >删除</a>
+                <li>
+                  场景3
+                  <a href="javascript:void(0)" class="fr">删除</a>
                 </li>
               </ul>
-
             </div>
           </div>
         </div>
@@ -187,80 +148,57 @@
 
         <!-- 所属分组s -->
         <div class="items">
-          <div
-            class="firstInfo"
-            id="outside"
-          >
+          <div class="firstInfo" id="outside">
             <h2>所属分组</h2>
           </div>
           <i class="iconfont icon-yiyongfeiji"></i>
           <div class="secondInfo">
-            <p v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null">暂无分组数据</p>
+            <p
+              v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null"
+            >暂无分组数据</p>
             <ul>
               <li
                 v-for="dpItem in detailInfo.baseUserGroupModels"
                 :key="dpItem.departmentId"
-              >{{dpItem.departName}}
-              </li>
+              >{{dpItem.departName}}</li>
             </ul>
           </div>
           <div class="fourInfo">
             <ul>
-              <li>病案科
-                <a
-                  href="javascript:void(0)"
-                  class="fr"
-                >删除</a>
-                <a
-                  href="javascript:void(0)"
-                  class="fr mg-r"
-                >功能权限</a>
-                <a
-                  href="javascript:void(0)"
-                  class="fr  mg-r"
-                >数据权限</a>
+              <li>
+                病案科
+                <a href="javascript:void(0)" class="fr">删除</a>
+                <a href="javascript:void(0)" class="fr mg-r">功能权限</a>
+                <a href="javascript:void(0)" class="fr mg-r">数据权限</a>
               </li>
             </ul>
-
           </div>
           <div class="thirdInfo">
             <div class="feature">
               <!-- <p v-if="gpFeatureV === false">请点击左侧功能权限查看</p> -->
               <ul>
-                <li>场景1
-                  <a
-                    href="javascript:void(0)"
-                    class="fr"
-                  >删除</a>
+                <li>
+                  场景1
+                  <a href="javascript:void(0)" class="fr">删除</a>
                 </li>
               </ul>
-
             </div>
             <div class="dataAuth">
               <p v-if="gpDataV === false">请点击左侧数据权限查看</p>
               <ul>
-                <li>场景3
-                  <a
-                    href="javascript:void(0)"
-                    class="fr"
-                  >删除</a>
+                <li>
+                  场景3
+                  <a href="javascript:void(0)" class="fr">删除</a>
                 </li>
               </ul>
-
             </div>
           </div>
         </div>
         <!-- 所属分组e -->
       </div>
 
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          @click="handleClose"
-        >关 闭</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleClose">关 闭</el-button>
       </span>
     </el-dialog>
   </div>
@@ -271,9 +209,8 @@ import { requestGetBaseRelationGroup } from "@/js/api";
 
 export default {
   name: "",
-  components: {
-  },
-  data () {
+  components: {},
+  data() {
     return {
       userFeatureV: false,
       userDataV: false,
@@ -295,10 +232,9 @@ export default {
       default: () => {}
     }
   },
-  created () {
-  },
+  created() {},
   methods: {
-    handleClose () {
+    handleClose() {
       this.$emit("closed");
     },
     // 获取用户角色功能权限
@@ -331,12 +267,13 @@ export default {
     },
     handleGetGpDataV() {
       this.gpDataV = true;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scope lang="less">
+@base: #4bc183;
 .userDialog {
   .el-dialog__body {
     height: 400px;

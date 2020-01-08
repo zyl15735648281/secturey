@@ -7,10 +7,7 @@
       </li>
 
       <li>
-        <State
-          :value="status"
-          @onChange="handleSwitchStatus"
-        ></State>
+        <State :value="status" @onChange="handleSwitchStatus"></State>
       </li>
       <li>
         <el-button>查询</el-button>
@@ -19,10 +16,7 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的角色列表</h3>
-        <el-button
-          class="fr add"
-          @click="handleAddRole"
-        >新增角色</el-button>
+        <el-button class="fr add" @click="handleAddRole">新增角色</el-button>
       </div>
       <el-table
         :data="cacheRoleList"
@@ -31,25 +25,12 @@
         height="calc(100% - 70px)"
         v-loading="loading"
       >
-        <el-table-column
-          label="角色名称"
-          width="120"
-          align="center"
-        >
+        <el-table-column label="角色名称" width="120" align="center">
           <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              placement="top"
-            >
+            <el-popover trigger="hover" placement="top">
               <p>点我查看角色详情</p>
-              <div
-                slot="reference"
-                class="name-wrapper"
-              >
-                <a
-                  href="javascript:void(0);"
-                  @click="SeeRoleDetail"
-                >{{scope.row.Name}}</a>
+              <div slot="reference" class="name-wrapper">
+                <a href="javascript:void(0);" @click="SeeRoleDetail">{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
@@ -60,22 +41,9 @@
           width="110"
           align="center"
           :formatter="fmtState"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="CreateUserName"
-          label="操作人"
-          width="130"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Description"
-          label="备注"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
+        ></el-table-column>
+        <el-table-column prop="CreateUserName" label="操作人" width="130" align="center"></el-table-column>
+        <el-table-column prop="Description" label="备注" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="name"
           label="操作时间"
@@ -83,48 +51,21 @@
           align="center"
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="200"
-          align="center"
-        >
+        ></el-table-column>
+        <el-table-column label="操作" width="200" align="center">
           <template>
-            <a
-              href="javascript:void(0);"
-              class="mg-r"
-              @click="handleEditRole"
-            >编辑</a>
-            <a
-              href="javascript:void(0);"
-              @click="handleDelRole"
-              class="mg-r"
-            >删除</a>
-            <a
-              href="javascript:void(0);"
-              @click="allocationAccount"
-            >分配用户</a>
+            <a href="javascript:void(0);" class="mg-r" @click="handleEditRole">编辑</a>
+            <a href="javascript:void(0);" @click="handleDelRole" class="mg-r">删除</a>
+            <a href="javascript:void(0);" @click="allocationAccount">分配用户</a>
           </template>
         </el-table-column>
       </el-table>
       <Paging></Paging>
     </div>
-    <Edit
-      :visible="roleVisible"
-      :mode="mode"
-      @closed="handleCloseRole"
-    ></Edit>
+    <Edit :visible="roleVisible" :mode="mode" @closed="handleCloseRole"></Edit>
     <Dialog></Dialog>
-    <RoleDetail
-      :visible="roleDelVisible"
-      @closed="handleCloseRoleDetail"
-    ></RoleDetail>
-    <AllocationAccount
-      :visible="aocAccVis"
-      @closed="handleCloseAocAcc"
-    ></AllocationAccount>
-
+    <RoleDetail :visible="roleDelVisible" @closed="handleCloseRoleDetail"></RoleDetail>
+    <AllocationAccount :visible="aocAccVis" @closed="handleCloseAocAcc"></AllocationAccount>
   </div>
 </template>
 
@@ -149,7 +90,7 @@ export default {
     RoleDetail,
     AllocationAccount
   },
-  data () {
+  data() {
     return {
       roleList: [],
       cacheRoleList: [],
@@ -164,8 +105,7 @@ export default {
       currentPage: 1
     };
   },
-  computed: {
-  },
+  computed: {},
   mounted() {
     this.getRoleList();
   },
@@ -182,51 +122,55 @@ export default {
       }
     },
     //   关闭分配用户
-    handleCloseAocAcc () {
+    handleCloseAocAcc() {
       this.aocAccVis = false;
     },
     //   分配用户
-    allocationAccount () {
+    allocationAccount() {
       this.aocAccVis = true;
     },
     // 查看角色详情
-    SeeRoleDetail () {
+    SeeRoleDetail() {
       this.roleDelVisible = true;
     },
     // 关闭角色详情对话框
-    handleCloseRoleDetail () {
+    handleCloseRoleDetail() {
       this.roleDelVisible = false;
     },
     // 新增角色
-    handleAddRole () {
+    handleAddRole() {
       this.roleVisible = true;
       this.mode = "新增角色";
     },
     // 编辑角色
-    handleEditRole () {
+    handleEditRole() {
       this.roleVisible = true;
       this.mode = "编辑角色";
     },
     // 删除角色
-    handleDelRole () {
-      show("您确定要删除这个角色吗？", {
-        type: "confirm",
-        cancleText: "取消",
-        confirmText: "确定",
-        titleText: "删除提示",
-        data: ""
-      }, "del");
+    handleDelRole() {
+      show(
+        "您确定要删除这个角色吗？",
+        {
+          type: "confirm",
+          cancleText: "取消",
+          confirmText: "确定",
+          titleText: "删除提示",
+          data: ""
+        },
+        "del"
+      );
     },
     // 关闭编辑/新增弹框
-    handleCloseRole () {
+    handleCloseRole() {
       this.roleVisible = false;
     },
     // 切换状态
-    handleSwitchStatus (e) {
+    handleSwitchStatus(e) {
       this.status = e;
     },
     // 自定义stripe样式
-    tabRowClassName ({ row, rowIndex }) {
+    tabRowClassName({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
         return "warning-row";
@@ -240,7 +184,7 @@ export default {
     fmtDate(row, coloum, cellValue) {
       return formatterDate(cellValue);
     }
-  },
+  }
 };
 </script>
 

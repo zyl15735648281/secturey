@@ -1,6 +1,6 @@
 <template>
   <div class="paging">
-    <span class="datatotal">共{{tableList.length}}条数据</span>
+    <span class="datatotal">共{{tableList.length}}条数杮</span>
     <el-pagination
       background
       layout="prev, pager, next"
@@ -8,22 +8,18 @@
       @current-change="handleCurrentChange"
       :current-page="currentPage"
       :page-size="10"
-    >
-    </el-pagination>
+    ></el-pagination>
   </div>
 </template>
 
 <script>
 export default {
   name: "",
-  components: {
+  components: {},
+  data() {
+    return {};
   },
-  data () {
-    return {
-    };
-  },
-  created () {
-  },
+  created() {},
   props: {
     totalCount: {
       type: Number,
@@ -42,11 +38,12 @@ export default {
     handleCurrentChange(val) {
       this.$emit("TogglePagingData", val);
     }
-  },
+  }
 };
 </script>
 
 <style scope lang="less">
+@base: #4bc183;
 .paging {
   text-align: center;
   margin-top: 3px;
@@ -63,11 +60,11 @@ export default {
   }
 
   .el-pagination.is-background .el-pager li:not(.disabled).active {
-    background-color: rgb(236, 107, 106);
+    background-color: rgb(224, 84, 99);
   }
 
   .el-pagination.is-background .el-pager li:not(.disabled):hover {
-    color: #285b91;
+    color: @base;
   }
 }
 </style>

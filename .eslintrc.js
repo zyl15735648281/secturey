@@ -22,7 +22,15 @@ module.exports = {
         "no-return-await": 0,
         "no-empty-pattern": 0,
         "no-param-reassign": 0,
-        "space-before-function-paren": 0
+        "space-before-function-paren": 0,
+        indent: "off",
+        "vue/script-indent": [
+            "error",
+            {
+                baseIndent: 1
+            }
+        ],
+        "eol-last": 0
     },
     parserOptions: {
         parser: "babel-eslint"

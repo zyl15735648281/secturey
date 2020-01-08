@@ -2,7 +2,7 @@
   <div class="aside fl">
     <!-- <ul class="outside">
     <Items v-for="(item,index) in list" :model="item" :key="index"></Items>
-  </ul> -->
+    </ul>-->
     <ul>
       <template v-for="route in $router.options.routes">
         <li
@@ -11,40 +11,31 @@
           @click="handleSwitchNav(route.path)"
           :class="$route.meta.description === route.meta.description ? 'active' : ''"
         >
-          <i
-            :class="route.meta.iconfont"
-            class="mg-r"
-          ></i>
+          <i :class="route.meta.iconfont" class="mg-r"></i>
           {{route.meta.description}}
         </li>
       </template>
     </ul>
   </div>
-
 </template>
 
 <script>
-
 export default {
   name: "",
-  components: {
-
-  },
-  data () {
-    return {
-
-    };
+  components: {},
+  data() {
+    return {};
   },
   methods: {
-    handleSwitchNav (path) {
+    handleSwitchNav(path) {
       this.$router.push(path);
     }
-  },
+  }
 };
 </script>
 
 <style lang="less" scope>
-@base: #285b91;
+@base: #4bc183;
 .aside {
   width: 220px;
   height: 100%;
