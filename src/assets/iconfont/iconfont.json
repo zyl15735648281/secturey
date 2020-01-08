@@ -27,6 +27,27 @@
       "unicode_decimal": 58983
     },
     {
+      "icon_id": "816492",
+      "name": "向右",
+      "font_class": "xiangyou",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "918775",
+      "name": "向右查看",
+      "font_class": "xiangyouchakan",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "925293",
+      "name": "实心飞机",
+      "font_class": "huiliuqujinkoushipin",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
       "icon_id": "1000939",
       "name": "部门管理",
       "font_class": "iconbmgl",
@@ -62,6 +83,20 @@
       "unicode_decimal": 59158
     },
     {
+      "icon_id": "3277755",
+      "name": "飞机",
+      "font_class": "feiji-",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "3906668",
+      "name": "飞机",
+      "font_class": "feiji",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
       "icon_id": "4329914",
       "name": "用户管理",
       "font_class": "yonghuguanli",
@@ -76,6 +111,13 @@
       "unicode_decimal": 58939
     },
     {
+      "icon_id": "4748105",
+      "name": "医用飞机",
+      "font_class": "yiyongfeiji",
+      "unicode": "e7c6",
+      "unicode_decimal": 59334
+    },
+    {
       "icon_id": "4867078",
       "name": "禁用",
       "font_class": "jinyong",
@@ -88,6 +130,13 @@
       "font_class": "stop3",
       "unicode": "e615",
       "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "4931652",
+      "name": "向右",
+      "font_class": "xiangyou1",
+      "unicode": "e629",
+      "unicode_decimal": 58921
     },
     {
       "icon_id": "5062044",
@@ -123,6 +172,13 @@
       "font_class": "fenzuguanli",
       "unicode": "ec23",
       "unicode_decimal": 60451
+    },
+    {
+      "icon_id": "5474842",
+      "name": "飞机",
+      "font_class": "feiji1",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
     },
     {
       "icon_id": "6335477",

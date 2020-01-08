@@ -4,43 +4,48 @@
       title="用户详细信息"
       :visible.sync="visible"
       :before-close="handleClose"
+      ref="dialog"
     >
       <div class="account-detail">
         <h3>用户详情</h3>
         <ul>
           <li>
             <span>姓名：</span>
-            张艳丽
+            {{detailInfo.Name}}
           </li>
           <li>
             <span>工号：</span>
-            张艳丽
+            {{detailInfo.EmployeeId}}
           </li>
           <li>
             <span>创建人：</span>
-            张艳丽
+            {{detailInfo.CreateUserName}}
           </li>
           <li>
             <span>创建时间：</span>
-            张艳丽
+            {{detailInfo.CreateTime !== undefined ? detailInfo.CreateTime.slice(0,10) : detailInfo.CreateTime}}
           </li>
           <li>
             <span>上次登录时间：</span>
-            张艳丽
+            上次登录
           </li>
         </ul>
       </div>
-      <div class="membership">
+      <div
+        class="membership"
+        id="container"
+        ref="userCharts"
+      >
         <h3>组织关系</h3>
         <ul class="me-list">
           <li>
             <span>科室：</span>
-            <div class="place">心内科</div>
+            <div class="place">{{detailInfo.DefaultDepName}}</div>
           </li>
           <span class="role-span">所属角色：</span>
           <div class="get-role">
             <p
-              v-for="item in roleList"
+              v-for="item in detailInfo.baseUserRoleList"
               :key="item.value"
             >
               <span>{{item.label}}</span>
@@ -82,17 +87,18 @@
             </p>
           </div>
         </ul>
+
       </div>
       <div class="info">
         <ul>
           <h3>个人信息</h3>
           <li class="mg-b">
             <span>手机号：</span>
-            <div class=""></div>
+            <div class="">{{detailInfo.Mobile}}</div>
           </li>
           <li>
             <span>Email：</span>
-            <div style="width: calc(100% - 50px);"></div>
+            <div style="width: calc(100% - 50px);">{{detailInfo.Email}}</div>
           </li>
         </ul>
       </div>
@@ -106,12 +112,13 @@
           id="confirm"
         >保 存</el-button>
       </span>
+
     </el-dialog>
     <RoleDetailDailog @userBehavior="handleInfo"></RoleDetailDailog>
 
     <ChildDialog @userBehavior="handleRelDelRole"></ChildDialog>
-
   </div>
+
 </template>
 
 <script>
@@ -119,6 +126,7 @@ import { roleDataset } from "@/js/dataset";
 import RoleDetailDailog from "./RoleDetailDaliog";
 import ChildDialog from "@/components/account/ChildDialog";
 import { show } from "@/js/dialog";
+import echarts from "echarts";
 
 export default {
   name: "",
@@ -128,13 +136,20 @@ export default {
   },
   data () {
     return {
-      codeGroup: "编码组"
+      codeGroup: "编码组",
+      myChart: null,
+      chartData: [],
+      chartLink: []
     };
   },
   props: {
     visible: {
       type: Boolean,
       default: false
+    },
+    detailInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   computed: {
@@ -143,6 +158,106 @@ export default {
     }
   },
   methods: {
+    drawLine() {
+      this.$nextTick(function() {
+        let dom = this.$refs.userCharts;
+        this.myChart = echarts.init(dom);
+        this.chartData = this.dataEChart();
+
+        let option = {
+          tooltip: {
+            trigger: "item",
+            triggerOn: "mousemove"
+          },
+          series: [
+            {
+              left: "2%",
+              right: "2%",
+              top: "8%",
+              bottom: "20%",
+              symbol: "emptyCircle",
+              orient: "vertical",
+              expandAndCollapse: true,
+              label: {
+                position: "top",
+                rotate: -90,
+                verticalAlign: "middle",
+                align: "right",
+                fontSize: 9
+              },
+
+              leaves: {
+                label: {
+                  position: "bottom",
+                  rotate: -90,
+                  verticalAlign: "middle",
+                  align: "left"
+                }
+              },
+
+              animationDurationUpdate: 750,
+
+              layout: "force",
+              roam: true,
+              itemStyle: {
+                normal: {
+                  color: "#6495ED"
+                },
+                // 鼠标放上去有阴影效果
+                emphasis: {
+                  shadowColor: "#3721db",
+                  shadowOffsetX: 0,
+                  shadowOffsetY: 0,
+                  shadowBlur: 40,
+                },
+              },
+              // 头像
+              // symbol: `image://${imgSrc}`,
+              symbolSize: 86,
+              type: "tree",
+              data: this.chartData
+            }
+          ]
+        };
+        this.myChart.setOption(option);
+      });
+    },
+    // 数据集合
+    dataEChart() {
+      let data = [
+        {
+          name: "admin",
+          symbolSize: 76,
+          id: "1",
+        },
+        {
+          name: "病案科-编码组",
+          id: "2",
+        },
+        {
+          name: "组角色（技师，医师）",
+          id: "3",
+        },
+        {
+          name: "角色（技师）",
+          id: "4",
+        }
+      ];
+      return data;
+    },
+    // 关系数据集合
+    linkEChart() {
+      let dataLink = [
+        { value: "同事", source: "1", target: "2" },
+        { value: "同事", source: "1", target: "3" },
+        { value: "同事", source: "1", target: "4" },
+        { value: "同学", source: "1", target: "5" },
+        { value: "同学", source: "1", target: "6" },
+        { value: "同学", source: "1", target: "7" },
+        { value: "爸爸", source: "1", target: "8" },
+      ];
+      return dataLink;
+    },
     handleClose () {
       this.$emit("closed");
     },

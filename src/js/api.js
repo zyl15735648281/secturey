@@ -26,6 +26,8 @@ export const requestGetBaseUser = data => createAPI("/GetBaseUser", "get", data)
 export const requestDeleteBaseUser = data => createAPI("/DeleteBaseUser", "post", data);
 // 用户管理获取列表
 export const requestGetBaseUserList = data => createAPI("/GetBaseUserList", "post", data);
+// 根据id获取权限信息
+export const requestGetBaseRelationGroup = data => createAPI("/GetBaseRelationGroup", "get", data);
 
 // 场景管理相关接口
 // 场景管理的添加/修改
