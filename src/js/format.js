@@ -13,3 +13,12 @@ export function formatterTime (value) {
   if (value === undefined || value === null) return value;
   return value.replace("T", " ");
 }
+
+// 格式化时间
+export function formatterTimeData (date) {
+  return `${date.getFullYear()}-${
+    date.getMonth() + 1 >= 10
+      ? date.getMonth() + 1
+      : "0" + (date.getMonth() + 1)
+    }-${date.getDate() >= 10 ? date.getDate() : "0" + date.getDate()}`;
+}

@@ -45,7 +45,6 @@ export default {
       if (type === "clickCancle") {
         hidden("childDel");
       } else {
-        console.log(1111);
         this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
         hidden("childDel");
       }

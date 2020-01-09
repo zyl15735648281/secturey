@@ -39,11 +39,12 @@
           <div class="roleDiv">
             <ul>
               <li
-                v-for="role in userRoleList"
-                :key="role.RoleId"
-              >{{role.CreateUserName}}<i
-                  class="el-icon-circle-close fr"
+                v-for="(role,index) in userRoleList[0]"
+                :key="role.Id"
+              >{{role.Name}}<i
+                  class="el-icon-circle-close fr icon"
                   style="margin-top:13px;margin-right:3px"
+                  @click="handleDelRole(role,index)"
                 ></i></li>
             </ul>
             <a
@@ -103,6 +104,7 @@
     <RoleDialog
       @userBehavior="switchRoleValue"
       :roleList="roleList"
+      :userRoleList="userRoleList"
     ></RoleDialog>
   </div>
 
@@ -127,11 +129,6 @@ export default {
       userRoleList: []
     };
   },
-  watch: {
-    accountInfo(val) {
-      this.userRoleList = val.baseUserRoleList;
-    }
-  },
   props: {
     visible: {
       type: Boolean,
@@ -150,7 +147,28 @@ export default {
       default: () => {}
     }
   },
-  created () {
+  watch: {
+    accountInfo(val) {
+      if (this.mode === "编辑用户") {
+        if (val.baseUserRoleList !== null && val.baseUserRoleList !== undefined) {
+          if (val.baseUserRoleList.length > 0) {
+            this.userRoleList = [[]];
+            val.baseUserRoleList.forEach(element => {
+              this.userRoleList[0].push({
+                Id: element.RoleId,
+                Name: element.RoleName,
+                startTime: element.BeginTime,
+                endTime: element.EndTime,
+                isEver: element.IsEnable,
+                CreateUserId: element.CreateUserId,
+                CreateUserName: element.CreateUserName,
+                CreateTime: element.CreateTime
+              });
+            });
+          }
+        }
+      }
+    }
   },
   methods: {
     handleClose () {
@@ -158,6 +176,24 @@ export default {
     },
     // 编辑/添加
     async handleConfirm () {
+      let paUserRoleList = [];
+      if (this.userRoleList[0] !== undefined || this.userRoleList[0] !== null) {
+        if (this.userRoleList[0].length >= 1) {
+          this.userRoleList[0].forEach(element => {
+            paUserRoleList.push({
+              RoleId: element.Id,
+              RoleName: element.Name,
+              BeginTime: element.startTime,
+              EndTime: element.endTime,
+              IsEnable: element.isEver,
+              CreateUserId: element.CreateUserId,
+              CreateUserName: element.CreateUserName,
+              CreateTime: element.CreateTime,
+            });
+          });
+        }
+      }
+
       const params = {
         userId: "",
         userCode: "",
@@ -171,7 +207,7 @@ export default {
         defaultDepName: this.accountInfo.DefaultDepName,
         createUserId: "zyl",
         createUserName: "zyl",
-        baseUserRoleList: this.userRoleList,
+        baseUserRoleList: paUserRoleList,
       };
 
       this.depList.forEach(element => {
@@ -206,20 +242,19 @@ export default {
       }
     },
     switchRoleValue (type, data) {
-      this.userRoleList = data;
+      this.userRoleList.push(data);
     },
-    async getRoleList() {
+    // 添加角色
+    async handleAddRole () {
       const res = await requestGetBaseRoleList({
         name: "",
         state: 2
       });
       if (res.status === 200) {
-        this.roleList = res.data;
+        this.roleList = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
       }
-    },
-    // 添加角色
-    handleAddRole () {
-      this.getRoleList();
+
+      this.userRoleList = [];
       show("", {
         type: "confirm",
         confirmText: "选好了",
@@ -229,8 +264,22 @@ export default {
       }, "role");
     },
     // 修改角色
-    handleEditRole() {
-      this.getRoleList();
+    async handleEditRole() {
+      const res = await requestGetBaseRoleList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        // 循环res.data 如果res.data 的IsEnable 为true的时候，checked必定为true，
+        let arr = [];
+        let arr1 = [];
+        this.userRoleList[0].forEach(element => {
+          arr.push({ checked: true, startTime: element.BeginTime, endTime: element.EndTime, isEver: element.IsEnable, ...element });
+        });
+        this.roleList = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
+        arr1 = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
+        this.roleList = arr.concat(arr1);
+      }
       show("", {
         type: "confirm",
         confirmText: "选好了",
@@ -238,6 +287,15 @@ export default {
         titleText: "编辑该用户角色",
         data: ""
       }, "role");
+    },
+    handleDelRole(row) {
+      const idx = this.userRoleList[0].forEach(element => {
+        // eslint-disable-next-line no-unused-expressions
+        element.Id === row.Id;
+      });
+      if (idx !== -1) {
+        this.userRoleList[0].splice(idx, 1);
+      }
     }
   },
 };
@@ -249,11 +307,15 @@ export default {
   ul {
     width: calc(100% - 40px);
     li {
-      width: 70px;
+      width: 100px;
       float: left;
       border: 1px solid #e4e4e4;
       margin-right: 6px;
       border-radius: 5px;
+      padding-left: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

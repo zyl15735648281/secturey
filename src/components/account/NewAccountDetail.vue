@@ -55,9 +55,16 @@
           <div class="fourInfo">
             <!-- <p v-if="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无用户角色</p> -->
             <ul>
-              <li v-for="roleItem in detailInfo.baseUserRoleList" :key="roleItem.RoleId">
+              <li
+                v-for="roleItem in detailInfo.baseUserRoleList"
+                :key="roleItem.RoleId"
+              >
                 {{roleItem.RoleName}}
-                <a href="javascript:void(0)" class="fr">删除</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr"
+                  @click="handleDelUserRole(roleItem)"
+                >删除</a>
                 <a
                   href="javascript:void(0)"
                   class="fr mg-r"
@@ -76,20 +83,31 @@
               <!-- <p v-if="userFeatureV === false && detailInfo.baseUserRoleList !== undefined && detailInfo.baseUserRoleList !== null && detailInfo.baseUserRoleList.length !== 0">请点击左侧功能权限查看</p> -->
               <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0 || userFeatureList.length === 0">暂无权限数据</p> -->
               <ul>
-                <li v-for="userFItem in userFeatureList" :key="userFItem.id">
+                <li
+                  v-for="userFItem in userFeatureList"
+                  :key="userFItem.id"
+                >
                   场景1
-                  <a href="javascript:void(0)" class="fr">删除</a>
+                  <a
+                    href="javascript:void(0)"
+                    class="fr"
+                  >删除</a>
                 </li>
               </ul>
             </div>
             <div class="dataAuth">
               <!-- <p v-if="detailInfo.baseUserRoleList !== undefined && detailInfo.baseUserRoleList !== null && detailInfo.baseUserRoleList.length !== 0">请点击左侧数据权限查看</p> -->
-              <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无权限数据</!-->
-              -->
+              <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无权限数据</p> -->
               <ul>
-                <li v-for="userDItem in userDataList" :key="userDItem.id">
+                <li
+                  v-for="userDItem in userDataList"
+                  :key="userDItem.id"
+                >
                   场景3
-                  <a href="javascript:void(0)" class="fr">删除</a>
+                  <a
+                    href="javascript:void(0)"
+                    class="fr"
+                  >删除</a>
                 </li>
               </ul>
             </div>
@@ -98,13 +116,16 @@
         <!-- 所属用户e -->
 
         <!-- 所属部门s -->
-        <div class="items">
-          <div class="firstInfo" id="outside">
+        <!-- <div class="items">
+          <div
+            class="firstInfo"
+            id="outside"
+          >
             <h2>所属部门</h2>
           </div>
           <i class="iconfont icon-yiyongfeiji"></i>
           <div class="secondInfo">
-            <!-- <p v-if="detailInfo.baseUserDepartmentModels === undefined || detailInfo.baseUserDepartmentModels === null">暂无部门数据</p> -->
+            <p v-if="detailInfo.baseUserDepartmentModels === undefined || detailInfo.baseUserDepartmentModels === null">暂无部门数据</p>
             <ul>
               <li
                 v-for="depItem in detailInfo.baseUserDepartmentModels"
@@ -113,49 +134,67 @@
             </ul>
           </div>
           <div class="fourInfo">
-            <!-- <p v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null">暂无部门角色</p> -->
+            <p v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null">暂无部门角色</p>
             <ul>
               <li>
                 病案科
-                <a href="javascript:void(0)" class="fr">删除</a>
-                <a href="javascript:void(0)" class="fr mg-r" @click="handleGetDepFeatureV">功能权限</a>
-                <a href="javascript:void(0)" class="fr mg-r" @click="handleGetDepDataV">数据权限</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr"
+                >删除</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr mg-r"
+                  @click="handleGetDepFeatureV"
+                >功能权限</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr mg-r"
+                  @click="handleGetDepDataV"
+                >数据权限</a>
               </li>
             </ul>
           </div>
           <div class="thirdInfo">
             <div class="feature">
-              <!-- <p v-if="depFeatureV === false">请点击左侧功能权限查看</p> -->
+              <p v-if="depFeatureV === false">请点击左侧功能权限查看</p>
               <ul>
                 <li>
                   场景1
-                  <a href="javascript:void(0)" class="fr">删除</a>
+                  <a
+                    href="javascript:void(0)"
+                    class="fr"
+                  >删除</a>
                 </li>
               </ul>
             </div>
             <div class="dataAuth">
-              <!-- <p v-if="depDataV === false">请点击左侧功能权限查看</p> -->
+              <p v-if="depDataV === false">请点击左侧功能权限查看</p>
               <ul>
                 <li>
                   场景3
-                  <a href="javascript:void(0)" class="fr">删除</a>
+                  <a
+                    href="javascript:void(0)"
+                    class="fr"
+                  >删除</a>
                 </li>
               </ul>
             </div>
           </div>
-        </div>
+        </div> -->
         <!-- 所属部门e -->
 
         <!-- 所属分组s -->
-        <div class="items">
-          <div class="firstInfo" id="outside">
+        <!-- <div class="items">
+          <div
+            class="firstInfo"
+            id="outside"
+          >
             <h2>所属分组</h2>
           </div>
           <i class="iconfont icon-yiyongfeiji"></i>
           <div class="secondInfo">
-            <p
-              v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null"
-            >暂无分组数据</p>
+            <p v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null">暂无分组数据</p>
             <ul>
               <li
                 v-for="dpItem in detailInfo.baseUserGroupModels"
@@ -167,19 +206,31 @@
             <ul>
               <li>
                 病案科
-                <a href="javascript:void(0)" class="fr">删除</a>
-                <a href="javascript:void(0)" class="fr mg-r">功能权限</a>
-                <a href="javascript:void(0)" class="fr mg-r">数据权限</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr"
+                >删除</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr mg-r"
+                >功能权限</a>
+                <a
+                  href="javascript:void(0)"
+                  class="fr mg-r"
+                >数据权限</a>
               </li>
             </ul>
           </div>
           <div class="thirdInfo">
             <div class="feature">
-              <!-- <p v-if="gpFeatureV === false">请点击左侧功能权限查看</p> -->
+              <p v-if="gpFeatureV === false">请点击左侧功能权限查看</p>
               <ul>
                 <li>
                   场景1
-                  <a href="javascript:void(0)" class="fr">删除</a>
+                  <a
+                    href="javascript:void(0)"
+                    class="fr"
+                  >删除</a>
                 </li>
               </ul>
             </div>
@@ -188,28 +239,43 @@
               <ul>
                 <li>
                   场景3
-                  <a href="javascript:void(0)" class="fr">删除</a>
+                  <a
+                    href="javascript:void(0)"
+                    class="fr"
+                  >删除</a>
                 </li>
               </ul>
             </div>
           </div>
-        </div>
+        </div> -->
         <!-- 所属分组e -->
       </div>
 
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleClose">关 闭</el-button>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="handleClose"
+        >关 闭</el-button>
       </span>
     </el-dialog>
+    <!-- 删除弹出框 -->
+    <ChildDialog @userBehavior="RelDelUserRole"></ChildDialog>
   </div>
 </template>
 
 <script>
-import { requestGetBaseRelationGroup } from "@/js/api";
+import { requestGetBaseRelationGroup, requestDeleteBaseUserRole } from "@/js/api";
+import { show } from "@/js/dialog";
+import ChildDialog from "@/components/account/ChildDialog";
 
 export default {
   name: "",
-  components: {},
+  components: {
+    ChildDialog
+  },
   data() {
     return {
       userFeatureV: false,
@@ -262,11 +328,39 @@ export default {
     handleGetDepDataV() {
       this.depDataV = true;
     },
+    // 获取所属分组的功能权限
     handleGetGpFeatureV() {
       this.gpFeatureV = true;
     },
+    // 获取所属分组的数据权限
     handleGetGpDataV() {
       this.gpDataV = true;
+    },
+    // 删除
+    handleDelUserRole(row) {
+      show(
+        "您确定要删除该用户角色吗？",
+        {
+          type: "confirm",
+          cancleText: "取消",
+          confirmText: "确定",
+          titleText: "删除提示",
+          data: row
+        },
+        "childDel"
+      );
+    },
+    // 真正的删除
+    async RelDelUserRole(type, data) {
+      console.log(data);
+      const res = await requestDeleteBaseUserRole({ roleId: data.RoleId, userId: data.UserId, });
+      console.log(res);
+      if (res.status === 200) {
+        this.$message({
+          type: "success",
+          message: "祝贺你，用户角色删除成功!"
+        });
+      }
     }
   }
 };

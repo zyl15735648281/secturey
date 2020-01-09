@@ -1,6 +1,6 @@
 <template>
   <div class="paging">
-    <span class="datatotal">共{{tableList.length}}条数杮</span>
+    <span class="datatotal">共{{tableList.length}}行记录</span>
     <el-pagination
       background
       layout="prev, pager, next"

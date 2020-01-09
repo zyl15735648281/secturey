@@ -3,11 +3,18 @@
     <ul class="retrieval-header acc-header">
       <li>
         <span>姓名：</span>
-        <el-input v-model="nameValue" @input="handleFilterName" style="width:calc(100% - 50px)"></el-input>
+        <el-input
+          v-model="nameValue"
+          @input="handleFilterName"
+          style="width:calc(100% - 50px)"
+        ></el-input>
       </li>
 
       <li>
-        <State :value="status" @onChange="handleSwitchStatus"></State>
+        <State
+          :value="status"
+          @onChange="handleSwitchStatus"
+        ></State>
       </li>
       <li>
         <el-button @click="handleSearch">查询</el-button>
@@ -16,28 +23,33 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的用户列表</h3>
-        <el-button class="fr add" @click="handleAddAccount">新增用户</el-button>
+        <el-button
+          class="fr add"
+          @click="handleAddAccount"
+        >新增用户</el-button>
       </div>
-      <!-- <el-table
+      <el-table
         :data="cacheAccountList"
         :row-class-name="tabRowClassName"
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
-      >-->
-      <el-table
-        :data="tabledata"
-        :row-class-name="tabRowClassName"
-        style="width: 100%"
-        height="calc(100% - 70px)"
-        v-loading="loading"
       >
-        <!-- prop="name" -->
-        <el-table-column label="姓名" width="120" align="center">
+        <el-table-column
+          label="姓名"
+          width="120"
+          align="center"
+        >
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
+            <el-popover
+              trigger="hover"
+              placement="top"
+            >
               <p>点我查看详情</p>
-              <div slot="reference" class="name-wrapper">
+              <div
+                slot="reference"
+                class="name-wrapper"
+              >
                 <a
                   href="javascript:void(0);"
                   @click="SeeAccountDetail(scope.row)"
@@ -50,7 +62,12 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column prop="EmployeeId" label="工号" width="130" align="center"></el-table-column>
+        <el-table-column
+          prop="EmployeeId"
+          label="工号"
+          width="130"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="DefaultDepName"
           label="部门"
@@ -72,7 +89,13 @@
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column prop label="角色" width="130" align="center"></el-table-column>
+        <el-table-column
+          prop="baseUserRoleList"
+          label="角色"
+          width="130"
+          align="center"
+          :formatter="fmtRoleData"
+        ></el-table-column>
         <el-table-column
           prop="IsEnable"
           label="状态"
@@ -87,7 +110,12 @@
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column prop="CreateUserName" label="创建人" width="120" align="center"></el-table-column>
+        <el-table-column
+          prop="CreateUserName"
+          label="创建人"
+          width="120"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="CreateTime"
           label="创建时间"
@@ -96,10 +124,23 @@
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="操作" width="180" align="center" fixed="right">
+        <el-table-column
+          label="操作"
+          width="180"
+          align="center"
+          fixed="right"
+        >
           <template slot-scope="scope">
-            <a href="javascript:void(0);" @click="handleEditAccount(scope.row)" class="mg-r">编辑</a>
-            <a href="javascript:void(0);" @click="handleDelAccount(scope.row)" class="mg-r">删除</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleEditAccount(scope.row)"
+              class="mg-r"
+            >编辑</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleDelAccount(scope.row)"
+              class="mg-r"
+            >删除</a>
             <a
               href="javascript:void(0);"
               @click="handleStartUsing(scope.row)"
@@ -129,7 +170,11 @@
       :detailInfo="detailInfo"
       @closed="handleCloseDetail"
     ></AccountDetail>-->
-    <NewAccountDetail :visible="detailVisible" :detailInfo="detailInfo" @closed="handleCloseDetail"></NewAccountDetail>
+    <NewAccountDetail
+      :visible="detailVisible"
+      :detailInfo="detailInfo"
+      @closed="handleCloseDetail"
+    ></NewAccountDetail>
     <Dialog @userBehavior="handleRelDelAccount"></Dialog>
   </div>
 </template>
@@ -177,28 +222,6 @@ export default {
       perPage: 10,
       depList: [],
       currentPage: 1,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ]
     };
   },
   computed: {},
@@ -341,7 +364,17 @@ export default {
     // 格式化时间
     fmtDate(row, coloum, cellValue) {
       return formatterDate(cellValue);
-    }
+    },
+    // 格式化角色
+    fmtRoleData(row, coloum, cellValue) {
+      if (cellValue.length === 0) {
+        return "无角色数据";
+      } else {
+        cellValue.forEach(element => {
+          return element.RoleName + ",";
+        });
+      }
+    },
   }
 };
 </script>

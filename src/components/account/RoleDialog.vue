@@ -25,27 +25,32 @@
         </div>
 
         <ul class="ccw-content">
-          <!-- <template slot-scope="scope"> -->
           <li
-            v-for="(item) in roleList"
+            v-for="(item,index) in roleList"
             :key="item.Id"
           >
-            <div class="mg-b">
-              <el-checkbox
-                class="mg-l"
-                :label="item.Name"
-                @change="handleChecked(item)"
-              >{{item.Name}}</el-checkbox>
-            </div>
-            <div class="mg-b role-limit">
+            <el-checkbox
+              class="mg-l mg-b"
+              :label="item.Name"
+              :checked="item.checked"
+              @change="handleChecked(item,index)"
+            >{{item.Name}}</el-checkbox>
+            <div
+              class="mg-b role-limit"
+              v-if="item.checked === true"
+            >
               <span class="role-isEver mg-r">角色有效性</span>
-              <el-checkbox v-model="item.isEver">永久有效</el-checkbox>
+              <el-checkbox
+                :checked="item.isEver"
+                @change="handleCheckedIsEver(item)"
+              >永久有效</el-checkbox>
               <span>开始时间：</span>
               <el-date-picker
                 v-model="item.startTime"
                 type="date"
                 placeholder="选择开始时间"
                 class="mg-r"
+                format="yyyy - MM - dd"
               >
               </el-date-picker>
               <span>截止时间：</span>
@@ -53,12 +58,12 @@
                 v-model="item.endTime"
                 type="date"
                 placeholder="选择结束时间"
+                format="yyyy - MM - dd"
               >
               </el-date-picker>
 
             </div>
           </li>
-          <!-- </template> -->
 
         </ul>
 
@@ -74,35 +79,44 @@ export default {
   name: "",
   data () {
     return {
-      checked: false,
-      startTime: "",
-      endTime: "",
-      checkList: []
+      checkList: [],
+      flag: false
     };
   },
   props: {
-    currentMode: {
-      type: String,
-      default: ""
-    },
     roleList: {
       type: Array,
       default: () => []
+    },
+    userRoleList: {
+      type: Array,
+      default: () => []
     }
-  },
-  mounted() {
   },
   methods: {
     clickFun (type) {
       if (type === "clickCancle") {
         hidden("role");
       } else {
-        console.log(this.$store.state.wholeDialog.receivedData);
         this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
+        this.roleList.forEach(element => {
+          element.checked = false;
+        });
         hidden("role");
       }
     },
-    handleChecked(e) {
+    handleChecked(e, index) {
+      e.checked = !e.checked;
+      if (this.userRoleList.length > 0) {
+        const idx = this.userRoleList.forEach(element => {
+          // eslint-disable-next-line no-unused-expressions
+          element.Id === e.id;
+        });
+        if (idx !== -1) {
+          return;
+        }
+      }
+
       if (this.checkList.length > 0) {
         const idx = this.checkList.findIndex(element => {
           // eslint-disable-next-line no-unused-expressions
@@ -117,6 +131,10 @@ export default {
         this.checkList.push(e);
       }
       this.$store.state.wholeDialog.receivedData = this.checkList;
+      this.flag = e.checked;
+    },
+    handleCheckedIsEver(e) {
+      e.isEver = !e.isEver;
     }
   }
 };
