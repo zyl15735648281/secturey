@@ -105,18 +105,16 @@ export default {
   created () {
   },
   watch: {
-    userList(val) {
-      console.log(val);
-    }
+    // userList(val) {
+    //   console.log(val);
+    // }
   },
   methods: {
     handleAdd(row) {
       this.$emit("addUser", row);
-      console.log(row);
     },
     handleRemove(row) {
       this.$emit("removeUser", row);
-      console.log(row);
     },
   },
 };

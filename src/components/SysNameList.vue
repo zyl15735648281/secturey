@@ -8,10 +8,10 @@
       class="md-select"
     >
       <el-option
-        v-for="item in systemList"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
+        v-for="item in sysList"
+        :key="item.SystemId"
+        :label="item.SystemName"
+        :value="item.SystemName"
       >
       </el-option>
     </el-select>
@@ -19,18 +19,18 @@
 </template>
 
 <script>
-import { systemDataset } from "@/js/dataset";
+// import { requestGetBaseModuleList } from "@/js/api.js";
 
 export default {
+  data() {
+    return {
+      sysList: []
+    };
+  },
   props: {
     value: {
       type: String,
       default: "2"
-    }
-  },
-  computed: {
-    systemList () {
-      return systemDataset;
     }
   },
   methods: {

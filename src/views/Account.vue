@@ -126,7 +126,7 @@
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="180"
+          width="220"
           align="center"
           fixed="right"
         >
@@ -144,7 +144,10 @@
             <a
               href="javascript:void(0);"
               @click="handleStartUsing(scope.row)"
+              class="mg-r"
             >{{scope.row.IsEnable === true ? '禁用' : '启用'}}</a>
+
+            <a href="javascript:void(0);">重置密码</a>
           </template>
         </el-table-column>
       </el-table>

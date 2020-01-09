@@ -7,7 +7,10 @@
       </li>
 
       <li>
-        <State :value="status" @onChange="handleSwitchStatus"></State>
+        <State
+          :value="status"
+          @onChange="handleSwitchStatus"
+        ></State>
       </li>
       <li>
         <el-button>查询</el-button>
@@ -16,7 +19,10 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的角色列表</h3>
-        <el-button class="fr add" @click="handleAddRole">新增角色</el-button>
+        <el-button
+          class="fr add"
+          @click="handleAddRole"
+        >新增角色</el-button>
       </div>
       <el-table
         :data="cacheRoleList"
@@ -25,12 +31,25 @@
         height="calc(100% - 70px)"
         v-loading="loading"
       >
-        <el-table-column label="角色名称" width="120" align="center">
+        <el-table-column
+          label="角色名称"
+          width="120"
+          align="center"
+        >
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
+            <el-popover
+              trigger="hover"
+              placement="top"
+            >
               <p>点我查看角色详情</p>
-              <div slot="reference" class="name-wrapper">
-                <a href="javascript:void(0);" @click="SeeRoleDetail">{{scope.row.Name}}</a>
+              <div
+                slot="reference"
+                class="name-wrapper"
+              >
+                <a
+                  href="javascript:void(0);"
+                  @click="SeeRoleDetail"
+                >{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
@@ -42,30 +61,70 @@
           align="center"
           :formatter="fmtState"
         ></el-table-column>
-        <el-table-column prop="CreateUserName" label="操作人" width="130" align="center"></el-table-column>
-        <el-table-column prop="Description" label="备注" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          prop="CreateUserName"
+          label="操作人"
+          width="130"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="Description"
+          label="备注"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
         <el-table-column
           prop="name"
           label="操作时间"
-          width="110"
+          width="130"
           align="center"
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="操作" width="200" align="center">
-          <template>
-            <a href="javascript:void(0);" class="mg-r" @click="handleEditRole">编辑</a>
-            <a href="javascript:void(0);" @click="handleDelRole" class="mg-r">删除</a>
-            <a href="javascript:void(0);" @click="allocationAccount">分配用户</a>
+        <el-table-column
+          label="操作"
+          width="250"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <a
+              href="javascript:void(0);"
+              class="mg-r"
+              @click="handleEditRole(scope.row)"
+            >编辑</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleDelRole(scope.row)"
+              class="mg-r"
+            >删除</a>
+            <a
+              href="javascript:void(0);"
+              @click="allocationAccount(scope.row)"
+              class="mg-r"
+            >分配用户</a>
+            <a
+              href="javascript:void(0);"
+              @click="allocationAccount(scope.row)"
+            >分配部门</a>
           </template>
         </el-table-column>
       </el-table>
       <Paging></Paging>
     </div>
-    <Edit :visible="roleVisible" :mode="mode" @closed="handleCloseRole"></Edit>
+    <Edit
+      :visible="roleVisible"
+      :mode="mode"
+      @closed="handleCloseRole"
+    ></Edit>
     <Dialog></Dialog>
-    <RoleDetail :visible="roleDelVisible" @closed="handleCloseRoleDetail"></RoleDetail>
-    <AllocationAccount :visible="aocAccVis" @closed="handleCloseAocAcc"></AllocationAccount>
+    <RoleDetail
+      :visible="roleDelVisible"
+      @closed="handleCloseRoleDetail"
+    ></RoleDetail>
+    <AllocationAccount
+      :visible="aocAccVis"
+      @closed="handleCloseAocAcc"
+    ></AllocationAccount>
   </div>
 </template>
 
@@ -77,7 +136,7 @@ import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
 import RoleDetail from "@/components/role/RoleDetail";
 import AllocationAccount from "@/components/role/AllocationAccount";
-import { requestGetBaseRoleList } from "@/js/api";
+import { requestGetBaseRoleList, requestDeleteBaseRole } from "@/js/api";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 
 export default {
@@ -148,7 +207,7 @@ export default {
       this.mode = "编辑角色";
     },
     // 删除角色
-    handleDelRole() {
+    handleDelRole(row) {
       show(
         "您确定要删除这个角色吗？",
         {
@@ -156,10 +215,21 @@ export default {
           cancleText: "取消",
           confirmText: "确定",
           titleText: "删除提示",
-          data: ""
+          data: row
         },
         "del"
       );
+    },
+    // 真正的删除角色
+    async relDelRole(type, data) {
+      const res = await requestDeleteBaseRole({ id: data.Id });
+      if (res.status === 200) {
+        this.$message({
+          type: "waring",
+          message: "祝贺您，删除成功！"
+        });
+        this.getRoleList();
+      }
     },
     // 关闭编辑/新增弹框
     handleCloseRole() {

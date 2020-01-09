@@ -8,6 +8,7 @@ import "@/style/animation.less";
 import "@/style/dialog.less";
 import "@/assets/iconfont/iconfont.css";
 import "element-ui/lib/theme-chalk/index.css";
+// import _ from "lodash";
 
 // 解决因为版本问题造成的路由错误
 import Router from "vue-router";
@@ -57,6 +58,7 @@ Vue.use(Upload);
 Vue.use(CheckboxGroup);
 
 Vue.prototype.$message = Message;
+// Vue.prototype._ = _;
 
 new Vue({
   router,

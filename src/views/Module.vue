@@ -39,6 +39,9 @@
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
+        row-key="id"
+        lazy
+        :tree-props="{children: 'treeChildren', hasChildren: 'hasChildren'}"
       >
         <el-table-column
           label="系统名称"
@@ -46,42 +49,6 @@
           align="center"
           prop="SystemName"
         >
-        </el-table-column>
-
-        <el-table-column
-          type="expand"
-          align="right"
-          width="20"
-        >
-          <template slot-scope="props">
-            <el-form
-              label-position="left"
-              inline
-              class="demo-table-expand"
-            >
-              <el-form-item label="商品名称">
-                <span>{{ props.row.name }}</span>
-              </el-form-item>
-              <el-form-item label="所属店铺">
-                <span>{{ props.row.shop }}</span>
-              </el-form-item>
-              <el-form-item label="商品 ID">
-                <span>{{ props.row.id }}</span>
-              </el-form-item>
-              <el-form-item label="店铺 ID">
-                <span>{{ props.row.shopId }}</span>
-              </el-form-item>
-              <el-form-item label="商品分类">
-                <span>{{ props.row.category }}</span>
-              </el-form-item>
-              <el-form-item label="店铺地址">
-                <span>{{ props.row.address }}</span>
-              </el-form-item>
-              <el-form-item label="商品描述">
-                <span>{{ props.row.desc }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
         </el-table-column>
 
         <el-table-column
@@ -108,6 +75,13 @@
         <el-table-column
           prop="Sort"
           label="排序"
+          width="130"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="Type"
+          label="类型"
           width="130"
           align="center"
         >
@@ -148,37 +122,40 @@
           label="操作"
           width="280"
           align="center"
+          fixed="right"
         >
-          <template>
+          <template slot-scope="scope">
             <a
               href="javascript:void(0);"
               class="mg-r"
-              @click="handleEditMd"
+              @click="handleEditMd(scope.row)"
             >编辑</a>
             <a
               href="javascript:void(0);"
               class="mg-r"
-              @click="handleDelMd"
+              @click="handleDelMd(scope.row)"
             >删除</a>
             <a
               href="javascript:void(0);"
               class="mg-r"
-              @click="handleAddPeer"
+              @click="handleAddPeer(scope.row)"
             >新增平级</a>
             <a
               href="javascript:void(0);"
-              @click="handleAddCollar"
+              @click="handleAddCollar(scope.row)"
             >新增子级</a>
           </template>
         </el-table-column>
       </el-table>
+
       <Edit
         :mode="mode"
         :visible="mdVisible"
+        :mdInfo="mdInfo"
         @closed="handleCloseMd"
       ></Edit>
       <Paging></Paging>
-      <Dialog></Dialog>
+      <Dialog @userBehavior="RelDelMd"></Dialog>
     </div>
   </div>
 </template>
@@ -191,7 +168,7 @@ import MenuNameList from "@/components/MenuNameList";
 import Edit from "@/components/module/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
-import { requestGetBaseModuleList } from "@/js/api.js";
+import { requestGetBaseModuleList, requestGetBaseModule, requestDeleteBaseModule } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 
 export default {
@@ -208,6 +185,7 @@ export default {
     return {
       moudleList: [],
       cacheModuleList: [],
+      mdInfo: {},
       perPage: 10,
       nameValue: "", // 姓名
       status: "2", // 状态
@@ -237,50 +215,40 @@ export default {
         this.cacheModuleList = this.moudleList.slice(0, this.perPage);
       }
     },
-    rowClick (row, event, column) { // 控制展开行
-      var NoIndex = column.type.indexOf("expand");
-      if (NoIndex === 0 && row.child.length <= 0) {
-        this.expands = [];
-        return;
-      }
-      if (row.child.length > 0) {
-        // eslint-disable-next-line no-extend-native
-        Array.prototype.remove = function (val) {
-          let index = this.indexOf(val);
-          if (index > -1) {
-            this.splice(index, 1);
-          }
-        };
-        if (this.expands.indexOf(row.id) < 0) { // 确保只展开一行
-          this.expands.shift();
-          this.expands.push(row.id);
-        } else {
-          this.expands.remove(row.id);
-        }
-      } else {
-        console.log(111);
-      }
-    },
-    isShowIcon () {},
     // 新增模块
     handleAddMd () {
       this.mdVisible = true;
       this.mode = "新增模块";
     },
     // 编辑模块
-    handleEditMd () {
+    async handleEditMd (row) {
+      // console.log(row);
       this.mdVisible = true;
       this.mode = "编辑模块";
+      const res = await requestGetBaseModule({ id: row.id });
+      if (res.status === 200) {
+        this.mdInfo = res.data;
+      }
     },
     // 删除模块
-    handleDelMd () {
+    handleDelMd (row) {
       show("您确定要删除这个模块吗？", {
         type: "confirm",
         cancleText: "取消",
         confirmText: "确定",
         titleText: "删除提示",
-        data: ""
+        data: row
       }, "del");
+    },
+    // 真正的删除模块
+    async RelDelMd(type, data) {
+      const res = await requestDeleteBaseModule({ id: data.id });
+      if (res.status === 200) {
+        this.$message({
+          type: "waring",
+          message: "祝贺您，删除成功！"
+        });
+      }
     },
     // 新增平级
     handleAddPeer () {
@@ -329,4 +297,13 @@ export default {
 </script>
 
 <style lang="less" scope>
+.el-table__row {
+  position: relative;
+  .el-table__expand-icon {
+    position: absolute;
+    left: 110px;
+    bottom: 8px;
+    z-index: 1999;
+  }
+}
 </style>

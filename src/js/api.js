@@ -28,6 +28,10 @@ export const requestDeleteBaseUser = data => createAPI("/DeleteBaseUser", "post"
 export const requestGetBaseUserList = data => createAPI("/GetBaseUserList", "post", data);
 // 根据id获取权限信息
 export const requestGetBaseRelationGroup = data => createAPI("/GetBaseRelationGroup", "get", data);
+// 用户禁用，启用
+export const requestModifiedIsEnable = data => createAPI("/ModifiedIsEnable", "post", data);
+// 用户重置密码
+export const requestModifiedPassword = data => createAPI("/ModifiedPassword", "post", data);
 
 // 场景管理相关接口
 // 场景管理的添加/修改

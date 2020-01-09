@@ -116,6 +116,7 @@ import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
 import { requestBaseUser } from "@/js/api";
 import { requestGetBaseRoleList } from "@/js/api.js";
+import _ from "lodash";
 
 export default {
   name: "",
@@ -270,14 +271,15 @@ export default {
         state: 2
       });
       if (res.status === 200) {
-        // 循环res.data 如果res.data 的IsEnable 为true的时候，checked必定为true，
         let arr = [];
         let arr1 = [];
         this.userRoleList[0].forEach(element => {
           arr.push({ checked: true, startTime: element.BeginTime, endTime: element.EndTime, isEver: element.IsEnable, ...element });
         });
-        this.roleList = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
-        arr1 = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
+        let temp = _.filter(res.data, item => _.every(arr, ele => item.Id !== ele.Id));
+        temp.forEach(element => {
+          arr1.push({ checked: false, startTime: "", endTime: "", isEver: false, ...element });
+        });
         this.roleList = arr.concat(arr1);
       }
       show("", {

@@ -217,7 +217,6 @@ export default {
         name: "",
         state: 2
       });
-      console.log(res);
       if (res.status === 200) {
         this.userList = res.data;
       }
@@ -228,7 +227,6 @@ export default {
         name: this.groupName,
         state: this.status
       });
-      console.log(res);
       if (res.status === 200) {
         this.groupList = res.data;
         this.cacheGroupList = this.groupList.slice(0, this.perPage);
@@ -257,7 +255,6 @@ export default {
       const res = await requestGetBaseGroup({ id: row.Id });
       this.groupInfo = res.data;
       this.alreadyGpList = this.groupInfo.baseUserGroupModels;
-      console.log(this.alreadyGpList);
       this.getUserList();
     },
     handleAddUsers(row) {

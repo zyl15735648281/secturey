@@ -6,10 +6,10 @@
       :before-close="handleClose"
       class="dialogStyle"
     >
-      <el-form>
+      <el-form v-model="mdInfo">
         <el-form-item label="系统名称">
           <SysNameList
-            :value="system"
+            v-model="mdInfo.SystemName"
             @onChange="handleSwitchSys"
           ></SysNameList>
         </el-form-item>
@@ -21,20 +21,29 @@
           ></OverMenu>
         </el-form-item>
         <el-form-item label="类型">
-          <el-radio>目录</el-radio>
-          <el-radio>菜单</el-radio>
-          <el-radio>按钮</el-radio>
+          <el-radio
+            label="0"
+            v-model="mdInfo.Type"
+          >目录</el-radio>
+          <el-radio
+            label="1"
+            v-model="mdInfo.Type"
+          >菜单</el-radio>
+          <el-radio
+            label="2"
+            v-model="mdInfo.Type"
+          >按钮</el-radio>
         </el-form-item>
         <el-form-item label="菜单名称">
-          <el-input></el-input>
+          <el-input v-model="mdInfo.Name"></el-input>
         </el-form-item>
         <el-form-item label="菜单链接">
-          <el-input></el-input>
+          <el-input v-model="mdInfo.Url"></el-input>
         </el-form-item>
         <el-form-item label="显示排序">
           <el-input
             id="sort-input"
-            v-model="numValue"
+            v-model="mdInfo.Sort"
           ></el-input>
           <div class="sort">
             <i
@@ -48,8 +57,12 @@
           </div>
         </el-form-item>
         <el-form-item label="图标">
+          <el-input
+            v-model="mdInfo.Icon"
+            style="width:calc(100% - 75px)"
+          ></el-input>
           <el-upload
-            class="upload-demo"
+            class="upload-demo fr"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
@@ -64,13 +77,20 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio label="0">开启</el-radio>
-          <el-radio>禁用</el-radio>
+          <el-radio
+            :label="true"
+            v-model="mdInfo.IsEnable"
+          >开启</el-radio>
+          <el-radio
+            :label="false"
+            v-model="mdInfo.IsEnable"
+          >禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             type="textarea"
             maxlength="500"
+            v-model="mdInfo.Description"
           ></el-input>
         </el-form-item>
 
@@ -115,6 +135,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    mdInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   computed: {

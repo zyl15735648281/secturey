@@ -352,9 +352,7 @@ export default {
     },
     // 真正的删除
     async RelDelUserRole(type, data) {
-      console.log(data);
       const res = await requestDeleteBaseUserRole({ roleId: data.RoleId, userId: data.UserId, });
-      console.log(res);
       if (res.status === 200) {
         this.$message({
           type: "success",
