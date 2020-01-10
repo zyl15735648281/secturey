@@ -3,17 +3,11 @@
     <ul class="retrieval-header ro-header">
       <li>
         <span>角色名称：</span>
-        <el-input
-          v-model="roleName"
-          @input="handleFilterRoleName"
-        ></el-input>
+        <el-input v-model="roleName" @input="handleFilterRoleName"></el-input>
       </li>
 
       <li>
-        <State
-          :value="status"
-          @onChange="handleSwitchStatus"
-        ></State>
+        <State :value="status" @onChange="handleSwitchStatus"></State>
       </li>
       <li>
         <el-button>查询</el-button>
@@ -22,10 +16,7 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的角色列表</h3>
-        <el-button
-          class="fr add"
-          @click="handleAddRole"
-        >新增角色</el-button>
+        <el-button class="fr add" @click="handleAddRole">新增角色</el-button>
       </div>
       <el-table
         :data="cacheRoleList"
@@ -33,26 +24,14 @@
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
+        :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
       >
-        <el-table-column
-          label="角色名称"
-          width="120"
-          align="center"
-        >
+        <el-table-column label="角色名称" width="120" align="center">
           <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              placement="top"
-            >
+            <el-popover trigger="hover" placement="top">
               <p>点我查看角色详情</p>
-              <div
-                slot="reference"
-                class="name-wrapper"
-              >
-                <a
-                  href="javascript:void(0);"
-                  @click="SeeRoleDetail"
-                >{{scope.row.Name}}</a>
+              <div slot="reference" class="name-wrapper">
+                <a href="javascript:void(0);" @click="SeeRoleDetail">{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
@@ -64,18 +43,8 @@
           align="center"
           :formatter="fmtState"
         ></el-table-column>
-        <el-table-column
-          prop="CreateUserName"
-          label="操作人"
-          width="130"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          prop="Description"
-          label="备注"
-          align="center"
-          :show-overflow-tooltip="true"
-        ></el-table-column>
+        <el-table-column prop="CreateUserName" label="操作人" width="130" align="center"></el-table-column>
+        <el-table-column prop="Description" label="备注" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="CreateTime"
           label="操作时间"
@@ -84,31 +53,12 @@
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column
-          label="操作"
-          width="250"
-          align="center"
-        >
+        <el-table-column label="操作" width="250" align="center">
           <template slot-scope="scope">
-            <a
-              href="javascript:void(0);"
-              class="mg-r"
-              @click="handleEditRole(scope.row)"
-            >编辑</a>
-            <a
-              href="javascript:void(0);"
-              @click="handleDelRole(scope.row)"
-              class="mg-r"
-            >删除</a>
-            <a
-              href="javascript:void(0);"
-              @click="allocationAccount(scope.row)"
-              class="mg-r"
-            >分配用户</a>
-            <a
-              href="javascript:void(0);"
-              @click="allocationAccount(scope.row)"
-            >分配部门</a>
+            <a href="javascript:void(0);" class="mg-r" @click="handleEditRole(scope.row)">编辑</a>
+            <a href="javascript:void(0);" @click="handleDelRole(scope.row)" class="mg-r">删除</a>
+            <a href="javascript:void(0);" @click="allocationAccount(scope.row)" class="mg-r">分配用户</a>
+            <a href="javascript:void(0);" @click="allocationAccount(scope.row)">分配部门</a>
           </template>
         </el-table-column>
       </el-table>
@@ -130,14 +80,8 @@
       @editRole="handleEditRoleSuc"
     ></Edit>
     <Dialog @userBehavior="relDelRole"></Dialog>
-    <RoleDetail
-      :visible="roleDelVisible"
-      @closed="handleCloseRoleDetail"
-    ></RoleDetail>
-    <AllocationAccount
-      :visible="aocAccVis"
-      @closed="handleCloseAocAcc"
-    ></AllocationAccount>
+    <RoleDetail :visible="roleDelVisible" @closed="handleCloseRoleDetail"></RoleDetail>
+    <AllocationAccount :visible="aocAccVis" @closed="handleCloseAocAcc"></AllocationAccount>
   </div>
 </template>
 
@@ -149,7 +93,12 @@ import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
 import RoleDetail from "@/components/role/RoleDetail";
 import AllocationAccount from "@/components/role/AllocationAccount";
-import { requestGetBaseRoleList, requestDeleteBaseRole, requestGetBaseRole, requestGetBaseScopeList } from "@/js/api";
+import {
+  requestGetBaseRoleList,
+  requestDeleteBaseRole,
+  requestGetBaseRole,
+  requestGetBaseScopeList
+} from "@/js/api";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
 

@@ -7,10 +7,7 @@
       </li>
 
       <li>
-        <State
-          :value="status"
-          @onChange="handleSwitchStatus"
-        ></State>
+        <State :value="status" @onChange="handleSwitchStatus"></State>
       </li>
       <li>
         <el-button>查询</el-button>
@@ -19,10 +16,7 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已存在的组</h3>
-        <el-button
-          class="fr add"
-          @click="handleAddGroup"
-        >新增组</el-button>
+        <el-button class="fr add" @click="handleAddGroup">新增组</el-button>
       </div>
       <el-table
         :data="cacheGroupList"
@@ -30,27 +24,14 @@
         style="width: 100%"
         height="calc(100% - 70px)"
         v-loading="loading"
+        :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
       >
-        <el-table-column
-          label="组名称"
-          width="150"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
+        <el-table-column label="组名称" width="150" align="center" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              placement="top"
-            >
+            <el-popover trigger="hover" placement="top">
               <p>点我查看分组详情</p>
-              <div
-                slot="reference"
-                class="name-wrapper"
-              >
-                <a
-                  href="javascript:void(0);"
-                  @click="SeeGroup(scope.row)"
-                >{{scope.row.Name}}</a>
+              <div slot="reference" class="name-wrapper">
+                <a href="javascript:void(0);" @click="SeeGroup(scope.row)">{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
@@ -61,8 +42,7 @@
           width="150"
           align="center"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           prop="IsEnable"
           label="状态"
@@ -70,23 +50,15 @@
           align="center"
           :formatter="fmtState"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           prop="CreateUserName"
           label="操作人"
           width="130"
           align="center"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Memo"
-          label="备注"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
+        ></el-table-column>
+        <el-table-column prop="Memo" label="备注" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="CreateTime"
           label="操作时间"
@@ -94,23 +66,11 @@
           align="center"
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="180"
-          align="center"
-        >
+        ></el-table-column>
+        <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
-            <a
-              href="javascript:void(0);"
-              class="mg-r"
-              @click="handleEditGroup(scope.row)"
-            >编辑</a>
-            <a
-              href="javascript:void(0);"
-              @click="handleDelGroup(scope.row)"
-            >删除</a>
+            <a href="javascript:void(0);" class="mg-r" @click="handleEditGroup(scope.row)">编辑</a>
+            <a href="javascript:void(0);" @click="handleDelGroup(scope.row)">删除</a>
           </template>
         </el-table-column>
       </el-table>
@@ -138,7 +98,6 @@
       :gpDetailInfo="gpDetailInfo"
       @closed="handleCloseGDetail"
     ></GroupDetail>
-
   </div>
 </template>
 
@@ -149,7 +108,13 @@ import Edit from "@/components/group/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import GroupDetail from "@/components/group/GroupDetail";
-import { requestGetBaseGroupList, requestDeleteBaseGroup, requestGetBaseUserList, requestGetDicBaseGroup, requestGetBaseGroup } from "@/js/api.js";
+import {
+  requestGetBaseGroupList,
+  requestDeleteBaseGroup,
+  requestGetBaseUserList,
+  requestGetDicBaseGroup,
+  requestGetBaseGroup
+} from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData } from "@/js/utils.js";
 
@@ -162,7 +127,7 @@ export default {
     Dialog,
     GroupDetail
   },
-  data () {
+  data() {
     return {
       groupList: [],
       cacheGroupList: [],
@@ -185,11 +150,15 @@ export default {
     this.getGroupList();
   },
   methods: {
-
     // 分页数据
     handleTogglePagingData(e) {
       this.currentPage = e;
-      this.cacheGroupList = pageData(this.groupList, this.cacheGroupList, e, this.perPage);
+      this.cacheGroupList = pageData(
+        this.groupList,
+        this.cacheGroupList,
+        e,
+        this.perPage
+      );
     },
     // 获取上级组的字典数据
     async getSuperGroupList() {
@@ -220,16 +189,16 @@ export default {
       }
     },
     // 查看详情
-    SeeGroup (row) {
+    SeeGroup(row) {
       this.groupDetailVisible = true;
       this.gpDetailInfo = row;
     },
     // 关闭详情
-    handleCloseGDetail () {
+    handleCloseGDetail() {
       this.groupDetailVisible = false;
     },
     // 新增组
-    handleAddGroup () {
+    handleAddGroup() {
       this.groupVisible = true;
       this.mode = "新增组";
       this.groupInfo = {};
@@ -238,7 +207,7 @@ export default {
       this.getSuperGroupList();
     },
     // 修改组
-    async handleEditGroup (row) {
+    async handleEditGroup(row) {
       this.groupVisible = true;
       this.mode = "编辑组";
       const res = await requestGetBaseGroup({ id: row.Id });
@@ -254,14 +223,18 @@ export default {
       this.getGroupList();
     },
     // 删除组
-    handleDelGroup (row) {
-      show("您确定要删除这个分组吗？", {
-        type: "confirm",
-        cancleText: "取消",
-        confirmText: "确定",
-        titleText: "删除提示",
-        data: row
-      }, "del");
+    handleDelGroup(row) {
+      show(
+        "您确定要删除这个分组吗？",
+        {
+          type: "confirm",
+          cancleText: "取消",
+          confirmText: "确定",
+          titleText: "删除提示",
+          data: row
+        },
+        "del"
+      );
     },
     // 真正的删除组
     async handleRelDelGroup(type, data) {
@@ -274,15 +247,15 @@ export default {
         this.getGroupList();
       }
     },
-    hadleCloseGroup () {
+    hadleCloseGroup() {
       this.groupVisible = false;
     },
     // 切换状态
-    handleSwitchStatus (e) {
+    handleSwitchStatus(e) {
       this.status = e;
     },
     // 自定义stripe样式
-    tabRowClassName ({ row, rowIndex }) {
+    tabRowClassName({ row, rowIndex }) {
       let index = rowIndex + 1;
       if (index % 2 === 0) {
         return "warning-row";
@@ -296,7 +269,7 @@ export default {
     fmtDate(row, coloum, cellValue) {
       return formatterDate(cellValue);
     }
-  },
+  }
 };
 </script>
 

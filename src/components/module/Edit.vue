@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class>
     <el-dialog
       :title="mode"
       :visible.sync="visible"
@@ -8,20 +8,10 @@
     >
       <el-form v-model="mdInfo">
         <el-form-item label="系统名称">
-          <SysNameList
-            v-model="mdInfo.SystemName"
-            :sysList="sysList"
-            style="width:100%"
-          ></SysNameList>
+          <SysNameList v-model="mdInfo.SystemName" :sysList="sysList" style="width:100%"></SysNameList>
         </el-form-item>
-        <el-form-item
-          label="上级菜单"
-          id="mdnorequired"
-        >
-          <el-input
-            v-model="mdInfo.parentID"
-            style="width: 48%;"
-          ></el-input>
+        <el-form-item label="上级菜单" id="mdnorequired">
+          <el-input v-model="mdInfo.parentID" style="width: 48%;"></el-input>
           <SelectTree
             :selectList="moudleList"
             @selectData="handleSelectMdData"
@@ -29,83 +19,34 @@
           ></SelectTree>
         </el-form-item>
         <el-form-item label="类型">
-          <el-radio
-            label="目录"
-            v-model="mdInfo.Type"
-          >目录</el-radio>
-          <el-radio
-            label="菜单"
-            v-model="mdInfo.Type"
-          >菜单</el-radio>
-          <el-radio
-            label="按钮"
-            v-model="mdInfo.Type"
-          >按钮</el-radio>
+          <el-radio label="目录" v-model="mdInfo.Type">目录</el-radio>
+          <el-radio label="菜单" v-model="mdInfo.Type">菜单</el-radio>
+          <el-radio label="按钮" v-model="mdInfo.Type">按钮</el-radio>
         </el-form-item>
         <el-form-item label="菜单名称">
           <el-input v-model="mdInfo.name"></el-input>
         </el-form-item>
-        <el-form-item
-          label="菜单链接"
-          id="mdnorequired"
-        >
+        <el-form-item label="菜单链接" id="mdnorequired">
           <el-input v-model="mdInfo.Url"></el-input>
         </el-form-item>
-        <el-form-item
-          label="图标"
-          id="mdnorequired"
-        >
-          <el-input
-            v-model="mdInfo.Icon"
-            style="width:calc(100% - 75px)"
-          ></el-input>
-          <el-upload
-            class="upload-demo fr"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            :limit="1"
-            :on-exceed="handleExceed"
-            action="#"
-          >
-            <a
-              href="javascript:void(0);"
-              @click="handleupload"
-            >点击上传</a>
-          </el-upload>
+        <el-form-item label="图标" id="mdnorequired">
+          <el-input v-model="Icon" style="width:calc(100% - 85px)"></el-input>
+          <form action name="file" class="file fr">
+            上传图片
+            <input type="file" id="icon" name="icon" @change="uploadPhoto($event)" />
+          </form>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio
-            :label="true"
-            v-model="mdInfo.IsEnable"
-          >开启</el-radio>
-          <el-radio
-            :label="false"
-            v-model="mdInfo.IsEnable"
-          >禁用</el-radio>
+          <el-radio :label="true" v-model="mdInfo.IsEnable">开启</el-radio>
+          <el-radio :label="false" v-model="mdInfo.IsEnable">禁用</el-radio>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input
-            type="textarea"
-            maxlength="500"
-            v-model="mdInfo.Description"
-          ></el-input>
+          <el-input type="textarea" maxlength="500" v-model="mdInfo.Description"></el-input>
         </el-form-item>
-
       </el-form>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          @click="handleClose"
-          class="cancle"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          @click="handleConfirm"
-          class="confirm"
-        >确 定</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose" class="cancle">取 消</el-button>
+        <el-button type="primary" @click="handleConfirm" class="confirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -124,9 +65,11 @@ export default {
     // OverMenu
     SelectTree
   },
-  data () {
+  data() {
     return {
-      menuValue: ""
+      menuValue: "",
+      imgcodes: "",
+      Icon: ""
     };
   },
   props: {
@@ -151,28 +94,12 @@ export default {
       default: () => []
     }
   },
+  computed: {
+    // Icon() {
+    //   return this.mdInfo.Icon;
+    // }
+  },
   methods: {
-    handleSelectMdData() {},
-    handleAddNum () {
-      if (this.mdInfo.Sort === "") {
-        return;
-      }
-      if (parseInt(this.mdInfo.Sort) >= 10) {
-        this.mdInfo.Sort = "10";
-      } else {
-        this.mdInfo.Sort = (parseInt(this.mdInfo.Sort) + 1).toString();
-      }
-    },
-    handleReduceNum () {
-      if (this.mdInfo.Sort === "") {
-        return;
-      }
-      if (parseInt(this.mdInfo.Sort) <= 0) {
-        this.mdInfo.Sort = "0";
-      } else {
-        this.mdInfo.Sort = (parseInt(this.mdInfo.Sort) - 1).toString();
-      }
-    },
     // 编辑/修改
     async handleConfirm() {
       const params = {
@@ -187,7 +114,7 @@ export default {
         createUserName: "zyl",
         type: this.mdInfo.Type,
         sort: this.mdInfo.Sort,
-        icon: this.mdInfo.Icon
+        icon: this.imgcodes
       };
 
       if (this.mode === "编辑模块") {
@@ -215,17 +142,48 @@ export default {
         }
       }
     },
-    handlePreview () {},
-    handleRemove () {},
-    beforeRemove () {},
-    handleExceed () {},
-    handleClose () {
+    handleClose() {
       this.$emit("closed");
     },
-    handleupload () {
-
-    }
-  },
+    uploadPhoto(e) {
+      let file = e.target.files[0];
+      let filesize = file.size;
+      let filename = file.name;
+      this.Icon = filename;
+      // 2,621,440   2M
+      if (filesize > 2101440) {
+        // 图片大于2MB
+      }
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = e => {
+        // 读取到的图片base64 数据编码 将此编码字符串传给后台即可
+        var imgcode = e.target.result;
+        this.imgcodes = imgcode;
+      };
+    },
+    handleSelectMdData() {}
+    // handleAddNum() {
+    //   if (this.mdInfo.Sort === "") {
+    //     return;
+    //   }
+    //   if (parseInt(this.mdInfo.Sort) >= 10) {
+    //     this.mdInfo.Sort = "10";
+    //   } else {
+    //     this.mdInfo.Sort = (parseInt(this.mdInfo.Sort) + 1).toString();
+    //   }
+    // },
+    // handleReduceNum() {
+    //   if (this.mdInfo.Sort === "") {
+    //     return;
+    //   }
+    //   if (parseInt(this.mdInfo.Sort) <= 0) {
+    //     this.mdInfo.Sort = "0";
+    //   } else {
+    //     this.mdInfo.Sort = (parseInt(this.mdInfo.Sort) - 1).toString();
+    //   }
+    // },
+  }
 };
 </script>
 
@@ -283,5 +241,26 @@ export default {
   width: 14px;
   height: 40px;
   line-height: 40px;
+}
+
+.file {
+  width: 75px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #4bc183;
+  position: relative;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+.file input {
+  width: 75px;
+  height: 40px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 </style>

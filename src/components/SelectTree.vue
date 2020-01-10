@@ -8,11 +8,7 @@
       class="group-search"
       id="search"
     ></el-input>
-    <i
-      class="el-icon-circle-close"
-      v-show="groupSearchText !== ''"
-      @click="handleRemove"
-    ></i>
+    <i class="el-icon-circle-close" v-show="groupSearchText !== ''" @click="handleRemove"></i>
 
     <div
       class="group-tree"
@@ -28,15 +24,12 @@
         @node-click="handleNodeClick"
         :filter-node-method="filterNode"
         ref="tree"
-      >
-      </el-tree>
+      ></el-tree>
     </div>
-
   </div>
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -53,8 +46,7 @@ export default {
     defaultProps: {
       type: Object,
       default: () => {
-        return { label: "name",
-                 children: "treeChildren" };
+        return { label: "name", children: "treeChildren" };
       }
     }
   },
@@ -88,7 +80,7 @@ export default {
         }
       }
     },
-    handleChange (e) {
+    handleChange(e) {
       this.$emit("onChange", e);
     },
     filterNode(value, data) {
@@ -117,7 +109,7 @@ export default {
     margin-top: 8px;
     position: absolute;
     top: 40px;
-    width: 100%;
+    width: 50%;
     height: 150px;
     z-index: 99999;
     border: 1px solid #e4e4e4;

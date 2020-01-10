@@ -25,7 +25,8 @@
   padding: 10px;
 }
 .info-table .ui-header {
-  margin-bottom: 8px;
+  height: 35px;
+  margin-bottom: 10px;
 }
 .info-table .ui-header .add {
   background-color: #4bc183;
@@ -35,11 +36,7 @@
 }
 .info-table .el-table {
   box-shadow: 0 0px 3px #ccc;
-  height: calc(100% - 40px);
-}
-.info-table .el-table .cell {
-  font-size: 14px;
-  color: #111 !important;
+  height: calc(100% - 45px);
 }
 .info-table .el-table .warning-row {
   background-color: #e4e4e4;
@@ -50,26 +47,4 @@
 }
 .info-table .mini-button {
   background-color: #4bc183;
-}
-.info-table .icon-stop3 {
-  width: 28px;
-  height: 28px;
-  display: inline-block;
-  vertical-align: middle;
-  background-color: #86af6c;
-  position: relative;
-}
-.info-table .icon-stop3:hover {
-  background-color: #86af6c;
-  color: #86af6c;
-}
-.info-table .icon-stop3::before {
-  color: white;
-  font-size: 16px;
-  position: absolute;
-  transform: translate(-50%, -50%);
-}
-.el-table .cell {
-  font-size: 14px;
-  color: #111 !important;
 }
