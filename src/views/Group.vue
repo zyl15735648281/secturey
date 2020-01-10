@@ -33,8 +33,9 @@
       >
         <el-table-column
           label="组名称"
-          width="130"
+          width="150"
           align="center"
+          :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">
             <el-popover
@@ -48,31 +49,16 @@
               >
                 <a
                   href="javascript:void(0);"
-                  @click="SeeGroup"
+                  @click="SeeGroup(scope.row)"
                 >{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
         </el-table-column>
         <el-table-column
-          prop=""
-          label="上级组"
-          width="130"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="baseUserGroupModels.length"
+          prop="GroupUserCount"
           label="组成员"
-          width="120"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="baseGroupRoleModels"
-          label="角色"
+          width="150"
           align="center"
           :show-overflow-tooltip="true"
         >
@@ -97,7 +83,6 @@
         <el-table-column
           prop="Memo"
           label="备注"
-          width="200"
           align="center"
           :show-overflow-tooltip="true"
         >
@@ -144,12 +129,13 @@
       :spTreeList="spTreeList"
       :alreadyGpList="alreadyGpList"
       @closed="hadleCloseGroup"
-      @addUsers="handleAddUsers"
-      @removeUsers="handleRemoveUsers"
+      @addGp="handleAddGp"
+      @editGp="handleRemoveGp"
     ></Edit>
     <Dialog @userBehavior="handleRelDelGroup"></Dialog>
     <GroupDetail
       :visible="groupDetailVisible"
+      :gpDetailInfo="gpDetailInfo"
       @closed="handleCloseGDetail"
     ></GroupDetail>
 
@@ -184,6 +170,7 @@ export default {
       groupInfo: {},
       spTreeList: [],
       alreadyGpList: [],
+      gpDetailInfo: {},
       status: "2", // 状态
       loading: false,
       groupName: "", // 组名称
@@ -233,8 +220,9 @@ export default {
       }
     },
     // 查看详情
-    SeeGroup () {
+    SeeGroup (row) {
       this.groupDetailVisible = true;
+      this.gpDetailInfo = row;
     },
     // 关闭详情
     handleCloseGDetail () {
@@ -247,6 +235,7 @@ export default {
       this.groupInfo = {};
       this.alreadyGpList = [];
       this.getUserList();
+      this.getSuperGroupList();
     },
     // 修改组
     async handleEditGroup (row) {
@@ -256,12 +245,13 @@ export default {
       this.groupInfo = res.data;
       this.alreadyGpList = this.groupInfo.baseUserGroupModels;
       this.getUserList();
+      this.getSuperGroupList();
     },
-    handleAddUsers(row) {
-      // this.alreadyGpList.
+    handleAddGp() {
+      this.getGroupList();
     },
-    handleRemoveUsers(row) {
-
+    handleRemoveGp() {
+      this.getGroupList();
     },
     // 删除组
     handleDelGroup (row) {
@@ -278,7 +268,7 @@ export default {
       const res = await requestDeleteBaseGroup({ id: data.Id });
       if (res.status === 200) {
         this.$message({
-          type: "waring",
+          type: "success",
           message: "删除成功！"
         });
         this.getGroupList();

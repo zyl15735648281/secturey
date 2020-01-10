@@ -42,7 +42,7 @@ export default {
     return {
       gpVisbible: false,
       mouseover: false,
-      groupSearchText: "",
+      groupSearchText: ""
     };
   },
   props: {
@@ -54,7 +54,7 @@ export default {
       type: Object,
       default: () => {
         return { label: "name",
-          children: "treeChildren" };
+                 children: "treeChildren" };
       }
     }
   },
@@ -107,6 +107,8 @@ export default {
 
 <style lang="less" scope>
 .group-dropDown {
+  width: 50%;
+  float: right;
   .group-search {
     position: relative;
   }

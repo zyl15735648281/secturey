@@ -21,12 +21,14 @@
         prop="Name"
         label="姓名"
         align="center"
+        :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
         prop="DefaultDepName"
         label="部门"
         align="center"
+        :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
@@ -50,15 +52,17 @@
       v-if="target === '删除'"
     >
       <el-table-column
-        prop="UserName"
+        prop="Name"
         label="姓名"
         align="center"
+        :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
-        prop="GroupName"
+        prop="DefaultDepName"
         label="部门"
         align="center"
+        :show-overflow-tooltip="true"
       >
       </el-table-column>
       <el-table-column
@@ -103,11 +107,6 @@ export default {
 
   },
   created () {
-  },
-  watch: {
-    // userList(val) {
-    //   console.log(val);
-    // }
   },
   methods: {
     handleAdd(row) {

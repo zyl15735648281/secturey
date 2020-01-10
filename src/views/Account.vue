@@ -89,13 +89,13 @@
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="baseUserRoleList"
           label="角色"
           width="130"
           align="center"
           :formatter="fmtRoleData"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="IsEnable"
           label="状态"
@@ -147,7 +147,10 @@
               class="mg-r"
             >{{scope.row.IsEnable === true ? '禁用' : '启用'}}</a>
 
-            <a href="javascript:void(0);">重置密码</a>
+            <a
+              href="javascript:void(0);"
+              @click="resetPass(scope.row)"
+            >重置密码</a>
           </template>
         </el-table-column>
       </el-table>
@@ -193,7 +196,9 @@ import {
   requestGetBaseUserList,
   requestDeleteBaseUser,
   requestGetBaseDepartmentList,
-  requestGetBaseUser
+  requestGetBaseUser,
+  requestModifiedIsEnable,
+  requestModifiedPassword
 } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
@@ -237,7 +242,6 @@ export default {
       if (this.nameValue === "") return this.getAccountList();
       this.cacheAccountList = frzzyQuery(this.nameValue, this.accountList);
     },
-
     // 分页数据
     handleTogglePagingData(e) {
       this.currentPage = e;
@@ -338,8 +342,29 @@ export default {
       }
     },
     // 启用
-    handleStartUsing(row) {
-      row.IsEnable = !row.IsEnable;
+    async handleStartUsing(row) {
+      const res = await requestModifiedIsEnable({
+        isEnable: !row.IsEnable,
+        userId: row.UserId
+      });
+      if (res.status === 200) {
+        row.IsEnable = res.data;
+        this.$message({
+          type: "success",
+          message: "恭喜您，操作成功!"
+        });
+        this.getAccountList();
+      }
+    },
+    // 重置密码
+    async resetPass(row) {
+      const res = await requestModifiedPassword({
+        password: "",
+        userId: row.UserId
+      });
+      if (res.status === 200) {
+
+      }
     },
     // 关闭弹窗
     handleClose() {

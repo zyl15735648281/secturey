@@ -4,36 +4,38 @@
       title="分组详情"
       :visible.sync="visible"
       :before-close="handleClose"
-      width="35%"
+      width="50%"
     >
-      <div class="gpinfo">
-        <ul>
-          <h3>编目组</h3>
-          <li class="mg-b">
-            <span>创建人：</span>
-            <div class="">钱多多</div>
-          </li>
-          <li>
-            <span>创建时间：</span>
-            <div style="width: calc(100% - 70px);">2019年11月28日17:54</div>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <div class="ownerAccount">
-          <OperateGroup mode="移除"></OperateGroup>
-        </div>
-      </div>
-      <div>
-        <h3>组织关系</h3>
-        <div style="padding: 10px;text-align:left">
-          <p>角色1</p>
+      <div class="gpInfo">
+        <div class="info-header">
           <div>
-            <p>功能权限</p>
-            <p>场景权限</p>
+            <h3>分组信息</h3>
+          </div>
+          <div>
+            <h3>分组成员</h3>
+            <OperateGroup
+              :data="gpDetailInfo.baseUserGroupModels"
+              target="删除"
+              @addUser="handleAddGpUser"
+            ></OperateGroup>
+          </div>
+        </div>
+        <div class="info-relation">
+          <div>
+            <h2>分组组织关系</h2>
+          </div>
+          <div>
+            <h2>角色信息</h2>
+            <ul>
+              <li></li>
+            </ul>
+          </div>
+          <div>
+            <h2>权限信息</h2>
           </div>
         </div>
       </div>
+
       <span
         slot="footer"
         class="dialog-footer"
@@ -68,6 +70,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    gpDetailInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   created () {
@@ -78,6 +84,9 @@ export default {
     },
     handleClose () {
       this.$emit("closed");
+    },
+    handleAddGpUser() {
+
     }
   },
 };

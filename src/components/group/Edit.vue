@@ -14,6 +14,10 @@
           label="上级组"
           id="group-norequired"
         >
+          <el-input
+            v-model="groupInfo.ParentId"
+            style="width: 48%;"
+          ></el-input>
           <SelectTree
             id="overgroup"
             :selectList="spTreeList"
@@ -32,7 +36,7 @@
           ></OperateGroup>
           <div class="rel-header">
             <h3>所属用户</h3>
-            <span>已有{{groupInfo.baseUserGroupModels !== null && groupInfo.baseUserGroupModels !== undefined ? groupInfo.baseUserGroupModels.length : '0'}}个</span>
+            <span>已有{{alreadyGpList !== null && alreadyGpList !== undefined ? alreadyGpList.length : '0'}}个</span>
           </div>
           <OperateGroup
             class="fr"
@@ -76,7 +80,7 @@
         <el-button @click="handleClose">取 消</el-button>
         <el-button
           type="primary"
-          @click="handleClose"
+          @click="handleConfirm"
           id="confirm"
         >确 定</el-button>
       </span>
@@ -90,6 +94,8 @@ import OperateGroup from "@/components/group/OperateGroup";
 import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
 import SelectTree from "@/components/SelectTree";
+import _ from "lodash";
+import { requestBaseGroup } from "@/js/api.js";
 
 export default {
   name: "",
@@ -141,6 +147,48 @@ export default {
     handleClose () {
       this.$emit("closed");
     },
+    // 修改/新增
+    async handleConfirm() {
+      // 必要的验证
+      // this.verify()
+      const params = {
+        id: "",
+        name: this.groupInfo.Name,
+        parentId: this.groupInfo.parentId || 0,
+        memo: this.groupInfo.Memo,
+        isEnable: this.groupInfo.IsEnable,
+        createUserId: "zyl",
+        createUserName: "zyl",
+        baseGroupRoleModels: [],
+        baseUserGroupModels: this.alreadyGpList,
+      };
+      console.log(params);
+
+      if (this.mode === "编辑组") {
+        params.id = this.groupInfo.Id;
+      }
+
+      const res = await requestBaseGroup(params);
+      if (this.mode === "新增组") {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，添加成功"
+          });
+          this.$emit("addGp");
+          this.handleClose();
+        }
+      } else {
+        if (res.status === 200) {
+          this.$message({
+            type: "success",
+            message: "祝贺您，编辑成功"
+          });
+          this.$emit("editGp");
+          this.handleClose();
+        }
+      }
+    },
     handleAddRole () {
       show("", {
         type: "confirm",
@@ -150,10 +198,14 @@ export default {
       }, "role");
     },
     handleAddUser(row) {
-      this.$emit("addUsers", row);
+      const idx = _.findIndex(this.userList, { "UserId": row.UserId });
+      this.userList.splice(idx, 1);
+      this.alreadyGpList.unshift(row);
     },
     handleRemoveUser(row) {
-      this.$emit("removeUsers", row);
+      const idx = _.findIndex(this.alreadyGpList, { "UserId": row.UserId });
+      this.alreadyGpList.splice(idx, 1);
+      this.userList.unshift(row);
     },
   },
 };

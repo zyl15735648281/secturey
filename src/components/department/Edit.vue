@@ -27,6 +27,10 @@
           label="上级部门"
           id="depnorequired"
         >
+          <el-input
+            v-model="childDePInfo.ParentName"
+            style="width: 48%;"
+          ></el-input>
           <SelectTree
             :selectList="deepTreeList"
             @selectData="handleSelectData"
