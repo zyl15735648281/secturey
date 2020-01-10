@@ -1,4 +1,4 @@
-import { createAPI } from "./request.js";
+import { createAPI, createAPIConfig } from "./request.js";
 
 // 部门管理相关接口
 // 部门管理获取列表
@@ -74,13 +74,15 @@ export const requestGetBaseModule = data => createAPI("/GetBaseModule", "get", d
 export const requestDeleteBaseModule = data => createAPI("/DeleteBaseModule", "post", data);
 // 模块管理获取列表
 export const requestGetBaseModuleList = data => createAPI("/GetBaseModuleList", "post", data);
+// 模块的上移/下移
+export const requestMoveBaseModule = data => createAPI("/MoveBaseModule", "post", data);
 
 // 获取字典数据
 // 字典的添加 / 修改;
 export const requestBaseDictionary = data => createAPI("/BaseDictionary", "post", data);
 // 字典的删除;
 export const requestDeleteBaseDictionary = data => createAPI("/DeleteBaseDictionary", "post", data);
-// 字典查询;
+// 字典查询，获取字典列表数据;
 export const requestGetBaseDictionaryList = data => createAPI("/GetBaseDictionaryList", "get", data);
 // 字典根据id查询字段;
 export const requestGetBaseDictionary = data => createAPI("/GetBaseDictionary", "get", data);
@@ -99,3 +101,6 @@ export const requestDeleteBaseUserRole = data => createAPI("/DeleteBaseUserRole"
 export const requestBaseUserRole = data => createAPI("/BaseUserRole", "post", data);
 // 获取用户角色列表;
 export const requestGetBaseUserRoleList = data => createAPI("/GetBaseUserRoleList", "post", data);
+
+// 获取资源配置系统
+export const requestGetTableSystemList = data => createAPIConfig("GetTableSystemList", "post", data);

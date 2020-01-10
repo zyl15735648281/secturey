@@ -2,10 +2,10 @@
   <div class="information">
     <ul class="retrieval-header dic-header">
       <li>
-        <span>类型：</span>
+        <span>名称：</span>
         <el-input
-          v-model="typeName"
-          @input="filter"
+          v-model="dicValue"
+          @input="filterDic"
         ></el-input>
       </li>
       <li>
@@ -28,34 +28,33 @@
         v-loading="loading"
       >
         <el-table-column
-          label="类型"
-          width="200"
-          align="center"
-          prop="Name"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Type"
-          label="描述"
-          width="280"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="Value"
-          label="值"
-          width="200"
+          prop="DicName"
+          label="名称"
           align="center"
           :show-overflow-tooltip="true"
         >
         </el-table-column>
 
         <el-table-column
+          label="类型"
+          align="center"
+          prop="DicType"
+        >
+        </el-table-column>
+
+        <el-table-column
           prop="IsEnable"
+          label="创建人"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="Note"
           label="备注"
           align="center"
         >
         </el-table-column>
+
         <el-table-column
           label="操作"
           width="180"
@@ -78,7 +77,10 @@
       <Edit
         :mode="mode"
         :visible="dicVisible"
+        :dicInfo="dicInfo"
         @closed="handleCloseDic"
+        @addDic="handleAddDicChi"
+        @editDic="handleEditDicChi"
       ></Edit>
 
       <Dialog @userBehavior="handleRelDelDic"></Dialog>
@@ -98,8 +100,9 @@
 import Dialog from "@/components/Dialog";
 import Edit from "@/components/dictionary/Edit";
 import Paging from "@/components/Paging";
-import { pageData } from "@/js/utils.js";
-
+import { pageData, frzzyQuery } from "@/js/utils.js";
+import { requestGetBaseDictionaryList, requestGetBaseDictionary, requestDeleteBaseDictionary } from "@/js/api";
+import { show } from "@/js/dialog";
 export default {
   name: "",
   components: {
@@ -111,7 +114,8 @@ export default {
     return {
       cacheDicList: [],
       dicList: [],
-      typeName: "",
+      dicInfo: {},
+      dicValue: "",
       loading: false,
       perPage: 10,
       currentPage: 1,
@@ -119,7 +123,8 @@ export default {
       dicVisible: false
     };
   },
-  created() {
+  mounted() {
+    this.getDicList();
   },
   methods: {
     // 分页数据
@@ -132,23 +137,72 @@ export default {
         this.perPage
       );
     },
-    getDicList() {
-      // const res = await
+    // 获取数据列表
+    async getDicList() {
+      const res = await requestGetBaseDictionaryList({
+        dicType: "",
+        dicName: this.dicValue || ""
+      });
+      if (res.status === 200) {
+        this.dicList = res.data;
+        this.cacheDicList = this.dicList.slice(0, this.perPage);
+      }
     },
-    filter() {},
-    handleSearch() {},
+    filterDic() {
+      if (this.dicValue === "") return this.getDicList();
+      this.cacheDicList = frzzyQuery(this.dicValue, this.dicList, "dic");
+    },
+    handleSearch() {
+      this.getDicList();
+    },
+    // 新增字典
     handleAddDic() {
+      this.mode = "新增字典";
       this.dicVisible = true;
+      this.dicInfo = {};
     },
-    handleEditDic(row) {
+    // 编辑字典
+    async handleEditDic(row) {
+      this.mode = "编辑字典";
       this.dicVisible = true;
+      const res = await requestGetBaseDictionary({ id: row.Id });
+      if (res.status === 200) {
+        this.dicInfo = res.data;
+      }
+    },
+    handleAddDicChi() {
+      this.getDicList();
+    },
+    handleEditDicChi() {
+      this.getDicList();
     },
     handleCloseDic() {
       this.dicVisible = false;
     },
-    handleDelDic(row) {},
+    handleDelDic(row) {
+      show(
+        "您确定要删除这条字典信息吗？",
+        {
+          type: "confirm",
+          cancleText: "取消",
+          confirmText: "确定",
+          titleText: "删除提示",
+          data: row
+        },
+        "del"
+      );
+    },
     // 真正的删除
-    handleRelDelDic(type, data) {},
+    async handleRelDelDic(type, data) {
+      const res = await requestDeleteBaseDictionary({ id: data.Id });
+      if (res.status === 200) {
+        this.$message({
+          type: "success",
+          message: "祝贺你，删除成功!"
+        });
+        this.getDicList();
+      }
+    },
     // 自定义stripe样式
     tabRowClassName ({ row, rowIndex }) {
       let index = rowIndex + 1;

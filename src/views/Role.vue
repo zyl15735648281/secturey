@@ -3,7 +3,10 @@
     <ul class="retrieval-header ro-header">
       <li>
         <span>角色名称：</span>
-        <el-input v-model="roleName"></el-input>
+        <el-input
+          v-model="roleName"
+          @input="handleFilterRoleName"
+        ></el-input>
       </li>
 
       <li>
@@ -74,7 +77,7 @@
           :show-overflow-tooltip="true"
         ></el-table-column>
         <el-table-column
-          prop="name"
+          prop="CreateTime"
           label="操作时间"
           width="130"
           align="center"
@@ -109,14 +112,24 @@
           </template>
         </el-table-column>
       </el-table>
-      <Paging></Paging>
+      <Paging
+        :tableList="roleList"
+        :currentPage="currentPage"
+        :totalCount="roleList.length"
+        @TogglePagingData="handleTogglePagingData"
+      ></Paging>
     </div>
     <Edit
       :visible="roleVisible"
       :mode="mode"
+      :roleInfo="roleInfo"
+      :dataPerList="dataPerList"
+      :alreadyDataPerList="alreadyDataPerList"
       @closed="handleCloseRole"
+      @addRole="handleAddRoleSuc"
+      @editRole="handleEditRoleSuc"
     ></Edit>
-    <Dialog></Dialog>
+    <Dialog @userBehavior="relDelRole"></Dialog>
     <RoleDetail
       :visible="roleDelVisible"
       @closed="handleCloseRoleDetail"
@@ -136,8 +149,9 @@ import Dialog from "@/components/Dialog";
 import { show } from "@/js/dialog";
 import RoleDetail from "@/components/role/RoleDetail";
 import AllocationAccount from "@/components/role/AllocationAccount";
-import { requestGetBaseRoleList, requestDeleteBaseRole } from "@/js/api";
+import { requestGetBaseRoleList, requestDeleteBaseRole, requestGetBaseRole, requestGetBaseScopeList } from "@/js/api";
 import { fmtStatus, formatterDate } from "@/js/format.js";
+import { pageData, frzzyQuery } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -153,6 +167,9 @@ export default {
     return {
       roleList: [],
       cacheRoleList: [],
+      roleInfo: {},
+      dataPerList: [],
+      alreadyDataPerList: [],
       status: "2", // 状态
       loading: false,
       roleName: "", // 角色名称
@@ -160,7 +177,7 @@ export default {
       mode: "",
       roleDelVisible: false,
       aocAccVis: false,
-      perPage: 1,
+      perPage: 10,
       currentPage: 1
     };
   },
@@ -169,16 +186,39 @@ export default {
     this.getRoleList();
   },
   methods: {
+    // 姓名列表模糊查询
+    handleFilterRoleName() {
+      if (this.roleName === "") return this.getRoleList();
+      this.cacheRoleList = frzzyQuery(this.roleName, this.roleList);
+    },
+    // 分页数据
+    handleTogglePagingData(e) {
+      this.currentPage = e;
+      this.cacheRoleList = pageData(
+        this.roleList,
+        this.cacheRoleList,
+        e,
+        this.perPage
+      );
+    },
     // 获取角色数据列表
     async getRoleList() {
       const res = await requestGetBaseRoleList({
         name: this.roleName,
         state: this.status
       });
+
       if (res.status === 200) {
         this.roleList = res.data;
         this.cacheRoleList = this.roleList.slice(0, this.perPage);
       }
+    },
+    async getDataPerList() {
+      const res = await requestGetBaseScopeList({
+        name: "",
+        state: 2
+      });
+      this.dataPerList = res.data;
     },
     //   关闭分配用户
     handleCloseAocAcc() {
@@ -200,11 +240,26 @@ export default {
     handleAddRole() {
       this.roleVisible = true;
       this.mode = "新增角色";
+      this.getDataPerList();
+      this.alreadyDataPerList = [];
+      this.roleInfo = {};
     },
     // 编辑角色
-    handleEditRole() {
+    async handleEditRole(row) {
       this.roleVisible = true;
       this.mode = "编辑角色";
+      this.getDataPerList();
+      const res = await requestGetBaseRole({ id: row.Id });
+      if (res.status === 200) {
+        this.roleInfo = res.data;
+      }
+      this.alreadyDataPerList = this.roleInfo.baseRoleScopeModels;
+    },
+    handleAddRoleSuc() {
+      this.getRoleList();
+    },
+    handleEditRoleSuc() {
+      this.getRoleList();
     },
     // 删除角色
     handleDelRole(row) {
@@ -222,6 +277,7 @@ export default {
     },
     // 真正的删除角色
     async relDelRole(type, data) {
+      console.log(data);
       const res = await requestDeleteBaseRole({ id: data.Id });
       if (res.status === 200) {
         this.$message({

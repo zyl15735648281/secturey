@@ -22,20 +22,19 @@
 // import { requestGetBaseModuleList } from "@/js/api.js";
 
 export default {
-  data() {
-    return {
-      sysList: []
-    };
-  },
   props: {
     value: {
       type: String,
-      default: "2"
+      default: ""
+    },
+    sysList: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
     handleChange (e) {
-      this.$emit("onChange", e);
+      this.$emit("input", e);
     }
   }
 };

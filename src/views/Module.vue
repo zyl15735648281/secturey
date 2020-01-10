@@ -45,37 +45,36 @@
       >
         <el-table-column
           label="系统名称"
-          width="120"
+          width="150"
           align="center"
           prop="SystemName"
+          :show-overflow-tooltip="true"
         >
         </el-table-column>
 
         <el-table-column
           prop="name"
           label="菜单名称"
-          width="120"
-          align="left"
+          width="150"
+          align="center"
         >
-
           <template slot-scope="scope">
             {{scope.row.name}}
-            <i class="el-icon-top"></i>
-            <i class="el-icon-bottom"></i>
+            <i
+              class="iconfont icon-jiantou_qiehuanxiangxia"
+              @click="handleDownMove(scope.row)"
+            ></i>
+            <i
+              class="iconfont icon-jiantou_qiehuanxiangshang"
+              @click="handleUpMove(scope.row)"
+            ></i>
           </template>
 
         </el-table-column>
         <el-table-column
-          prop=""
-          label="层级"
-          width="110"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
           prop="Sort"
           label="排序"
-          width="130"
+          width="110"
           align="center"
         >
         </el-table-column>
@@ -152,9 +151,18 @@
         :mode="mode"
         :visible="mdVisible"
         :mdInfo="mdInfo"
+        :sysList="sysList"
+        :moudleList="moudleList"
         @closed="handleCloseMd"
+        @addMd="handleAddMdSuc"
+        @editMd="handleEditMdSuc"
       ></Edit>
-      <Paging></Paging>
+      <Paging
+        :tableList="moudleList"
+        :currentPage="currentPage"
+        :totalCount="moudleList.length"
+        @TogglePagingData="handleTogglePagingData"
+      ></Paging>
       <Dialog @userBehavior="RelDelMd"></Dialog>
     </div>
   </div>
@@ -168,8 +176,9 @@ import MenuNameList from "@/components/MenuNameList";
 import Edit from "@/components/module/Edit";
 import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
-import { requestGetBaseModuleList, requestGetBaseModule, requestDeleteBaseModule } from "@/js/api.js";
+import { requestGetBaseModuleList, requestGetBaseModule, requestDeleteBaseModule, requestMoveBaseModule, requestGetTableSystemList } from "@/js/api.js";
 import { fmtStatus, formatterDate } from "@/js/format.js";
+import { pageData } from "@/js/utils.js";
 
 export default {
   name: "account",
@@ -186,6 +195,7 @@ export default {
       moudleList: [],
       cacheModuleList: [],
       mdInfo: {},
+      sysList: [],
       perPage: 10,
       nameValue: "", // 姓名
       status: "2", // 状态
@@ -194,16 +204,37 @@ export default {
       menu: "",
       mode: "",
       mdVisible: false,
-      expands: []
+      expands: [],
+      currentPage: 1
     };
   },
   computed: {
   },
   mounted() {
     this.getModuleList();
+    this.getSysList();
   },
 
   methods: {
+    // 分页数据
+    handleTogglePagingData(e) {
+      this.currentPage = e;
+      this.cacheModuleList = pageData(
+        this.moudleList,
+        this.cacheModuleList,
+        e,
+        this.perPage
+      );
+    },
+    // 获取系统名称列表
+    async getSysList() {
+      const res = await requestGetTableSystemList({
+        name: "",
+        environmentId: "",
+        isEnable: 2
+      });
+      this.sysList = res.data;
+    },
     // 获取模块数据列表
     async getModuleList() {
       const res = await requestGetBaseModuleList({
@@ -215,6 +246,17 @@ export default {
         this.cacheModuleList = this.moudleList.slice(0, this.perPage);
       }
     },
+    async handleDownMove(row) {
+      const res = await requestMoveBaseModule({
+        currentId: row.id,
+        type: row.Type,
+        changId: row.changId,
+      });
+      console.log(res);
+    },
+    handleUpMove(row) {
+
+    },
     // 新增模块
     handleAddMd () {
       this.mdVisible = true;
@@ -222,13 +264,19 @@ export default {
     },
     // 编辑模块
     async handleEditMd (row) {
-      // console.log(row);
       this.mdVisible = true;
       this.mode = "编辑模块";
       const res = await requestGetBaseModule({ id: row.id });
       if (res.status === 200) {
         this.mdInfo = res.data;
       }
+      console.log(this.mdInfo);
+    },
+    handleAddMdSuc() {
+      this.getModuleList();
+    },
+    handleEditMdSuc() {
+      this.getModuleList();
     },
     // 删除模块
     handleDelMd (row) {
@@ -245,9 +293,10 @@ export default {
       const res = await requestDeleteBaseModule({ id: data.id });
       if (res.status === 200) {
         this.$message({
-          type: "waring",
+          type: "success",
           message: "祝贺您，删除成功！"
         });
+        this.getModuleList();
       }
     },
     // 新增平级
@@ -301,9 +350,16 @@ export default {
   position: relative;
   .el-table__expand-icon {
     position: absolute;
-    left: 110px;
-    bottom: 8px;
+    left: 145px;
+    bottom: 9px;
     z-index: 1999;
+  }
+  .iconfont {
+    margin-right: -5px;
+    cursor: pointer;
+  }
+  .iconfont:hover {
+    color: #4bc183;
   }
 }
 </style>

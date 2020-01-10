@@ -154,6 +154,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <Paging
         :tableList="accountList"
         :currentPage="currentPage"

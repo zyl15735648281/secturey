@@ -167,6 +167,27 @@
       "unicode_decimal": 58900
     },
     {
+      "icon_id": "5387575",
+      "name": "箭头_切换向下",
+      "font_class": "jiantou_qiehuanxiangxia",
+      "unicode": "eb04",
+      "unicode_decimal": 60164
+    },
+    {
+      "icon_id": "5387578",
+      "name": "箭头_切换向上",
+      "font_class": "jiantou_qiehuanxiangshang",
+      "unicode": "eb05",
+      "unicode_decimal": 60165
+    },
+    {
+      "icon_id": "5387937",
+      "name": "箭头_左右切换_o",
+      "font_class": "jiantou_zuoyouqiehuan_o",
+      "unicode": "eb95",
+      "unicode_decimal": 60309
+    },
+    {
       "icon_id": "5401579",
       "name": "分组管理",
       "font_class": "fenzuguanli",

@@ -1,4 +1,6 @@
 // 全局的dialog样式
+@base: #4bc183;
+
 .dialogStyle {
   height: 100%;
 
@@ -44,36 +46,69 @@
       height     : 40px;
       line-height: 40px;
     }
-  }
 
-  .el-radio__input.is-checked .el-radio__inner {
-    border-color: #285b91;
-    background  : #285b91;
-  }
-
-  .el-radio__input.is-checked+.el-radio__label {
-    color: #285b91;
+    .el-checkbox__input.is-checked .el-checkbox__inner {
+      background-color: @base;
+      border-color    : @base;
+    }
   }
 }
 
-#confirm {
-  background-color: rgb(50, 92, 147);
-  color           : white;
+.el-radio__input.is-checked .el-radio__inner {
+  border-color: @base  !important;
+  background  : @base  !important;
 }
 
-#confirm:hover {
-  background-color: rgb(50, 92, 147);
-  color           : white;
+.el-radio__input.is-checked+.el-radio__label {
+  color: @base  !important;
 }
 
-.el-button:focus,
-.el-button:hover {
-  color           : #285b91;
-  border-color    : #285b91;
-  background-color: #285b91;
-  color           : white;
+.el-radio__inner:hover {
+  border-color: @base  !important;
 }
 
 .el-dialog__title {
-  font-weight: 600;
+  font-weight: 600 !important;
+}
+
+.el-form-item__label {
+  color      : #111 !important;
+  font-weight: 500 !important;
+}
+
+.el-input {
+
+  .el-input.is-active .el-input__inner,
+  .el-input__inner:focus {
+    border : 2px solid @base  !important;
+    outline: 0 !important;
+  }
+}
+
+.cancle {
+  background-color: white !important;
+  color           : #111 !important;
+  padding         : 10px 15px !important;
+}
+
+.cancle:hover {
+  background-color: white !important;
+  color           : #111 !important;
+}
+
+.confirm {
+  background-color: @base  !important;
+  color           : white !important;
+  border          : 1px solid #DCDFE6 !important;
+  padding         : 10px 15px !important;
+}
+
+.confirm:hover {
+  background-color: @base  !important;
+  color           : white !important;
+}
+
+.el-textarea__inner:focus {
+  border : 2px solid @base  !important;
+  outline: 0 !important;
 }

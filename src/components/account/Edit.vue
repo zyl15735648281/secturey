@@ -323,13 +323,11 @@ export default {
 }
 #norequired {
   display: flex;
-
   .el-form-item__label {
     letter-spacing: 0.5px;
     text-align-last: justify;
     width: 110px;
   }
-
   .el-form-item__content {
     width: calc(100% - 110px);
     margin-left: 0;

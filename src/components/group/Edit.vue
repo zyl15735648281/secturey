@@ -198,14 +198,18 @@ export default {
       }, "role");
     },
     handleAddUser(row) {
-      const idx = _.findIndex(this.userList, { "UserId": row.UserId });
-      this.userList.splice(idx, 1);
-      this.alreadyGpList.unshift(row);
+      if (this.userList.length > 0) {
+        const idx = _.findIndex(this.userList, { "UserId": row.UserId });
+        this.userList.splice(idx, 1);
+        this.alreadyGpList.unshift(row);
+      }
     },
     handleRemoveUser(row) {
-      const idx = _.findIndex(this.alreadyGpList, { "UserId": row.UserId });
-      this.alreadyGpList.splice(idx, 1);
-      this.userList.unshift(row);
+      if (this.alreadyGpList.length > 0) {
+        const idx = _.findIndex(this.alreadyGpList, { "UserId": row.UserId });
+        this.alreadyGpList.splice(idx, 1);
+        this.userList.unshift(row);
+      }
     },
   },
 };

@@ -6,6 +6,10 @@ const instance = axios.create({
   timeout: 5000 // request timeout
 });
 
+const instanceOne = axios.create({
+  baseURL: window.config.configServer, // 配置服务接口地址
+  timeout: 5000 // request timeout
+});
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
@@ -34,6 +38,20 @@ export const createAPI = (url, method, data) => {
     config.data = data;
   }
   return instance({
+    url,
+    method,
+    ...config
+  });
+};
+
+export const createAPIConfig = (url, method, data) => {
+  let config = {};
+  if (method === "get") {
+    config.params = data;
+  } else {
+    config.data = data;
+  }
+  return instanceOne({
     url,
     method,
     ...config
