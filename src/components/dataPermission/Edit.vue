@@ -20,7 +20,26 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="类型">
-          <el-input v-model="dperInfo.Type"></el-input>
+          <el-radio
+            v-model="dperInfo.Type"
+            label="院区"
+          >院区</el-radio>
+          <el-radio
+            v-model="dperInfo.Type"
+            label="科室"
+          >科室</el-radio>
+          <el-radio
+            v-model="dperInfo.Type"
+            label="时间"
+          >时间</el-radio>
+          <el-radio
+            v-model="dperInfo.Type"
+            label="病案状态"
+          >病案状态</el-radio>
+          <el-radio
+            v-model="dperInfo.Type"
+            label="病案等级"
+          >病案等级</el-radio>
         </el-form-item>
         <el-form-item label="状态">
           <el-radio
@@ -97,7 +116,6 @@ export default {
       if (!this.verify()) {
         return;
       }
-
       const params = {
         scopeId: "",
         name: this.dperInfo.Name,
@@ -144,18 +162,20 @@ export default {
         });
         return false;
       }
-      if (this.mode === "添加数据权限") {
+      if (this.mode === "新增数据权限") {
         if (this.dperList.length > 0) {
           const arr = [];
+          console.log("this.dperInfo.Name: " + this.dperInfo.Name);
           this.dperList.forEach(element => {
-            if (element.Name === this.childDePInfo.Name) {
+            console.log("element.Name: " + element.Name);
+            if (element.Name === this.dperInfo.Name) {
               arr.push(element);
             }
           });
           if (arr.length > 0) {
             this.$message({
               type: "waring",
-              message: "部门名称不能重复"
+              message: "名称不能重复"
             });
             return false;
           }

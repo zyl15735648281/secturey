@@ -25,6 +25,7 @@
         height="calc(100% - 70px)"
         v-loading="loading"
         :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+        :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
       >
         <el-table-column label="姓名" width="120" align="center">
           <template slot-scope="scope">

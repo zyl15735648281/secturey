@@ -2,7 +2,12 @@
   <div class="dep-all">
     <div class="dep-l fl">
       <h3 style="margin-bottom:10px">组织架构</h3>
-      <el-input placeholder="请搜索" suffix-icon="el-icon-search" v-model="depValue" class="mg-b"></el-input>
+      <el-input
+        placeholder="请搜索"
+        suffix-icon="el-icon-search"
+        v-model="depValue"
+        class="mg-b"
+      ></el-input>
 
       <el-tree
         ref="depTree"
@@ -18,11 +23,17 @@
       <ul class="retrieval-header dep-header">
         <li>
           <span>部门名称：</span>
-          <el-input v-model="depName" @input="handleFilter"></el-input>
+          <el-input
+            v-model="depName"
+            @input="handleFilter"
+          ></el-input>
         </li>
 
         <li>
-          <State :value="status" @onChange="handleSwitchStatus"></State>
+          <State
+            :value="status"
+            @onChange="handleSwitchStatus"
+          ></State>
         </li>
         <li>
           <el-button @click="handleSearch">查询</el-button>
@@ -31,7 +42,10 @@
       <div class="info-table">
         <div class="ui-header">
           <h3>已有的部门列表</h3>
-          <el-button class="fr add" @click="handleAddDep">新增部门</el-button>
+          <el-button
+            class="fr add"
+            @click="handleAddDep"
+          >新增部门</el-button>
         </div>
         <el-table
           :data="cacheDepList"
@@ -40,6 +54,7 @@
           height="calc(100% - 70px)"
           v-loading="loading"
           :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+          :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
         >
           <el-table-column
             prop="Name"
@@ -48,7 +63,12 @@
             align="center"
             :show-overflow-tooltip="true"
           ></el-table-column>
-          <el-table-column prop="PinyinShort" label="部门首字母" width="110" align="center"></el-table-column>
+          <el-table-column
+            prop="PinyinShort"
+            label="部门首字母"
+            width="110"
+            align="center"
+          ></el-table-column>
           <el-table-column
             prop="ParentName"
             label="上级部门"
@@ -63,7 +83,12 @@
             align="center"
             :formatter="fmtState"
           ></el-table-column>
-          <el-table-column prop="CreateUserName" label="操作人" width="130" align="center"></el-table-column>
+          <el-table-column
+            prop="CreateUserName"
+            label="操作人"
+            width="130"
+            align="center"
+          ></el-table-column>
           <el-table-column
             prop="CreateTime"
             label="操作时间"
@@ -73,12 +98,31 @@
             :show-overflow-tooltip="true"
           ></el-table-column>
 
-          <el-table-column label="操作" width="350" align="center">
+          <el-table-column
+            label="操作"
+            width="350"
+            align="center"
+          >
             <template slot-scope="scope">
-              <a href="javascript:void(0);" class="mg-r" @click="handleEditDep(scope.row)">编辑</a>
-              <a href="javascript:void(0);" class="mg-r" @click="handleDelDep(scope.row)">删除</a>
-              <a href="javascript:void(0);" class="mg-r" @click="handleAddPeers(scope.row)">新增平级部门</a>
-              <a href="javascript:void(0);" @click="handleCollarPeers(scope.row)">新增下级部门</a>
+              <a
+                href="javascript:void(0);"
+                class="mg-r"
+                @click="handleEditDep(scope.row)"
+              >编辑</a>
+              <a
+                href="javascript:void(0);"
+                class="mg-r"
+                @click="handleDelDep(scope.row)"
+              >删除</a>
+              <a
+                href="javascript:void(0);"
+                class="mg-r"
+                @click="handleAddPeers(scope.row)"
+              >新增平级部门</a>
+              <a
+                href="javascript:void(0);"
+                @click="handleCollarPeers(scope.row)"
+              >新增下级部门</a>
             </template>
           </el-table-column>
         </el-table>

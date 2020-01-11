@@ -7,7 +7,10 @@
       </li>
 
       <li>
-        <State :value="status" @onChange="handleSwitchStatus"></State>
+        <State
+          :value="status"
+          @onChange="handleSwitchStatus"
+        ></State>
       </li>
       <li>
         <el-button>查询</el-button>
@@ -16,7 +19,10 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已存在的组</h3>
-        <el-button class="fr add" @click="handleAddGroup">新增组</el-button>
+        <el-button
+          class="fr add"
+          @click="handleAddGroup"
+        >新增组</el-button>
       </div>
       <el-table
         :data="cacheGroupList"
@@ -25,13 +31,28 @@
         height="calc(100% - 70px)"
         v-loading="loading"
         :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+        :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
       >
-        <el-table-column label="组名称" width="150" align="center" :show-overflow-tooltip="true">
+        <el-table-column
+          label="组名称"
+          width="150"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
+            <el-popover
+              trigger="hover"
+              placement="top"
+            >
               <p>点我查看分组详情</p>
-              <div slot="reference" class="name-wrapper">
-                <a href="javascript:void(0);" @click="SeeGroup(scope.row)">{{scope.row.Name}}</a>
+              <div
+                slot="reference"
+                class="name-wrapper"
+              >
+                <a
+                  href="javascript:void(0);"
+                  @click="SeeGroup(scope.row)"
+                >{{scope.row.Name}}</a>
               </div>
             </el-popover>
           </template>
@@ -58,7 +79,12 @@
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column prop="Memo" label="备注" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          prop="Memo"
+          label="备注"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
         <el-table-column
           prop="CreateTime"
           label="操作时间"
@@ -67,10 +93,21 @@
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column
+          label="操作"
+          width="180"
+          align="center"
+        >
           <template slot-scope="scope">
-            <a href="javascript:void(0);" class="mg-r" @click="handleEditGroup(scope.row)">编辑</a>
-            <a href="javascript:void(0);" @click="handleDelGroup(scope.row)">删除</a>
+            <a
+              href="javascript:void(0);"
+              class="mg-r"
+              @click="handleEditGroup(scope.row)"
+            >编辑</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleDelGroup(scope.row)"
+            >删除</a>
           </template>
         </el-table-column>
       </el-table>

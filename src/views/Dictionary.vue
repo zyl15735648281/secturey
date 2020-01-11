@@ -3,7 +3,10 @@
     <ul class="retrieval-header dic-header">
       <li>
         <span>名称：</span>
-        <el-input v-model="dicValue" @input="filterDic"></el-input>
+        <el-input
+          v-model="dicValue"
+          @input="filterDic"
+        ></el-input>
       </li>
       <li>
         <el-button @click="handleSearch">查询</el-button>
@@ -12,7 +15,10 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的字典列表</h3>
-        <el-button class="fr add" @click="handleAddDic">新增字典</el-button>
+        <el-button
+          class="fr add"
+          @click="handleAddDic"
+        >新增字典</el-button>
       </div>
       <el-table
         :data="cacheDicList"
@@ -21,18 +27,47 @@
         height="calc(100% - 70px)"
         v-loading="loading"
         :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+        :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
       >
-        <el-table-column prop="DicName" label="名称" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          prop="DicName"
+          label="名称"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
 
-        <el-table-column label="类型" align="center" prop="DicType"></el-table-column>
+        <el-table-column
+          label="类型"
+          align="center"
+          prop="DicType"
+        ></el-table-column>
 
-        <el-table-column prop="IsEnable" label="创建人" align="center"></el-table-column>
-        <el-table-column prop="Note" label="备注" align="center"></el-table-column>
+        <el-table-column
+          prop="IsEnable"
+          label="创建人"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="Note"
+          label="备注"
+          align="center"
+        ></el-table-column>
 
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column
+          label="操作"
+          width="180"
+          align="center"
+        >
           <template slot-scope="scope">
-            <a href="javascript:void(0);" class="mg-r" @click="handleEditDic(scope.row)">编辑</a>
-            <a href="javascript:void(0);" @click="handleDelDic(scope.row)">删除</a>
+            <a
+              href="javascript:void(0);"
+              class="mg-r"
+              @click="handleEditDic(scope.row)"
+            >编辑</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleDelDic(scope.row)"
+            >删除</a>
           </template>
         </el-table-column>
       </el-table>

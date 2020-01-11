@@ -3,14 +3,23 @@
     <ul class="retrieval-header mo-header">
       <li>
         <span>系统名称：</span>
-        <SysNameList :value="system" @onChange="handleSwitchSys"></SysNameList>
+        <SysNameList
+          :value="system"
+          @onChange="handleSwitchSys"
+        ></SysNameList>
       </li>
 
       <li>
-        <MenuNameList :value="menu" @onChange="handleSwitchMenu"></MenuNameList>
+        <MenuNameList
+          :value="menu"
+          @onChange="handleSwitchMenu"
+        ></MenuNameList>
       </li>
       <li>
-        <State :value="status" @onChange="handleSwitchStatus"></State>
+        <State
+          :value="status"
+          @onChange="handleSwitchStatus"
+        ></State>
       </li>
       <li>
         <el-button>查询</el-button>
@@ -19,7 +28,10 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的系统项</h3>
-        <el-button class="fr add" @click="handleAddMd">新增菜单</el-button>
+        <el-button
+          class="fr add"
+          @click="handleAddMd"
+        >新增菜单</el-button>
       </div>
       <el-table
         :data="cacheModuleList"
@@ -31,6 +43,7 @@
         lazy
         :tree-props="{children: 'treeChildren', hasChildren: 'hasChildren'}"
         :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+        :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
       >
         <el-table-column
           label="系统名称"
@@ -40,18 +53,36 @@
           :show-overflow-tooltip="true"
         ></el-table-column>
 
-        <el-table-column prop="name" label="菜单名称" width="150" align="center">
+        <el-table-column
+          prop="name"
+          label="菜单名称"
+          width="150"
+          align="center"
+        >
           <template slot-scope="scope">
             {{scope.row.name}}
             <i
               class="iconfont icon-jiantou_qiehuanxiangxia"
               @click="handleDownMove(scope.row)"
             ></i>
-            <i class="iconfont icon-jiantou_qiehuanxiangshang" @click="handleUpMove(scope.row)"></i>
+            <i
+              class="iconfont icon-jiantou_qiehuanxiangshang"
+              @click="handleUpMove(scope.row)"
+            ></i>
           </template>
         </el-table-column>
-        <el-table-column prop="Sort" label="排序" width="110" align="center"></el-table-column>
-        <el-table-column prop="Type" label="类型" width="130" align="center"></el-table-column>
+        <el-table-column
+          prop="Sort"
+          label="排序"
+          width="110"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="Type"
+          label="类型"
+          width="130"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="IsEnable"
           label="状态"
@@ -59,8 +90,18 @@
           align="center"
           :formatter="fmtState"
         ></el-table-column>
-        <el-table-column prop="CreateUserName" label="操作人" width="130" align="center"></el-table-column>
-        <el-table-column prop="Description" label="备注" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column
+          prop="CreateUserName"
+          label="操作人"
+          width="130"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="Description"
+          label="备注"
+          align="center"
+          :show-overflow-tooltip="true"
+        ></el-table-column>
 
         <el-table-column
           prop="CreateTime"
@@ -70,12 +111,32 @@
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="操作" width="280" align="center" fixed="right">
+        <el-table-column
+          label="操作"
+          width="280"
+          align="center"
+          fixed="right"
+        >
           <template slot-scope="scope">
-            <a href="javascript:void(0);" class="mg-r" @click="handleEditMd(scope.row)">编辑</a>
-            <a href="javascript:void(0);" class="mg-r" @click="handleDelMd(scope.row)">删除</a>
-            <a href="javascript:void(0);" class="mg-r" @click="handleAddPeer(scope.row)">新增平级</a>
-            <a href="javascript:void(0);" @click="handleAddCollar(scope.row)">新增子级</a>
+            <a
+              href="javascript:void(0);"
+              class="mg-r"
+              @click="handleEditMd(scope.row)"
+            >编辑</a>
+            <a
+              href="javascript:void(0);"
+              class="mg-r"
+              @click="handleDelMd(scope.row)"
+            >删除</a>
+            <a
+              href="javascript:void(0);"
+              class="mg-r"
+              @click="handleAddPeer(scope.row)"
+            >新增平级</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleAddCollar(scope.row)"
+            >新增子级</a>
           </template>
         </el-table-column>
       </el-table>
@@ -143,16 +204,13 @@ export default {
       menu: "",
       mode: "",
       mdVisible: false,
-      expands: [],
       currentPage: 1
     };
   },
-  computed: {},
   mounted() {
     this.getModuleList();
     this.getSysList();
   },
-
   methods: {
     // 分页数据
     handleTogglePagingData(e) {
@@ -184,6 +242,7 @@ export default {
         this.cacheModuleList = this.moudleList.slice(0, this.perPage);
       }
     },
+    // 下移，上移
     async handleDownMove(row) {
       const res = await requestMoveBaseModule({
         currentId: row.id,
@@ -192,11 +251,19 @@ export default {
       });
       console.log(res);
     },
-    handleUpMove(row) {},
+    async handleUpMove(row) {
+      const res = await requestMoveBaseModule({
+        currentId: row.id,
+        type: row.Type,
+        changId: row.changId
+      });
+      console.log(res);
+    },
     // 新增模块
     handleAddMd() {
       this.mdVisible = true;
       this.mode = "新增模块";
+      this.mdInfo = {};
     },
     // 编辑模块
     async handleEditMd(row) {
