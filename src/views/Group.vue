@@ -133,6 +133,7 @@
     <GroupDetail
       :visible="groupDetailVisible"
       :gpDetailInfo="gpDetailInfo"
+      :alreadyGpList="alreadyGpList"
       @closed="handleCloseGDetail"
     ></GroupDetail>
   </div>
@@ -226,9 +227,11 @@ export default {
       }
     },
     // 查看详情
-    SeeGroup(row) {
+    async SeeGroup(row) {
       this.groupDetailVisible = true;
-      this.gpDetailInfo = row;
+      const res = await requestGetBaseGroup({ id: row.Id });
+      this.gpDetailInfo = res.data;
+      this.alreadyGpList = this.gpDetailInfo.baseUserGroupModels;
     },
     // 关闭详情
     handleCloseGDetail() {

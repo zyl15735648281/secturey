@@ -1,38 +1,34 @@
 <template>
-  <div class="">
+  <div>
     <el-dialog
       title="分组详情"
       :visible.sync="visible"
       :before-close="handleClose"
       width="50%"
     >
-      <div class="gpInfo">
-        <div class="info-header">
-          <div>
-            <h3>分组信息</h3>
-          </div>
-          <div>
-            <h3>分组成员</h3>
-            <OperateGroup
-              :data="gpDetailInfo.baseUserGroupModels"
-              target="删除"
-              @addUser="handleAddGpUser"
-            ></OperateGroup>
-          </div>
+      <div class="item">
+        <div class="header-info fl">
+          <h3>分组信息</h3>
+          <ul>
+            <li>分组名称：</li>
+            <li>创建人：</li>
+            <li>创建时间：</li>
+          </ul>
         </div>
-        <div class="info-relation">
-          <div>
-            <h2>分组组织关系</h2>
-          </div>
-          <div>
-            <h2>角色信息</h2>
-            <ul>
-              <li></li>
-            </ul>
-          </div>
-          <div>
-            <h2>权限信息</h2>
-          </div>
+
+        <div class="fr user-info">
+          <h3>分组成员</h3>
+          <OperateGroup
+            :aleradyUserList="alreadyGpList"
+            target="删除"
+            @removeUser="handleRemoveUser"
+            style="width:100%;height:calc(100% - 35px)"
+          ></OperateGroup>
+        </div>
+      </div>
+      <div class="info-relation">
+        <div>
+          <h3>分组组织关系</h3>
         </div>
       </div>
 
@@ -40,33 +36,35 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleClose">关 闭</el-button>
         <el-button
           type="primary"
-          @click="handleSave"
-          id="confirm"
-        >保 存</el-button>
+          @click="handleClose"
+          class="confirm"
+        >关 闭</el-button>
       </span>
     </el-dialog>
+
+    <ChildDialog @userBehavior="handleRelDelRole"></ChildDialog>
   </div>
+
 </template>
 
 <script>
 import OperateGroup from "@/components/group/OperateGroup";
+import ChildDialog from "@/components/account/ChildDialog";
+// import { show } from "@/js/dialog";
+
 export default {
   name: "",
   components: {
-    OperateGroup
+    OperateGroup,
+    ChildDialog
   },
   data () {
     return {
     };
   },
   props: {
-    mode: {
-      type: String,
-      default: ""
-    },
     visible: {
       type: Boolean,
       default: false
@@ -74,52 +72,52 @@ export default {
     gpDetailInfo: {
       type: Object,
       default: () => {}
+    },
+    alreadyGpList: {
+      type: Array,
+      default: () => []
     }
   },
-  created () {
+  watch: {
+    gpDetailInfo(val) {
+      console.log(val);
+    }
   },
   methods: {
-    handleSave () {
-
-    },
     handleClose () {
       this.$emit("closed");
     },
-    handleAddGpUser() {
-
-    }
+    handleRemoveUser(row) {}
   },
 };
 </script>
 
 <style scope lang="less">
-.ownerAccount {
-  .group-list {
-    width: 100%;
+.item {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 10px;
+  .header-info {
+    width: 49%;
+    height: 100%;
+    ul {
+      border: 1px solid #e4e4e4;
+      height: calc(100% - 35px);
+      overflow: auto;
+      li {
+        padding: 0 10px;
+        height: 30px;
+        line-height: 30px;
+        border-bottom: 1px dashed #e4e4e4;
+        list-style: none;
+        font-size: 14px;
+      }
+    }
   }
-}
 
-.gpinfo {
-  height: 115px;
-  li {
-    height: 30px;
-    line-height: 30px;
-    span {
-      display: inline-block;
-      vertical-align: middle;
-      height: 30px;
-      line-height: 30px;
-      margin-top: -10px;
-    }
-    div {
-      border: 2px solid #e4e4e4;
-      display: inline-block;
-      width: calc(100% - 56px);
-      height: 30px;
-      line-height: 30px;
-      box-sizing: border-box;
-      padding: 0 10px;
-    }
+  .user-info {
+    width: 49%;
+    height: 100%;
   }
 }
 </style>
