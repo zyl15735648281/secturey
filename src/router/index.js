@@ -18,7 +18,7 @@ const routes = [
             iconfont: "iconfont icon-yonghuguanli1"
         },
         component: () =>
-            import ("@/views/Account")
+            import("@/views/Account")
     },
     {
         path: "/Department",
@@ -28,7 +28,7 @@ const routes = [
             iconfont: "iconfont icon-iconbmgl"
         },
         component: () =>
-            import ("@/views/Department")
+            import("@/views/Department")
     },
     {
         path: "/Group",
@@ -38,7 +38,7 @@ const routes = [
             iconfont: "iconfont icon-fenzuguanli"
         },
         component: () =>
-            import ("@/views/Group")
+            import("@/views/Group")
     },
     {
         path: "/Role",
@@ -48,7 +48,7 @@ const routes = [
             iconfont: "iconfont icon-jiaoseguanli1"
         },
         component: () =>
-            import ("@/views/Role")
+            import("@/views/Role")
     },
     {
         path: "/DataPermission",
@@ -58,7 +58,7 @@ const routes = [
             iconfont: "iconfont icon-shujuquanxianguanli1"
         },
         component: () =>
-            import ("@/views/DataPermission")
+            import("@/views/DataPermission")
     },
     {
         path: "/Module",
@@ -68,17 +68,17 @@ const routes = [
             iconfont: "iconfont icon-mokuaiguanli-"
         },
         component: () =>
-            import ("@/views/Module")
+            import("@/views/Module")
     },
     {
         path: "/Dictionary",
         name: "dictionary",
         meta: {
             description: "字典管理",
-            iconfont: "iconfont icon-mokuaiguanli-"
+            iconfont: "iconfont icon-zidianguanli"
         },
         component: () =>
-            import ("@/views/Dictionary")
+            import("@/views/Dictionary")
     },
     {
         path: "/Test",
@@ -88,7 +88,7 @@ const routes = [
             iconfont: "iconfont icon-mokuaiguanli-"
         },
         component: () =>
-            import ("@/views/Test")
+            import("@/views/Test")
     }
 ];
 

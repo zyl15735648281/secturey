@@ -1,34 +1,53 @@
 <template>
   <div class="acoAccStyle">
     <el-dialog
-      title="分配用户"
+      :title="mode"
       :visible.sync="visible"
       :before-close="handleClose"
     >
       <div class="search">
         <!-- 搜索框 -->
-        <el-input placeholder="输入姓名查询" class="fl s-input"></el-input>
+        <el-input
+          placeholder="输入姓名查询"
+          class="fl s-input"
+        ></el-input>
         <el-button class="fr">确定</el-button>
-        <span class="fr s-span">已选10人</span>
+        <span class="fr s-span">已选{{checkedList.length}}个</span>
       </div>
-      <div class="gp-table">
+      <div
+        class="gp-table"
+        v-if="mode === '分配用户'"
+      >
         <el-table
-          :data="tableData"
+          :data="tableList"
           ref="multipleTable"
           tooltip-effect="dark"
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55" align="center">
-          </el-table-column>
-          <el-table-column label="姓名" width="120" align="center">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
-          </el-table-column>
-          <el-table-column prop="name" label="工号" width="120" align="center">
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center"
+          >
           </el-table-column>
           <el-table-column
-            prop="address"
+            label="姓名"
+            width="120"
+            align="center"
+          >
+            <template slot-scope="scope">{{scope.row.Name}}</template>
+          </el-table-column>
+          <el-table-column
+            prop="EmployeeId"
+            label="工号"
+            width="120"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="DefaultDepName"
             label="部门"
             align="center"
             show-overflow-tooltip
@@ -36,9 +55,57 @@
           </el-table-column>
         </el-table>
       </div>
-      <span slot="footer" class="dialog-footer">
+
+      <div
+        class="gp-table"
+        v-if="mode === '分配部门'"
+      >
+        <el-table
+          :data="tableList"
+          ref="multipleTable"
+          tooltip-effect="dark"
+          style="width: 100%"
+          height="100%"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            label="部门名称"
+            width="120"
+            align="center"
+          >
+            <template slot-scope="scope">{{scope.row.Name}}</template>
+          </el-table-column>
+          <el-table-column
+            prop="PinyinShort"
+            label="部门简拼"
+            width="120"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="ParentName"
+            label="上级部门"
+            align="center"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+        </el-table>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="handleClose">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="handleClose"
+        >确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -50,54 +117,29 @@ export default {
   components: {},
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ]
+      checkedList: []
     };
   },
   props: {
     visible: {
       type: Boolean,
       default: false
+    },
+    tableList: {
+      type: Array,
+      default: () => []
+    },
+    mode: {
+      type: String,
+      default: ""
     }
   },
   created() {},
   methods: {
-    handleSelectionChange() {},
+    handleSelectionChange(e) {
+      this.checkedList = e;
+      console.log(e);
+    },
     handleClose() {
       this.$emit("closed");
     }

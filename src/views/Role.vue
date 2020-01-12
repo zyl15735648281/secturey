@@ -53,7 +53,7 @@
               >
                 <a
                   href="javascript:void(0);"
-                  @click="SeeRoleDetail"
+                  @click="SeeRoleDetail(scope.row)"
                 >{{scope.row.Name}}</a>
               </div>
             </el-popover>
@@ -109,7 +109,7 @@
             >分配用户</a>
             <a
               href="javascript:void(0);"
-              @click="allocationAccount(scope.row)"
+              @click="allocationDep(scope.row)"
             >分配部门</a>
           </template>
         </el-table-column>
@@ -134,12 +134,24 @@
     <Dialog @userBehavior="relDelRole"></Dialog>
     <RoleDetail
       :visible="roleDelVisible"
+      :roleInfo="roleInfo"
+      :alreadyRoleList="alreadyRoleList"
       @closed="handleCloseRoleDetail"
     ></RoleDetail>
+
     <AllocationAccount
+      :mode="allocationMode"
       :visible="aocAccVis"
+      :tableList="accTableList"
       @closed="handleCloseAocAcc"
     ></AllocationAccount>
+
+    <!-- <AllocationAccount
+      :mode="allocationMode"
+      :visible="aocAccVis"
+      :tableList="allDepList"
+      @closed="handleCloseAocAcc"
+    ></AllocationAccount> -->
   </div>
 </template>
 
@@ -155,7 +167,9 @@ import {
   requestGetBaseRoleList,
   requestDeleteBaseRole,
   requestGetBaseRole,
-  requestGetBaseScopeList
+  requestGetBaseScopeList,
+  requestGetBaseUserList,
+  requestGetBaseDepartmentList
 } from "@/js/api";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
@@ -177,6 +191,8 @@ export default {
       roleInfo: {},
       dataPerList: [],
       alreadyDataPerList: [],
+      alreadyRoleList: [],
+      accTableList: [],
       status: "2", // 状态
       loading: false,
       roleName: "", // 角色名称
@@ -185,7 +201,8 @@ export default {
       roleDelVisible: false,
       aocAccVis: false,
       perPage: 10,
-      currentPage: 1
+      currentPage: 1,
+      allocationMode: "account"
     };
   },
   computed: {},
@@ -197,6 +214,26 @@ export default {
     handleFilterRoleName() {
       if (this.roleName === "") return this.getRoleList();
       this.cacheRoleList = frzzyQuery(this.roleName, this.roleList);
+    },
+    // 获取所有用户
+    async getAllUsers() {
+      const res = await requestGetBaseUserList({
+        name: "",
+        state: 2
+      });
+      this.accTableList = res.data;
+    },
+    // 获取所有部门
+    async getAllDep() {
+      const res = await requestGetBaseDepartmentList({
+        name: "",
+        state: 2
+      });
+      console.log(res);
+      if (res.status === 200) {
+        this.accTableList = res.data;
+      }
+      console.log(this.accTableList);
     },
     // 分页数据
     handleTogglePagingData(e) {
@@ -234,10 +271,23 @@ export default {
     //   分配用户
     allocationAccount() {
       this.aocAccVis = true;
+      this.allocationMode = "分配用户";
+      this.getAllUsers();
+    },
+    // 分配部门
+    allocationDep() {
+      this.aocAccVis = true;
+      this.allocationMode = "分配部门";
+      this.getAllDep();
     },
     // 查看角色详情
-    SeeRoleDetail() {
+    async SeeRoleDetail(row) {
       this.roleDelVisible = true;
+      const res = await requestGetBaseRole({ id: row.Id });
+      if (res.status === 200) {
+        this.roleInfo = res.data;
+      }
+      this.alreadyRoleList = this.roleInfo.baseUserRoleModels;
     },
     // 关闭角色详情对话框
     handleCloseRoleDetail() {

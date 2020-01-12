@@ -251,6 +251,13 @@
       "unicode_decimal": 59054
     },
     {
+      "icon_id": "8605754",
+      "name": "字典管理",
+      "font_class": "zidianguanli",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
       "icon_id": "8666837",
       "name": "用户",
       "font_class": "yonghu2",
