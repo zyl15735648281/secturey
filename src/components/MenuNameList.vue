@@ -5,6 +5,8 @@
       :value="value"
       placeholder="请选择"
       @change="handleChange"
+      filterable
+      clearable
     >
       <el-option
         v-for="item in menuList"

@@ -18,15 +18,11 @@
           label="上级菜单"
           id="mdnorequired"
         >
-          <el-input
-            v-model="parentName"
-            style="width: 48%;"
-            disabled
-          ></el-input>
           <SelectTree
             :selectList="moudleList"
             @selectData="handleSelectMdData"
-            :value="parentInfo.name"
+            @removeDep="handelRemoveGp"
+            :groupSearchText="ParentGp"
           ></SelectTree>
         </el-form-item>
         <el-form-item label="类型">
@@ -45,7 +41,7 @@
         </el-form-item>
         <el-form-item label="菜单名称">
           <el-input
-            v-model="mdInfo.Name"
+            v-model="mdInfo.name"
             clearable
           ></el-input>
         </el-form-item>
@@ -130,13 +126,50 @@ export default {
   data() {
     return {
       imgcodes: "",
-      parentInfo: {},
-      parentName: ""
+      ParentGp: "",
+      ParentGpId: "0"
     };
   },
   watch: {
     mdInfo(val) {
-      this.parentName = val.parentName;
+      if (this.mode === "编辑模块") {
+        if (val.parentID === undefined) {
+          return;
+        }
+        if (val.parentID.trim() === "0") {
+          this.ParentGp = "";
+          this.ParentGpId = "0";
+        } else {
+          let thisMouList = this.moudleList.filter(r => { return r.SystemId === val.SystemId; });
+          if (thisMouList.length === 1) {
+            let arr;
+            arr = thisMouList.filter(r => {
+              return r.id === val.parentID;
+            });
+
+            if (arr.length === 0) {
+              let tempInfo = thisMouList[0].treeChildren.find(r => {
+                return r.id === val.parentID;
+              });
+              arr.push(tempInfo);
+            }
+
+            this.ParentGp = arr[0].name;
+            this.ParentGpId = arr[0].id;
+          }
+        }
+      }
+
+      if (this.mode === "新增平级模块") {
+        this.ParentGp = val.ParentGpname;
+        this.ParentGpId = val.ParentGpid;
+        console.log(val);
+      }
+
+      if (this.mode === "新增子级模块") {
+        this.ParentGp = val.ParentGpchildname;
+        this.ParentGpId = val.ParentGpchildid;
+      }
     }
   },
   props: {
@@ -166,26 +199,31 @@ export default {
     }
   },
   methods: {
+    handelRemoveGp() {
+      this.ParentGp = "";
+    },
+    handleSelectMdData(e) {
+      this.ParentGp = e.name;
+      this.ParentGpId = e.id;
+    },
     // 编辑/修改
     async handleConfirm() {
       if (!this.verify()) {
         return;
       }
-      console.log(111);
       // 这里需要做必要的验证
       const params = {
         id: "",
-        name: this.mdInfo.Name,
+        name: this.mdInfo.name,
         systemName: this.mdInfo.SystemName,
         isEnable: this.mdInfo.IsEnable,
-        parentId: this.parentInfo.id || 0,
+        parentId: this.ParentGpId || 0,
         description: this.mdInfo.Description || "",
         createUserId: this.$store.state.userInfo.UserId,
         createUserName: this.$store.state.userInfo.Name,
         type: this.mdInfo.Type,
         icon: this.imgcodes || ""
       };
-      console.log(params);
 
       this.sysList.forEach(element => {
         if (element.SystemName === this.mdInfo.SystemName) {
@@ -194,11 +232,17 @@ export default {
       });
 
       if (this.mode === "编辑模块") {
-        params.id = this.mdInfo.Id;
+        params.id = this.mdInfo.id;
       }
-      console.log(params);
+      if (params.parentId === 0 && params.type === "按钮") {
+        this.$message({
+          type: "waring",
+          message: "按钮不能作为父级添加"
+        });
+        return;
+      }
       const res = await requestBaseModule(params);
-      if (this.mode === "新增模块") {
+      if (this.mode === "新增模块" || this.mode === "新增平级模块" || this.mode === "新增子级模块") {
         if (res.status === 200) {
           this.$message({
             type: "success",
@@ -261,7 +305,7 @@ export default {
       let filename = file.name;
       console.log(filename);
       let filesize = file.size;
-      if (filesize / (1024 * 1024) > 2) {
+      if (filesize / (1024 / 1024) > 1) {
         this.$message({
           type: "waring",
           message: "图片大小不能超过1M"
@@ -278,10 +322,8 @@ export default {
     },
     handleClearImg() {
       this.imgcodes = "";
-    },
-    handleSelectMdData(e) {
-      this.parentInfo = e;
     }
+
     // handleAddNum() {
     //   if (this.mdInfo.Sort === "") {
     //     return;

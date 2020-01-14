@@ -6,6 +6,8 @@
       placeholder="请选择"
       @change="handleChange"
       class="md-select"
+      filterable
+      clearable
     >
       <el-option
         v-for="item in sysList"
@@ -42,11 +44,14 @@ export default {
 
 <style lang="less" scope>
 .drop {
-  width: 100%;
+  width: 50%;
   display: inline-block;
   width: calc(100% - 80px);
   .md-select {
     width: 100%;
   }
+}
+.el-select-dropdown__list {
+  width: 210px;
 }
 </style>

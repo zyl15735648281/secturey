@@ -174,7 +174,6 @@ import { show } from "@/js/dialog";
 import Dialog from "@/components/Dialog";
 import {
   requestGetBaseModuleList,
-  requestGetBaseModule,
   requestDeleteBaseModule,
   requestMoveBaseModule,
   requestGetTableSystemList
@@ -200,7 +199,6 @@ export default {
       sysList: [],
       Icon: "",
       perPage: 10,
-      nameValue: "", // 姓名
       status: "2", // 状态
       loading: false,
       system: "",
@@ -218,7 +216,7 @@ export default {
   methods: {
     // 查询
     handleSearch() {
-
+      this.getModuleList();
     },
     // 分页数据
     handleTogglePagingData(e) {
@@ -242,8 +240,9 @@ export default {
     // 获取模块数据列表
     async getModuleList() {
       const res = await requestGetBaseModuleList({
-        name: this.nameValue,
-        state: this.status
+        name: this.menu || "",
+        state: this.status,
+        systemName: this.system || ""
       });
       if (res.status === 200) {
         this.moudleList = res.data;
@@ -279,26 +278,9 @@ export default {
     },
     // 编辑模块
     async handleEditMd(row) {
-      console.log(row);
       this.mdVisible = true;
       this.mode = "编辑模块";
-      const res = await requestGetBaseModule({ id: row.id });
-      if (res.status === 200) {
-        this.mdInfo = res.data;
-        if (this.mdInfo.ParentId.trim() === "0") {
-          this.mdInfo.parentName = "";
-        } else {
-          if (this.moudleList.length > 0) {
-            this.moudleList.forEach(element => {
-              if (element.id.trim() === this.mdInfo.ParentId.trim()) {
-                this.mdInfo.parentName = element.name;
-              }
-            });
-          }
-        }
-      }
-
-      // var imgFile = this.base64ImgtoFile(this.mdInfo.Icon);
+      this.mdInfo = row;
     },
     // base64编码转换成图片
     base64ImgtoFile(dataurl, filename = "file") {
@@ -347,28 +329,69 @@ export default {
       }
     },
     // 新增平级
-    handleAddPeer() {
+    handleAddPeer(row) {
       this.mdVisible = true;
-      this.mode = "新增平级";
-      // this.mdInfo = {};
+      this.mode = "新增平级模块";
+      // this.mdInfo = row;
+      this.mdInfo = {
+        id: "",
+        name: row.name,
+        SystemName: "",
+        SystemId: "",
+        IsEnable: false,
+        Description: "",
+        Type: "",
+        Icon: "",
+        Url: "",
+        treeChildren: row.treeChildren
+      };
+      if (row.parentID === undefined) {
+        return;
+      }
+      if (row.parentID.trim() === "0") {
+        this.mdInfo.ParentGpname = "";
+        this.mdInfo.ParentGpid = "0";
+      } else {
+        let thisMouList = this.moudleList.filter(r => { return r.SystemId === row.SystemId; });
+        if (thisMouList.length === 1) {
+          let arr;
+          arr = thisMouList.filter(r => {
+            return r.id === row.parentID;
+          });
+
+          if (arr.length === 0) {
+            let tempInfo = thisMouList[0].treeChildren.find(r => {
+              return r.id === row.parentID;
+            });
+            arr.push(tempInfo);
+          }
+
+          this.mdInfo.ParentGpname = arr[0].name;
+          this.mdInfo.ParentGpid = arr[0].id;
+        }
+      }
     },
     // 新增子级
     async handleAddCollar(row) {
       this.mdVisible = true;
-      this.mode = "新增子级";
-      const res = await requestGetBaseModule({ id: row.id });
-      if (res.status === 200) {
-        let tempInfo = res.data;
-        console.log(tempInfo);
-        this.mdInfo.parentName = tempInfo.Name;
-      }
+      this.mode = "新增子级模块";
+      this.mdInfo = {
+        id: "",
+        name: row.name,
+        SystemName: "",
+        SystemId: "",
+        IsEnable: false,
+        Description: "",
+        Type: "",
+        Icon: "",
+        Url: "",
+        treeChildren: row.treeChildren
+      };
+      this.mdInfo.ParentGpchildname = row.name;
+      this.mdInfo.ParentGpchildid = row.id;
     },
     handleCloseMd() {
       this.mdVisible = false;
-    },
-    // 切换姓名
-    handleSwitchName(e) {
-      this.nameValue = e;
     },
     // 切换状态
     handleSwitchStatus(e) {

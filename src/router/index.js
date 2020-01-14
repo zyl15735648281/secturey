@@ -78,16 +78,16 @@ const routes = [
         component: () =>
             import("@/views/Dictionary")
     },
-    {
-        path: "/Test",
-        name: "test",
-        meta: {
-            description: "测试管理",
-            iconfont: "iconfont icon-mokuaiguanli-"
-        },
-        component: () =>
-            import("@/views/Test")
-    }
+    // {
+    //     path: "/Test",
+    //     name: "test",
+    //     meta: {
+    //         description: "测试管理",
+    //         iconfont: "iconfont icon-mokuaiguanli-"
+    //     },
+    //     component: () =>
+    //         import("@/views/Test")
+    // }
 ];
 
 const router = new VueRouter({
