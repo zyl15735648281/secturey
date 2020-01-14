@@ -204,7 +204,6 @@ export default {
   },
   methods: {
     filter(value, data) {
-      console.log(data);
       if (!value) return true;
       return data.name.indexOf(value) !== -1;
     },

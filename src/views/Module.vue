@@ -4,15 +4,15 @@
       <li>
         <span>系统名称：</span>
         <SysNameList
-          :value="system"
-          @onChange="handleSwitchSys"
+          v-model="system"
+          :sysList="sysList"
         ></SysNameList>
       </li>
 
       <li>
         <MenuNameList
-          :value="menu"
-          @onChange="handleSwitchMenu"
+          :menuList="moudleList"
+          v-model="menu"
         ></MenuNameList>
       </li>
       <li>
@@ -22,7 +22,7 @@
         ></State>
       </li>
       <li>
-        <el-button>查询</el-button>
+        <el-button @click="handleSearch">查询</el-button>
       </li>
     </ul>
     <div class="info-table">
@@ -64,6 +64,7 @@
             <i
               class="iconfont icon-jiantou_qiehuanxiangxia"
               @click="handleDownMove(scope.row)"
+              v-if="scope.row.Sort !== max"
             ></i>
             <i
               class="iconfont icon-jiantou_qiehuanxiangshang"
@@ -147,6 +148,7 @@
         :mdInfo="mdInfo"
         :sysList="sysList"
         :moudleList="moudleList"
+        :Icon="Icon"
         @closed="handleCloseMd"
         @addMd="handleAddMdSuc"
         @editMd="handleEditMdSuc"
@@ -196,6 +198,7 @@ export default {
       cacheModuleList: [],
       mdInfo: {},
       sysList: [],
+      Icon: "",
       perPage: 10,
       nameValue: "", // 姓名
       status: "2", // 状态
@@ -204,7 +207,8 @@ export default {
       menu: "",
       mode: "",
       mdVisible: false,
-      currentPage: 1
+      currentPage: 1,
+      max: 0
     };
   },
   mounted() {
@@ -212,6 +216,10 @@ export default {
     this.getSysList();
   },
   methods: {
+    // 查询
+    handleSearch() {
+
+    },
     // 分页数据
     handleTogglePagingData(e) {
       this.currentPage = e;
@@ -240,9 +248,11 @@ export default {
       if (res.status === 200) {
         this.moudleList = res.data;
         this.cacheModuleList = this.moudleList.slice(0, this.perPage);
+        // 遍历数组，找到其中modulist中最大值
+        this.max = Math.max.apply(Math, this.moudleList.map(r => { return r.Sort; }));
       }
     },
-    // 下移，上移
+    // 下移，
     async handleDownMove(row) {
       const res = await requestMoveBaseModule({
         currentId: row.id,
@@ -251,6 +261,7 @@ export default {
       });
       console.log(res);
     },
+    // 上移
     async handleUpMove(row) {
       const res = await requestMoveBaseModule({
         currentId: row.id,
@@ -264,16 +275,45 @@ export default {
       this.mdVisible = true;
       this.mode = "新增模块";
       this.mdInfo = {};
+      this.Icon = "";
     },
     // 编辑模块
     async handleEditMd(row) {
+      console.log(row);
       this.mdVisible = true;
       this.mode = "编辑模块";
       const res = await requestGetBaseModule({ id: row.id });
       if (res.status === 200) {
         this.mdInfo = res.data;
+        if (this.mdInfo.ParentId.trim() === "0") {
+          this.mdInfo.parentName = "";
+        } else {
+          if (this.moudleList.length > 0) {
+            this.moudleList.forEach(element => {
+              if (element.id.trim() === this.mdInfo.ParentId.trim()) {
+                this.mdInfo.parentName = element.name;
+              }
+            });
+          }
+        }
       }
-      console.log(this.mdInfo);
+
+      // var imgFile = this.base64ImgtoFile(this.mdInfo.Icon);
+    },
+    // base64编码转换成图片
+    base64ImgtoFile(dataurl, filename = "file") {
+      let arr = dataurl.split(",");
+      let mime = arr[0].match(/:(.*?);/)[1];
+      let suffix = mime.split("/")[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], `${filename}.${suffix}`, {
+        type: mime
+      });
     },
     handleAddMdSuc() {
       this.getModuleList();
@@ -309,12 +349,19 @@ export default {
     // 新增平级
     handleAddPeer() {
       this.mdVisible = true;
-      this.mode = "新增模块";
+      this.mode = "新增平级";
+      // this.mdInfo = {};
     },
     // 新增子级
-    handleAddCollar() {
+    async handleAddCollar(row) {
       this.mdVisible = true;
-      this.mode = "新增模块";
+      this.mode = "新增子级";
+      const res = await requestGetBaseModule({ id: row.id });
+      if (res.status === 200) {
+        let tempInfo = res.data;
+        console.log(tempInfo);
+        this.mdInfo.parentName = tempInfo.Name;
+      }
     },
     handleCloseMd() {
       this.mdVisible = false;

@@ -19,6 +19,22 @@ export default {
     AppHeader,
     AppAside,
     AppContent
+  },
+  mounted() {
+    // this.accessLimit();
+  },
+  methods: {
+    accessLimit() {
+      // console.log(111);
+      // console.log(this.store.state.userInfo);
+      // if (this.$store.state.userInfo.UserName.trim() !== "admin") {
+      //   console.log(333);
+      //   this.$message({
+      //     type: "waring",
+      //     message: "您没有操作权限"
+      //   });
+      // }
+    }
   }
 };
 </script>

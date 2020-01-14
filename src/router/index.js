@@ -1,20 +1,18 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import { oidcGuard } from "@docimax/oidc";
+import store from "@/store";
 
 Vue.use(VueRouter);
 
 const routes = [
-    // {
-    //   path: '/',
-    //   name: 'index',
-    //   redirect: '/Account'
-    // },
     {
         path: "/",
         name: "account",
         // redirect: '/Account',
         meta: {
             description: "用户管理",
+            // requireAuth: true,
             iconfont: "iconfont icon-yonghuguanli1"
         },
         component: () =>
@@ -96,6 +94,39 @@ const router = new VueRouter({
     mode: "history",
     base: process.env.BASE_URL,
     routes
+});
+
+router.beforeEach((to, from, next) => {
+    try {
+        if (to.name === "oidc-callback") {
+            next();
+        } else {
+            oidcGuard(Vue, store, next);
+        }
+        // 获取当前操作人
+        let operinfo = JSON.parse(window.sessionStorage.getItem("@docimax/oidc:userinfo"));
+        store.state.userInfo = operinfo;
+        // if (operinfo !== null) {
+        //     if (from.name === "oidc-callback") {
+        //         // 获取操作人的信息
+        //         if (operinfo.UserName.trim() !== "admin") {
+        //             Vue.prototype.$message({
+        //                 type: "waring",
+        //                 message: "您没有操作权限"
+        //             });
+        //             next(false);
+        //         } else {
+        //             store.state.userInfo = operinfo;
+        //             console.log(store.state.userInfo);
+        //             next();
+        //         }
+        //     }
+        // } else {
+        //     next(false);
+        // }
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 export default router;

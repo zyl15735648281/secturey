@@ -8,9 +8,9 @@
     >
       <el-option
         v-for="item in menuList"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
+        :key="item.id"
+        :label="item.name"
+        :value="item.name"
       >
       </el-option>
     </el-select>
@@ -18,23 +18,21 @@
 </template>
 
 <script>
-import { menuDataset } from "@/js/dataset";
 
 export default {
   props: {
     value: {
       type: String,
       default: "2"
-    }
-  },
-  computed: {
-    menuList () {
-      return menuDataset;
+    },
+    menuList: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
     handleChange (e) {
-      this.$emit("onChange", e);
+      this.$emit("input", e);
     }
   }
 };

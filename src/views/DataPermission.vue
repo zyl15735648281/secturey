@@ -202,9 +202,11 @@ export default {
     },
     // 编辑数据权限
     handleEditDp(row) {
+      console.log(row);
       this.dpVisible = true;
       this.mode = "编辑数据权限";
       this.dperInfo = row;
+      this.dperInfo.Type = this.dperInfo.Type.trim();
     },
     handleaddDper() {
       if (this.currentPage !== 1) {

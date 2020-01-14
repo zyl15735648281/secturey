@@ -19,14 +19,14 @@
           id="mdnorequired"
         >
           <el-input
-            v-model="mdInfo.parentID"
+            v-model="parentName"
             style="width: 48%;"
-            clearable
+            disabled
           ></el-input>
           <SelectTree
             :selectList="moudleList"
             @selectData="handleSelectMdData"
-            v-model="mdInfo.parentID"
+            :value="parentInfo.name"
           ></SelectTree>
         </el-form-item>
         <el-form-item label="类型">
@@ -45,7 +45,7 @@
         </el-form-item>
         <el-form-item label="菜单名称">
           <el-input
-            v-model="mdInfo.name"
+            v-model="mdInfo.Name"
             clearable
           ></el-input>
         </el-form-item>
@@ -63,6 +63,7 @@
             v-model="Icon"
             style="width:calc(100% - 85px)"
             clearable
+            @clear="handleClearImg"
           ></el-input>
           <form
             action
@@ -118,6 +119,7 @@
 import SysNameList from "@/components/SysNameList";
 import SelectTree from "@/components/SelectTree";
 import { requestBaseModule } from "@/js/api.js";
+// requestUploadBase64
 
 export default {
   name: "",
@@ -128,8 +130,14 @@ export default {
   data() {
     return {
       imgcodes: "",
-      Icon: ""
+      parentInfo: {},
+      parentName: ""
     };
+  },
+  watch: {
+    mdInfo(val) {
+      this.parentName = val.parentName;
+    }
   },
   props: {
     mode: {
@@ -151,26 +159,39 @@ export default {
     moudleList: {
       type: Array,
       default: () => []
+    },
+    Icon: {
+      type: String,
+      default: ""
     }
   },
   methods: {
     // 编辑/修改
     async handleConfirm() {
+      if (!this.verify()) {
+        return;
+      }
+      console.log(111);
       // 这里需要做必要的验证
       const params = {
         id: "",
-        name: this.mdInfo.name,
+        name: this.mdInfo.Name,
         systemName: this.mdInfo.SystemName,
-        systemId: this.mdInfo.SystemId,
         isEnable: this.mdInfo.IsEnable,
-        parentId: this.mdInfo.parentID || 0,
-        description: this.mdInfo.Description,
-        createUserId: "zyl",
-        createUserName: "zyl",
+        parentId: this.parentInfo.id || 0,
+        description: this.mdInfo.Description || "",
+        createUserId: this.$store.state.userInfo.UserId,
+        createUserName: this.$store.state.userInfo.Name,
         type: this.mdInfo.Type,
-        sort: this.mdInfo.Sort,
         icon: this.imgcodes || ""
       };
+      console.log(params);
+
+      this.sysList.forEach(element => {
+        if (element.SystemName === this.mdInfo.SystemName) {
+          params.systemId = element.SystemId;
+        }
+      });
 
       if (this.mode === "编辑模块") {
         params.id = this.mdInfo.Id;
@@ -201,28 +222,28 @@ export default {
       this.$emit("closed");
     },
     verify() {
-      if (this.mdInfo.SystemName === undefined) {
+      if (this.mdInfo.SystemName === undefined || this.mdInfo.SystemName === "") {
         this.$message({
           type: "waring",
           message: "请选择系统名称"
         });
         return false;
       }
-      if (this.mdInfo.Type === undefined) {
+      if (this.mdInfo.Type === undefined || this.mdInfo.Type === "") {
         this.$message({
           type: "waring",
           message: "请选择类型"
         });
         return false;
       }
-      if (this.mdInfo.name === undefined) {
+      if (this.mdInfo.Name === undefined || this.mdInfo.Name === "") {
         this.$message({
           type: "waring",
           message: "请输入菜单名称"
         });
         return false;
       }
-      if (this.mdInfo.IsEnable === undefined) {
+      if (this.mdInfo.IsEnable === undefined || this.mdInfo.IsEnable === "") {
         this.$message({
           type: "waring",
           message: "请选择状态"
@@ -232,24 +253,35 @@ export default {
       return true;
     },
     // 上传图片
-    uploadPhoto(e) {
+    async uploadPhoto(e) {
+      if (this.imgcodes !== "") {
+        this.imgcodes = "";
+      }
       let file = e.target.files[0];
-      let filesize = file.size;
       let filename = file.name;
-      this.Icon = filename;
-      // 2,621,440   2M
-      if (filesize > 2101440) {
-        // 图片大于2MB
+      console.log(filename);
+      let filesize = file.size;
+      if (filesize / (1024 * 1024) > 2) {
+        this.$message({
+          type: "waring",
+          message: "图片大小不能超过1M"
+        });
       }
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = e => {
         // 读取到的图片base64 数据编码
-        var imgcode = e.target.result;
+        let imgcode = e.target.result;
         this.imgcodes = imgcode;
       };
+      this.Icon = filename;
     },
-    handleSelectMdData() {}
+    handleClearImg() {
+      this.imgcodes = "";
+    },
+    handleSelectMdData(e) {
+      this.parentInfo = e;
+    }
     // handleAddNum() {
     //   if (this.mdInfo.Sort === "") {
     //     return;

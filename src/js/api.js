@@ -76,6 +76,8 @@ export const requestDeleteBaseModule = data => createAPI("/DeleteBaseModule", "p
 export const requestGetBaseModuleList = data => createAPI("/GetBaseModuleList", "post", data);
 // 模块的上移/下移
 export const requestMoveBaseModule = data => createAPI("/MoveBaseModule", "post", data);
+// 上传图片的接口
+export const requestUploadBase64 = data => createAPI("/UploadBase64", "post", data);
 
 // 获取字典数据
 // 字典的添加 / 修改;

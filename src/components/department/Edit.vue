@@ -27,14 +27,12 @@
           label="上级部门"
           id="depnorequired"
         >
-          <el-input
-            v-model="childDePInfo.ParentName"
-            style="width: 48%;"
-          ></el-input>
+
           <SelectTree
             :selectList="deepTreeList"
             @selectData="handleSelectData"
-            v-model="childDePInfo.ParentName"
+            @removeDep="handelRemoveDep"
+            :groupSearchText="ParentName"
           ></SelectTree>
         </el-form-item>
         <el-form-item label="状态">
@@ -65,11 +63,14 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleClose">取 消</el-button>
+        <el-button
+          @click="handleClose"
+          class="cancle"
+        >取 消</el-button>
         <el-button
           type="primary"
           @click="handleConfirm"
-          id="confirm"
+          class="confirm"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -87,7 +88,15 @@ export default {
   },
   data () {
     return {
+      ParentName: "",
+      ParentId: "0"
     };
+  },
+  watch: {
+    childDePInfo(val) {
+      this.ParentName = val.ParentName;
+      this.ParentId = val.ParentId;
+    }
   },
   props: {
     title: {
@@ -109,7 +118,7 @@ export default {
     deepTreeList: {
       type: Array,
       default: () => []
-    }
+    },
   },
   created () {
   },
@@ -117,7 +126,11 @@ export default {
   },
   methods: {
     handleSelectData(e) {
-      console.log(e);
+      // this.childDePInfo.ParentName = e.name;
+      this.ParentName = e.name;
+    },
+    handelRemoveDep(e) {
+      this.ParentName = "";
     },
     // 编辑或者修改
     async handleConfirm() {

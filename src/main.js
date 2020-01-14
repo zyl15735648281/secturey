@@ -2,6 +2,9 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store/index";
+import { oidcInstance } from "@docimax/oidc";
+import axios from "axios";
+import auth from "./auth";
 import "@/style/common.less";
 import "@/style/content.less";
 import "@/style/animation.less";
@@ -37,6 +40,8 @@ Router.prototype.push = function push (location, onResolve, onReject) {
 };
 
 Vue.config.productionTip = false;
+Vue.prototype.$axios = axios;
+Vue.use(oidcInstance, { oidcConf: auth, router, store });
 
 Vue.use(Select);
 Vue.use(Option);

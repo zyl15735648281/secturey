@@ -8,7 +8,11 @@
       class="group-search"
       id="search"
     ></el-input>
-    <i class="el-icon-circle-close" v-show="groupSearchText !== ''" @click="handleRemove"></i>
+    <i
+      class="el-icon-circle-close"
+      v-show="groupSearchText !== ''"
+      @click="handleRemove"
+    ></i>
 
     <div
       class="group-tree"
@@ -35,7 +39,6 @@ export default {
     return {
       gpVisbible: false,
       mouseover: false,
-      groupSearchText: ""
     };
   },
   props: {
@@ -48,6 +51,10 @@ export default {
       default: () => {
         return { label: "name", children: "treeChildren" };
       }
+    },
+    groupSearchText: {
+      type: String,
+      default: ""
     }
   },
   watch: {
@@ -60,7 +67,7 @@ export default {
   },
   methods: {
     handleRemove() {
-      this.groupSearchText = "";
+      this.$emit("removeDep", this.groupSearchText);
       this.gpVisbible = true;
     },
     handleHidden() {
@@ -80,18 +87,14 @@ export default {
         }
       }
     },
-    handleChange(e) {
-      this.$emit("onChange", e);
-    },
     filterNode(value, data) {
       if (!value) return true;
       return data.name.indexOf(value) !== -1;
     },
     handleNodeClick(data) {
       document.querySelector("#search").focus();
-      this.groupSearchText = data.name;
       this.gpVisbible = false;
-      this.$emit("input", data.name);
+      this.$emit("selectData", data);
     }
   }
 };
@@ -99,7 +102,7 @@ export default {
 
 <style lang="less" scope>
 .group-dropDown {
-  width: 50%;
+  width: 100%;
   float: right;
   .group-search {
     position: relative;
@@ -109,7 +112,7 @@ export default {
     margin-top: 8px;
     position: absolute;
     top: 40px;
-    width: 50%;
+    width: 100%;
     height: 150px;
     z-index: 99999;
     border: 1px solid #e4e4e4;

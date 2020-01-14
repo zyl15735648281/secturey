@@ -74,6 +74,7 @@
 
 <script>
 import { hidden } from "@/js/dialog.js";
+import _ from "lodash";
 
 export default {
   name: "",
@@ -91,6 +92,17 @@ export default {
     userRoleList: {
       type: Array,
       default: () => []
+    },
+    roleMode: {
+      type: String,
+      default: ""
+    }
+  },
+  watch: {
+    userRoleList(val) {
+      if (val.length > 0) {
+        this.checkList = val.map(r => ({ checked: true, ...r }));
+      }
     }
   },
   methods: {
@@ -98,6 +110,18 @@ export default {
       if (type === "clickCancle") {
         hidden("role");
       } else {
+        // 判断一下列表中有哪些角色是没有勾选角色有效性或者选择时间
+        if (this.checkList.length > 0) {
+          let arr = this.checkList.filter(r => { return r.isEver === false; });
+          let arr1 = this.checkList.filter(r => { return r.startTime === "" && r.endTime === ""; });
+          if (arr.length > 0 || arr1.length > 0) {
+            this.$message({
+              type: "waring",
+              message: "您还有未选择有效性的角色，请添加角色有效性"
+            });
+            return;
+          }
+        }
         this.$emit("userBehavior", type, this.$store.state.wholeDialog.receivedData);
         this.roleList.forEach(element => {
           element.checked = false;
@@ -107,28 +131,39 @@ export default {
     },
     handleChecked(e, index) {
       e.checked = !e.checked;
-      if (this.userRoleList.length > 0) {
-        const idx = this.userRoleList.forEach(element => {
-          // eslint-disable-next-line no-unused-expressions
-          element.Id === e.id;
-        });
-        if (idx !== -1) {
-          return;
+      if (this.roleMode === "添加") {
+        if (this.userRoleList.length > 0) {
+          const idx = this.userRoleList.forEach(element => {
+            // eslint-disable-next-line no-unused-expressions
+            element.Id === e.id;
+          });
+          if (idx !== -1) {
+            return;
+          }
         }
       }
 
       if (this.checkList.length > 0) {
-        const idx = this.checkList.findIndex(element => {
-          // eslint-disable-next-line no-unused-expressions
-          element.Id === e.Id;
-        });
-        if (idx !== -1) {
-          this.checkList.splice(idx, 1);
+        if (e.checked === true) {
+          const idx = this.checkList.findIndex(element => {
+            // eslint-disable-next-line no-unused-expressions
+            element.Id === e.Id;
+          });
+          if (idx !== -1) {
+            this.checkList.splice(idx, 1);
+          } else {
+            this.checkList.push(e);
+          }
         } else {
-          this.checkList.push(e);
+          const idx = _.findIndex(this.checkList, { "Id": e.Id });
+          this.checkList.splice(idx, 1);
         }
-      } else if (this.checkList.length === 0) {
-        this.checkList.push(e);
+      } else {
+        if (e.checked === true) {
+          this.checkList.push(e);
+        } else {
+          this.checkList.splice(0, 1);
+        }
       }
       this.$store.state.wholeDialog.receivedData = this.checkList;
       this.flag = e.checked;

@@ -23,23 +23,23 @@
           <el-radio
             v-model="dperInfo.Type"
             label="院区"
-          >院区</el-radio>
+          ></el-radio>
           <el-radio
             v-model="dperInfo.Type"
             label="科室"
-          >科室</el-radio>
+          ></el-radio>
           <el-radio
             v-model="dperInfo.Type"
             label="时间"
-          >时间</el-radio>
+          ></el-radio>
           <el-radio
             v-model="dperInfo.Type"
             label="病案状态"
-          >病案状态</el-radio>
+          ></el-radio>
           <el-radio
             v-model="dperInfo.Type"
             label="病案等级"
-          >病案等级</el-radio>
+          ></el-radio>
         </el-form-item>
         <el-form-item label="状态">
           <el-radio
@@ -123,8 +123,8 @@ export default {
         value: this.dperInfo.Value,
         enable: false,
         isEnable: this.dperInfo.IsEnable,
-        createUserId: "",
-        createUserName: "",
+        createUserId: this.$store.state.userInfo.UserId,
+        createUserName: this.$store.state.userInfo.Name,
         memo: this.dperInfo.Memo
       };
       console.log(params);

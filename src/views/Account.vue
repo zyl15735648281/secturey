@@ -3,11 +3,18 @@
     <ul class="retrieval-header acc-header">
       <li>
         <span>姓名：</span>
-        <el-input v-model="nameValue" @input="handleFilterName" style="width:calc(100% - 50px)"></el-input>
+        <el-input
+          v-model="nameValue"
+          @input="handleFilterName"
+          style="width:calc(100% - 50px)"
+        ></el-input>
       </li>
 
       <li>
-        <State :value="status" @onChange="handleSwitchStatus"></State>
+        <State
+          :value="status"
+          @onChange="handleSwitchStatus"
+        ></State>
       </li>
       <li>
         <el-button @click="handleSearch">查询</el-button>
@@ -16,7 +23,10 @@
     <div class="info-table">
       <div class="ui-header">
         <h3>已有的用户列表</h3>
-        <el-button class="fr add" @click="handleAddAccount">新增用户</el-button>
+        <el-button
+          class="fr add"
+          @click="handleAddAccount"
+        >新增用户</el-button>
       </div>
       <el-table
         :data="cacheAccountList"
@@ -27,11 +37,21 @@
         :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
         :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
       >
-        <el-table-column label="姓名" width="120" align="center">
+        <el-table-column
+          label="姓名"
+          width="120"
+          align="center"
+        >
           <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
+            <el-popover
+              trigger="hover"
+              placement="top"
+            >
               <p>点我查看详情</p>
-              <div slot="reference" class="name-wrapper">
+              <div
+                slot="reference"
+                class="name-wrapper"
+              >
                 <a
                   href="javascript:void(0);"
                   @click="SeeAccountDetail(scope.row)"
@@ -44,7 +64,12 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column prop="EmployeeId" label="工号" width="130" align="center"></el-table-column>
+        <el-table-column
+          prop="EmployeeId"
+          label="工号"
+          width="130"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="DefaultDepName"
           label="部门"
@@ -87,7 +112,12 @@
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column prop="CreateUserName" label="创建人" width="120" align="center"></el-table-column>
+        <el-table-column
+          prop="CreateUserName"
+          label="创建人"
+          width="120"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="CreateTime"
           label="创建时间"
@@ -96,17 +126,33 @@
           :formatter="fmtDate"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="操作" width="220" align="center" fixed="right">
+        <el-table-column
+          label="操作"
+          width="220"
+          align="center"
+          fixed="right"
+        >
           <template slot-scope="scope">
-            <a href="javascript:void(0);" @click="handleEditAccount(scope.row)" class="mg-r">编辑</a>
-            <a href="javascript:void(0);" @click="handleDelAccount(scope.row)" class="mg-r">删除</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleEditAccount(scope.row)"
+              class="mg-r"
+            >编辑</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleDelAccount(scope.row)"
+              class="mg-r"
+            >删除</a>
             <a
               href="javascript:void(0);"
               @click="handleStartUsing(scope.row)"
               class="mg-r"
             >{{scope.row.IsEnable === true ? '禁用' : '启用'}}</a>
 
-            <a href="javascript:void(0);" @click="resetPass(scope.row)">重置密码</a>
+            <a
+              href="javascript:void(0);"
+              @click="resetPass(scope.row)"
+            >重置密码</a>
           </template>
         </el-table-column>
       </el-table>
@@ -124,6 +170,7 @@
       :mode="mode"
       :depList="depList"
       :accountInfo="accountInfo"
+      :accountList="accountList"
       @closed="handleClose"
       @addAccount="handleAddAcc"
       @editAccount="handleEditAcc"
@@ -133,7 +180,11 @@
       :detailInfo="detailInfo"
       @closed="handleCloseDetail"
     ></AccountDetail>-->
-    <NewAccountDetail :visible="detailVisible" :detailInfo="detailInfo" @closed="handleCloseDetail"></NewAccountDetail>
+    <NewAccountDetail
+      :visible="detailVisible"
+      :detailInfo="detailInfo"
+      @closed="handleCloseDetail"
+    ></NewAccountDetail>
     <Dialog @userBehavior="handleRelDelAccount"></Dialog>
   </div>
 </template>
@@ -311,11 +362,16 @@ export default {
     },
     // 重置密码
     async resetPass(row) {
+      console.log(row);
       const res = await requestModifiedPassword({
-        password: "",
-        userId: row.UserId
+        id: row.UserId
       });
       if (res.status === 200) {
+        this.$message({
+          type: "success",
+          message: "祝贺您，重置密码成功"
+        });
+        this.getAccountList();
       }
     },
     // 关闭弹窗
