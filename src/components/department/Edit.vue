@@ -126,7 +126,6 @@ export default {
   },
   methods: {
     handleSelectData(e) {
-      // this.childDePInfo.ParentName = e.name;
       this.ParentName = e.name;
     },
     handelRemoveDep(e) {

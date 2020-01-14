@@ -14,14 +14,12 @@
           label="上级组"
           id="group-norequired"
         >
-          <el-input
-            v-model="groupInfo.ParentId"
-            style="width: 48%;"
-          ></el-input>
           <SelectTree
             id="overgroup"
             :selectList="spTreeList"
-            v-model="groupInfo.ParentId"
+            @selectData="handleSelectData"
+            @removeDep="handelRemoveGp"
+            :groupSearchText="ParentGpName"
           ></SelectTree>
         </el-form-item>
         <el-form-item
@@ -106,7 +104,8 @@ export default {
   },
   data () {
     return {
-      overDepValue: "",
+      ParentGpName: "",
+      ParentGpId: "0"
     };
   },
   props: {
@@ -141,8 +140,11 @@ export default {
     switchRoleValue () {
 
     },
-    switchOverDep(e) {
-      this.overDepValue = e;
+    handleSelectData(e) {
+      this.ParentGpName = e.name;
+    },
+    handelRemoveGp() {
+      this.ParentGpName = "";
     },
     handleClose () {
       this.$emit("closed");
@@ -187,6 +189,32 @@ export default {
           this.$emit("editGp");
           this.handleClose();
         }
+      }
+    },
+    verify() {
+      if (this.groupInfo.Name === undefined || this.groupInfo.Name === "") {
+        this.$message({
+          type: "waring",
+          message: "请输入分组名称"
+        });
+        return false;
+      }
+      // 判断分组名称是否合格
+
+      if (this.alreadyGpList === null || this.alreadyGpList === [] || this.alreadyGpList === undefined) {
+        this.$message({
+          type: "waring",
+          message: "请选择组成员"
+        });
+        return false;
+      }
+
+      if (this.groupInfo.IsEnable === undefined) {
+        this.$message({
+          type: "waring",
+          message: "请选择状态"
+        });
+        return false;
       }
     },
     handleAddRole () {
