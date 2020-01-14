@@ -20,8 +20,11 @@
         </ul>
       </div>
       <div>
-        <h3>所属分组</h3>
-        <span></span>
+        <div>
+          <h3>所属分组</h3>
+          <span></span>
+        </div>
+
         <h3>所属用户</h3>
         <OperateGroup
           :aleradyUserList="alreadyRoleList"
@@ -61,6 +64,11 @@ export default {
   data () {
     return {
     };
+  },
+  watch: {
+    roleInfo(val) {
+      console.log(val);
+    }
   },
   props: {
     visible: {

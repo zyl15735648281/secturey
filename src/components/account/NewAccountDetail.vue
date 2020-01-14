@@ -116,7 +116,7 @@
         <!-- 所属用户e -->
 
         <!-- 所属部门s -->
-        <!-- <div class="items">
+        <div class="items">
           <div
             class="firstInfo"
             id="outside"
@@ -181,11 +181,11 @@
               </ul>
             </div>
           </div>
-        </div> -->
+        </div>
         <!-- 所属部门e -->
 
         <!-- 所属分组s -->
-        <!-- <div class="items">
+        <div class="items">
           <div
             class="firstInfo"
             id="outside"
@@ -247,7 +247,7 @@
               </ul>
             </div>
           </div>
-        </div> -->
+        </div>
         <!-- 所属分组e -->
       </div>
 
@@ -258,6 +258,7 @@
         <el-button
           type="primary"
           @click="handleClose"
+          class="cancle"
         >关 闭</el-button>
       </span>
     </el-dialog>
