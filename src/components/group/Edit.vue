@@ -48,10 +48,31 @@
           id="group-norequired"
           style="margin-bottom:10px;"
         >
-          <a
-            href="javascript:void(0);"
-            @click="handleAddRole"
-          >添加</a>
+
+          <div class="roleDiv">
+            <ul>
+              <li
+                v-for="(role,index) in userRoleList"
+                :key="role.Id"
+              >{{role.Name}}<i
+                  class="el-icon-circle-close fr icon"
+                  style="margin-top:13px;margin-right:3px"
+                  @click="handleDelRole(role,index)"
+                ></i></li>
+            </ul>
+            <a
+              href="javascript:void(0);"
+              @click="handleAddRole"
+              class="fr"
+              v-if="mode === '新增组'"
+            >添加</a>
+            <a
+              href="javascript:void(0);"
+              @click="handleEditRole"
+              class="fr"
+              v-if="mode === '编辑组' "
+            >修改</a>
+          </div>
         </el-form-item>
         <el-form-item label="状态">
           <el-radio
@@ -75,15 +96,24 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleClose">取 消</el-button>
+        <el-button
+          @click="handleClose"
+          class="cancle"
+        >取 消</el-button>
         <el-button
           type="primary"
           @click="handleConfirm"
-          id="confirm"
+          class="confirm"
         >确 定</el-button>
       </span>
     </el-dialog>
-    <RoleDialog @userBehavior="switchRoleValue"></RoleDialog>
+
+    <RoleDialog
+      @userBehavior="switchRoleValue"
+      :roleMode="roleMode"
+      :roleList="roleList"
+      :userRoleList="userRoleList"
+    ></RoleDialog>
   </div>
 </template>
 
@@ -93,7 +123,7 @@ import RoleDialog from "@/components/account/RoleDialog";
 import { show } from "@/js/dialog";
 import SelectTree from "@/components/SelectTree";
 import _ from "lodash";
-import { requestBaseGroup } from "@/js/api.js";
+import { requestBaseGroup, requestGetBaseRoleList } from "@/js/api.js";
 
 export default {
   name: "",
@@ -105,8 +135,38 @@ export default {
   data () {
     return {
       ParentGpName: "",
-      ParentGpId: "0"
+      ParentGpId: "0",
+      roleList: [], // 所有角色列表
+      roleMode: "",
+      userRoleList: [] // 自定义角色列表
     };
+  },
+  watch: {
+    groupInfo(val) {
+      if (val.ParentId.trim() === "0") {
+        this.ParentGpName = "";
+        this.ParentGpId = "0";
+      } else {
+        let thisGpList = this.spTreeList.filter(r => { return r.id === val.ParentId; });
+        if (thisGpList.length === 1) {
+          let arr;
+          arr = thisGpList.filter(r => {
+            return r.id === val.ParentId;
+          });
+
+          if (arr.length === 0) {
+            let tempInfo = thisGpList[0].treeChildren.find(r => {
+              return r.id === val.ParentId;
+            });
+            arr.push(tempInfo);
+          }
+
+          this.groupInfo.ParentGpName = arr[0].name;
+          this.groupInfo.ParentGpId = arr[0].id;
+        }
+      }
+      this.userRoleList = val.baseGroupRoleModels;
+    }
   },
   props: {
     mode: {
@@ -132,13 +192,88 @@ export default {
     alreadyGpList: {
       type: Array,
       default: () => []
+    },
+    groupList: {
+      type: Array,
+      default: () => []
     }
   },
   created () {
   },
   methods: {
-    switchRoleValue () {
-
+    // 真正的获取到数据做处理
+    switchRoleValue (type, data) {
+      console.log(data);
+      if (data === null) {
+        return;
+      }
+      if (data.length > 0) {
+        data.filter(r => {
+          this.userRoleList.filter(v => {
+            return r.Id === v.Id;
+          });
+        });
+      }
+      this.userRoleList = data;
+      console.log(this.userRoleList);
+    },
+    // 添加角色
+    async handleAddRole() {
+      // 获取到所有的角色
+      this.roleMode = "添加";
+      const res = await requestGetBaseRoleList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        this.roleList = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
+      }
+      this.userRoleList = [];
+      show("", {
+        type: "confirm",
+        confirmText: "选好了",
+        cancelText: "取消",
+        titleText: "请为该用户添加角色",
+        data: ""
+      }, "role");
+    },
+    // 修改角色
+    async handleEditRole() {
+      // 获取所有角色列表，并且将现有的数据列表和未选的角色列表拼接显示
+      this.roleMode = "修改";
+      const res = await requestGetBaseRoleList({
+        name: "",
+        state: 2
+      });
+      if (res.status === 200) {
+        // 判断现有角色列表是否有数据
+        let arr = [];
+        let arr1 = [];
+        if (this.userRoleList.length > 0) {
+          this.userRoleList.forEach(element => {
+            arr.push({ checked: true, startTime: element.BeginTime, endTime: element.EndTime, isEver: element.IsEnable, ...element });
+          });
+          let temp = _.filter(res.data, item => _.every(arr, ele => item.Id !== ele.Id));
+          temp.forEach(element => {
+            arr1.push({ checked: false, startTime: "", endTime: "", isEver: false, ...element });
+          });
+          this.roleList = arr.concat(arr1);
+        } else {
+          this.roleList = res.data.map(r => ({ checked: false, startTime: "", endTime: "", isEver: false, ...r }));
+        }
+        show("", {
+          type: "confirm",
+          confirmText: "选好了",
+          cancelText: "取消",
+          titleText: "编辑该用户角色",
+          data: ""
+        }, "role");
+      }
+    },
+    // 删除角色
+    handleDelRole(row) {
+      const idx = _.findIndex(this.userRoleList, { "Id": row.Id });
+      this.userRoleList.splice(idx, 1);
     },
     handleSelectData(e) {
       this.ParentGpName = e.name;
@@ -146,22 +281,25 @@ export default {
     handelRemoveGp() {
       this.ParentGpName = "";
     },
+    // 关闭弹窗
     handleClose () {
       this.$emit("closed");
     },
     // 修改/新增
     async handleConfirm() {
       // 必要的验证
-      // this.verify()
+      if (!this.verify()) {
+        return;
+      }
       const params = {
         id: "",
         name: this.groupInfo.Name,
-        parentId: this.groupInfo.parentId || 0,
+        parentId: this.ParentGpId || 0,
         memo: this.groupInfo.Memo,
         isEnable: this.groupInfo.IsEnable,
-        createUserId: "zyl",
-        createUserName: "zyl",
-        baseGroupRoleModels: [],
+        createUserId: this.$store.state.userInfo.UserId,
+        createUserName: this.$store.state.userInfo.Name,
+        baseGroupRoleModels: this.userRoleList || [],
         baseUserGroupModels: this.alreadyGpList,
       };
       console.log(params);
@@ -191,6 +329,7 @@ export default {
         }
       }
     },
+    // 必要的验证
     verify() {
       if (this.groupInfo.Name === undefined || this.groupInfo.Name === "") {
         this.$message({
@@ -200,6 +339,18 @@ export default {
         return false;
       }
       // 判断分组名称是否合格
+      if (this.mode === "新增组") {
+        let arr = this.groupList.filter(r => {
+          return r.Name === this.groupInfo.Name;
+        });
+        if (arr.length > 0) {
+          this.$message({
+            type: "waring",
+            message: "组名称重复"
+          });
+          return false;
+        }
+      }
 
       if (this.alreadyGpList === null || this.alreadyGpList === [] || this.alreadyGpList === undefined) {
         this.$message({
@@ -217,14 +368,7 @@ export default {
         return false;
       }
     },
-    handleAddRole () {
-      show("", {
-        type: "confirm",
-        confirmText: "选好了",
-        cancelText: "取消",
-        titleText: "请为该用户添加/编辑角色"
-      }, "role");
-    },
+    // 添加用户
     handleAddUser(row) {
       if (this.userList.length > 0) {
         const idx = _.findIndex(this.userList, { "UserId": row.UserId });
@@ -232,6 +376,7 @@ export default {
         this.alreadyGpList.unshift(row);
       }
     },
+    // 移除用户
     handleRemoveUser(row) {
       if (this.alreadyGpList.length > 0) {
         const idx = _.findIndex(this.alreadyGpList, { "UserId": row.UserId });

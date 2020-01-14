@@ -304,6 +304,7 @@ export default {
       if (res.status === 200) {
         this.accountInfo = res.data;
       }
+      console.log(this.accountInfo);
     },
     handleAddAcc() {
       if (this.currentPage !== 1) {
@@ -362,7 +363,6 @@ export default {
     },
     // 重置密码
     async resetPass(row) {
-      console.log(row);
       const res = await requestModifiedPassword({
         id: row.UserId
       });

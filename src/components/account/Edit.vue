@@ -168,7 +168,7 @@ export default {
       if (this.mode === "编辑用户") {
         if (val.baseUserRoleList !== null && val.baseUserRoleList !== undefined) {
           if (val.baseUserRoleList.length > 0) {
-            // this.userRoleList = [[]];
+            // this.userRoleList = [];
             val.baseUserRoleList.forEach(element => {
               this.userRoleList.push({
                 Id: element.RoleId,
@@ -198,10 +198,10 @@ export default {
       }
       let paUserRoleList = [];
       // 改变用户角色的字段
-      if (this.userRoleList[0] !== undefined || this.userRoleList[0] !== null) {
-        if (this.userRoleList[0].length >= 1) {
+      if (this.userRoleList !== undefined || this.userRoleList !== null) {
+        if (this.userRoleList.length >= 1) {
           if (this.mode === "编辑用户") {
-            this.userRoleList[0].forEach(element => {
+            this.userRoleList.forEach(element => {
               paUserRoleList.push({
                 userId: this.accountInfo.UserId,
                 RoleId: element.Id,
@@ -215,7 +215,7 @@ export default {
               });
             });
           } else {
-            this.userRoleList[0].forEach(element => {
+            this.userRoleList.forEach(element => {
               paUserRoleList.push({
                 userId: "",
                 RoleId: element.Id,
@@ -257,6 +257,7 @@ export default {
       if (this.mode === "编辑用户") {
         params.userId = this.accountInfo.UserId;
       }
+      console.log(params);
 
       const res = await requestBaseUser(params);
       if (this.mode === "新增用户") {
@@ -348,6 +349,9 @@ export default {
       return true;
     },
     switchRoleValue (type, data) {
+      if (data === null) {
+        return;
+      }
       if (data.length > 0) {
         data.filter(r => {
           this.userRoleList.filter(v => {
@@ -386,6 +390,7 @@ export default {
       if (res.status === 200) {
         let arr = [];
         let arr1 = [];
+        console.log(this.userRoleList);
         if (this.userRoleList !== undefined) {
           this.userRoleList.forEach(element => {
             arr.push({ checked: true, startTime: element.BeginTime, endTime: element.EndTime, isEver: element.IsEnable, ...element });
@@ -409,8 +414,8 @@ export default {
     },
     // 删除角色
     handleDelRole(row) {
-      const idx = _.findIndex(this.userRoleList[0], { "Id": row.Id });
-      this.userRoleList[0].splice(idx, 1);
+      const idx = _.findIndex(this.userRoleList, { "Id": row.Id });
+      this.userRoleList.splice(idx, 1);
     }
   },
 };
