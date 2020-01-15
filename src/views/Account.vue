@@ -56,10 +56,6 @@
                   href="javascript:void(0);"
                   @click="SeeAccountDetail(scope.row)"
                 >{{scope.row.Name}}</a>
-                <a
-                  href="javascript:void(0);"
-                  @click="SeeAccountDetail(scope.row)"
-                >{{scope.row.name}}</a>
               </div>
             </el-popover>
           </template>
@@ -224,6 +220,9 @@ export default {
       cacheAccountList: [],
       accountInfo: {},
       detailInfo: {},
+      userRoleList: [],
+      userGroupList: [],
+      userDepList: [],
       condition: "启用",
       nameValue: "", // 姓名
       status: "2", // 状态
@@ -280,9 +279,19 @@ export default {
       this.cacheAccountList = this.accountList.slice(0, this.perPage);
     },
     // 查看明细
-    SeeAccountDetail(row) {
+    async SeeAccountDetail(row) {
       this.detailVisible = true;
-      this.detailInfo = row;
+      const res = await requestGetBaseUser({ id: row.UserId });
+      if (res.status === 200) {
+        this.detailInfo = res.data;
+      }
+      // 用户信息列表
+      this.userRoleList = this.detailInfo.baseUserRoleList;
+      // 用户分组信息列表
+      this.userGroupList = this.detailInfo.baseUserGroupModels;
+      // 用户部门信息列表
+      this.userDepList = this.detailInfo.baseUserDepartmentModels;
+      console.log(this.detailInfo);
     },
     // 关闭明细
     handleCloseDetail() {

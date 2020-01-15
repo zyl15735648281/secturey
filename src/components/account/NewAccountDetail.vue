@@ -53,10 +53,10 @@
             </ul>
           </div>
           <div class="fourInfo">
-            <!-- <p v-if="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0">暂无用户角色</p> -->
+            <p v-if="userRoleList === undefined || userRoleList === null || userRoleList.length === 0">暂无用户角色</p>
             <ul>
               <li
-                v-for="roleItem in detailInfo.baseUserRoleList"
+                v-for="roleItem in userRoleList"
                 :key="roleItem.RoleId"
               >
                 {{roleItem.RoleName}}
@@ -80,8 +80,8 @@
           </div>
           <div class="thirdInfo">
             <div class="feature">
-              <!-- <p v-if="userFeatureV === false && detailInfo.baseUserRoleList !== undefined && detailInfo.baseUserRoleList !== null && detailInfo.baseUserRoleList.length !== 0">请点击左侧功能权限查看</p> -->
-              <!-- <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0 || userFeatureList.length === 0">暂无权限数据</p> -->
+              <p v-if="userFeatureV === false && userFeatureList !== undefined && userFeatureList !== null && userFeatureList.length !== 0">请点击左侧功能权限查看</p>
+              <p v-show="detailInfo.baseUserRoleList === undefined || detailInfo.baseUserRoleList === null || detailInfo.baseUserRoleList.length === 0 || userFeatureList.length === 0">暂无权限数据</p>
               <ul>
                 <li
                   v-for="userFItem in userFeatureList"
@@ -128,7 +128,7 @@
             <p v-if="detailInfo.baseUserDepartmentModels === undefined || detailInfo.baseUserDepartmentModels === null">暂无部门数据</p>
             <ul>
               <li
-                v-for="depItem in detailInfo.baseUserDepartmentModels"
+                v-for="depItem in userDepList"
                 :key="depItem.groupId"
               >{{depItem.groupName}}</li>
             </ul>
@@ -197,9 +197,9 @@
             <p v-if="detailInfo.baseUserGroupModels === undefined || detailInfo.baseUserGroupModels === null">暂无分组数据</p>
             <ul>
               <li
-                v-for="dpItem in detailInfo.baseUserGroupModels"
-                :key="dpItem.departmentId"
-              >{{dpItem.departName}}</li>
+                v-for="dpItem in userGroupList"
+                :key="dpItem.GroupId"
+              >{{dpItem.GroupName}}</li>
             </ul>
           </div>
           <div class="fourInfo">
@@ -258,7 +258,7 @@
         <el-button
           type="primary"
           @click="handleClose"
-          class="cancle"
+          class="confirm"
         >关 闭</el-button>
       </span>
     </el-dialog>
@@ -297,7 +297,19 @@ export default {
     detailInfo: {
       type: Object,
       default: () => {}
-    }
+    },
+    userRoleList: {
+      type: Array,
+      default: () => []
+    },
+    userGroupList: {
+      type: Array,
+      default: () => []
+    },
+    userDepList: {
+      type: Array,
+      default: () => []
+    },
   },
   created() {},
   methods: {
