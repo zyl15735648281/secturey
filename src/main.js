@@ -17,26 +17,37 @@ import "element-ui/lib/theme-chalk/index.css";
 import Router from "vue-router";
 
 import {
-  Select, Option, Button, Table,
-  TableColumn, Pagination, Loading, Input, Tree, Dialog, Form,
-  FormItem,
-  Radio,
-  RadioGroup,
-  RadioButton,
-  Checkbox,
-  DatePicker,
-  Popover,
-  Upload,
-  Message,
-  CheckboxGroup,
-  Tabs,
-  TabPane
+    Select,
+    Option,
+    Button,
+    Table,
+    TableColumn,
+    Pagination,
+    Loading,
+    Input,
+    Tree,
+    Dialog,
+    Form,
+    FormItem,
+    Radio,
+    RadioGroup,
+    RadioButton,
+    Checkbox,
+    DatePicker,
+    Popover,
+    Upload,
+    Message,
+    CheckboxGroup,
+    Tabs,
+    TabPane
 } from "element-ui";
 
 const originalPush = Router.prototype.push;
 Router.prototype.push = function push (location, onResolve, onReject) {
-  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject);
-  return originalPush.call(this, location).catch(err => err);
+    if (onResolve || onReject) {
+        return originalPush.call(this, location, onResolve, onReject);
+    }
+    return originalPush.call(this, location).catch(err => err);
 };
 
 Vue.config.productionTip = false;
@@ -65,11 +76,12 @@ Vue.use(Upload);
 Vue.use(CheckboxGroup);
 Vue.use(Tabs);
 Vue.use(TabPane);
+
 Vue.prototype.$message = Message;
 // Vue.prototype._ = _;
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount("#app");

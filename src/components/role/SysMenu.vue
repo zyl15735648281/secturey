@@ -1,6 +1,6 @@
 <template>
   <div class="sysMenu">
-    <ul>
+    <!-- <ul>
       <li
         v-for="(item,index) in list"
         :key="item.id"
@@ -24,73 +24,91 @@
         >{{i.title}}</el-checkbox>
 
       </div>
-    </template>
+    </template> -->
 
+    <el-tabs type="border-card">
+      <el-tab-pane :label="item.title" v-for="item in tabList" :key="item.id">{{
+        item.title
+      }}</el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
 export default {
   name: "",
-  components: {
-  },
-  data () {
+  components: {},
+  data() {
     return {
-      list: [{
-        id: "1",
-        name: "示踪"
-      }, {
-        id: "2",
-        name: "首页"
-      }, {
-        id: "3",
-        name: "查询"
-      }, {
-        id: "4",
-        name: "科研"
-      }, {
-        id: "5",
-        name: "示踪"
-      }, ],
-      tabList: [{
-        id: "500",
-        title: "编码列表",
-        child: [{
-          id: "11",
-          title: "加急",
-        }, {
-          id: "22",
-          title: "应用",
-        }, {
-          id: "33",
-          title: "加急1",
-        }, {
-          id: "44",
-          title: "加急2",
-        }, {
-          id: "55",
-          title: "加急3",
-        }, ]
-      }, {
-        id: "501",
-        title: "编码项目"
-      }],
+      list: [
+        {
+          id: "1",
+          name: "示踪"
+        },
+        {
+          id: "2",
+          name: "首页"
+        },
+        {
+          id: "3",
+          name: "查询"
+        },
+        {
+          id: "4",
+          name: "科研"
+        },
+        {
+          id: "5",
+          name: "示踪"
+        }
+      ],
+      tabList: [
+        {
+          id: "500",
+          title: "编码列表",
+          child: [
+            {
+              id: "11",
+              title: "加急"
+            },
+            {
+              id: "22",
+              title: "应用"
+            },
+            {
+              id: "33",
+              title: "加急1"
+            },
+            {
+              id: "44",
+              title: "加急2"
+            },
+            {
+              id: "55",
+              title: "加急3"
+            }
+          ]
+        },
+        {
+          id: "501",
+          title: "编码项目"
+        }
+      ],
       curtab: 0
     };
   },
-  created () {
-  },
+  created() {},
   methods: {
-    switchTab (index) {
+    switchTab(index) {
       this.curtab = index;
     }
-  },
+  }
 };
 </script>
 
 <style scope lang="less">
 .sysMenu {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
   ul {
     width: 100%;
     height: 40px;
