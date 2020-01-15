@@ -204,7 +204,6 @@ export default {
       const res = await requestGetDicBaseGroup();
       if (res.status === 200) {
         this.spTreeList = res.data;
-        console.log(this.spTreeList);
       }
     },
     // 获取用户数据

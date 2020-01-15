@@ -141,6 +141,9 @@
       :visible="roleDelVisible"
       :roleInfo="roleInfo"
       :alreadyRoleList="alreadyRoleList"
+      :alreadyGroupList="alreadyGroupList"
+      :alreadyModuleList="alreadyModuleList"
+      :alreadyScopeList="alreadyScopeList"
       @closed="handleCloseRoleDetail"
     ></RoleDetail>
 
@@ -203,6 +206,9 @@ export default {
       accTableList: [],
       sysList: [],
       alreadyMoudleList: [],
+      alreadyGroupList: [],
+      alreadyModuleList: [],
+      alreadyScopeList: [],
       status: "2", // 状态
       loading: false,
       roleName: "", // 角色名称
@@ -322,7 +328,15 @@ export default {
       if (res.status === 200) {
         this.roleInfo = res.data;
       }
+      console.log(this.roleInfo);
+      // 用户信息
       this.alreadyRoleList = this.roleInfo.baseUserRoleModels;
+      // 分组信息列表
+      this.alreadyGroupList = this.roleInfo.baseGroupRoleModels;
+      // 功能权限列表
+      this.alreadyModuleList = this.roleInfo.baseRoleModuleModels;
+      // 数据权限列表
+      this.alreadyScopeList = this.roleInfo.baseRoleScopeModels;
     },
     // 关闭角色详情对话框
     handleCloseRoleDetail() {

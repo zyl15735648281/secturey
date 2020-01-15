@@ -22,7 +22,11 @@
       <div>
         <div>
           <h3>所属分组</h3>
-          <span></span>
+          <span
+            v-for="item in alreadyGroupList"
+            :key="item.id"
+            class="spanStyle"
+          >{{item.groupName}}</span>
         </div>
 
         <h3>所属用户</h3>
@@ -34,19 +38,37 @@
         ></OperateGroup>
       </div>
       <div>
-        <div>功能权限</div>
-        <div>数据权限
-          <span>场景1</span>
+        <div>
+          <h3>功能权限</h3><br>
+          <span
+            v-for="item in alreadyModuleList"
+            :key="item.ModuleId"
+            class="spanStyle"
+          >
+            {{item.ModuleName}}
+          </span>
+        </div>
+        <div>
+          <h3>数据权限</h3><br>
+          <span
+            v-for="item in alreadyScopeList"
+            :key="item.ScopeId"
+            class="spanStyle"
+          >{{item.ScopeName}}</span>
         </div>
       </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleClose">取 消</el-button>
+        <el-button
+          @click="handleClose"
+          class="cancle"
+        >取 消</el-button>
         <el-button
           type="primary"
           @click="handleClose"
+          class="confirm"
         >保 存</el-button>
       </span>
     </el-dialog>
@@ -82,7 +104,19 @@ export default {
     roleInfo: {
       type: Object,
       default: () => {}
-    }
+    },
+    alreadyGroupList: {
+      type: Array,
+      default: () => []
+    },
+    alreadyModuleList: {
+      type: Array,
+      default: () => []
+    },
+    alreadyScopeList: {
+      type: Array,
+      default: () => []
+    },
   },
   created () {
   },
@@ -111,6 +145,14 @@ export default {
       list-style: none;
       font-size: 14px;
     }
+  }
+  .spanStyle {
+    display: inline-block;
+    width: 80px;
+    border: 1px solid #e4e4e4;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
   }
 }
 </style>
