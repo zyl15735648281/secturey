@@ -1,7 +1,7 @@
 <template>
   <div class="datapermission">
 
-    <el-select
+    <!-- <el-select
       placeholder="请选择"
       :value="value"
       @change="handleChange"
@@ -13,7 +13,7 @@
         :value="item.Type"
       >
       </el-option>
-    </el-select>
+    </el-select> -->
     <el-input
       placeholder="请输入名称检索"
       class="dp-input"
@@ -68,7 +68,7 @@ export default {
     margin-right: 10px;
   }
   .dp-input {
-    width: calc(100% - 140px);
+    width: 100%;
   }
   .de-resource {
     width: 100%;

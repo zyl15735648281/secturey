@@ -143,6 +143,9 @@ export default {
   },
   watch: {
     groupInfo(val) {
+      if (val.ParentId === undefined) {
+        return;
+      }
       if (val.ParentId.trim() === "0") {
         this.ParentGpName = "";
         this.ParentGpId = "0";

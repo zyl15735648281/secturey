@@ -4,14 +4,17 @@
       :title="mode"
       :visible.sync="visible"
       :before-close="handleClose"
+      width="60%"
     >
       <div class="search">
         <!-- 搜索框 -->
         <el-input
-          placeholder="输入姓名查询"
+          placeholder="输入查询"
           class="fl s-input"
+          style="height:30px"
+          v-model="filterName"
+          @input="filter"
         ></el-input>
-        <el-button class="fr">确定</el-button>
         <span class="fr s-span">已选{{checkedList.length}}个</span>
       </div>
       <div
@@ -25,6 +28,8 @@
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectionChange"
+          :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+          :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
         >
           <el-table-column
             type="selection"
@@ -53,6 +58,31 @@
             show-overflow-tooltip
           >
           </el-table-column>
+          <el-table-column
+            prop="DefaultDepName"
+            label="请自行选择时间有效性"
+            align="center"
+            :show-overflow-tooltip="true"
+          >
+            <template>
+              <el-checkbox v-model="this.isEnable">永久有效</el-checkbox>
+              <el-date-picker
+                v-model="this.beginTime"
+                type="date"
+                placeholder="选择开始日期"
+              >
+              </el-date-picker>
+
+              <el-date-picker
+                v-model="this.endTime"
+                type="date"
+                placeholder="选择结束日期"
+              >
+              </el-date-picker>
+
+            </template>
+          </el-table-column>
+
         </el-table>
       </div>
 
@@ -67,6 +97,8 @@
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectionChange"
+          :header-cell-style="{fontSize:'16px',color: '#111',fontWeight:600}"
+          :cell-style="{fontSize:'14px',color: '#111',fontWeight:500}"
         >
           <el-table-column
             type="selection"
@@ -101,10 +133,14 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleClose">取 消</el-button>
+        <el-button
+          @click="handleClose"
+          class="cancle"
+        >取 消</el-button>
         <el-button
           type="primary"
-          @click="handleClose"
+          @click="handelConfirm"
+          class="confirm"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -112,12 +148,18 @@
 </template>
 
 <script>
+import { requestBaseUserRole } from "@/js/api";
+
 export default {
   name: "",
   components: {},
   data() {
     return {
-      checkedList: []
+      checkedList: [],
+      filterName: "",
+      isEnable: false,
+      beginTime: "",
+      endTime: ""
     };
   },
   props: {
@@ -136,12 +178,45 @@ export default {
   },
   created() {},
   methods: {
+    // 模糊查询
+    filter(e) {
+      if (this.filterName === "") {
+        this.$emit("getalldata");
+      } else {
+        this.$emit("getdata", e);
+      }
+    },
     handleSelectionChange(e) {
       this.checkedList = e;
-      console.log(e);
+      // console.log(e);
     },
     handleClose() {
       this.$emit("closed");
+    },
+    // 点击确定
+    async handelConfirm() {
+      // 做一个验证，checkedlist是否有值
+      if (this.checkedList.length === 0) {
+        this.$message({
+          type: "waring",
+          message: "请选择您要分配的用户"
+        });
+      }
+
+      const params = {
+        userId: "",
+        roleId: "",
+        roleName: "",
+        beginTime: "",
+        endTime: "",
+        positive: "",
+        isEnable: "",
+        createUserId: this.$store.state.userInfo.UserId,
+        createUserName: this.$store.state.userInfo.Name,
+        userName: "",
+      };
+      const res = await requestBaseUserRole(params);
+      console.log(res);
     }
   }
 };

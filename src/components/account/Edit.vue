@@ -390,7 +390,6 @@ export default {
       if (res.status === 200) {
         let arr = [];
         let arr1 = [];
-        console.log(this.userRoleList);
         if (this.userRoleList !== undefined) {
           this.userRoleList.forEach(element => {
             arr.push({ checked: true, startTime: element.BeginTime, endTime: element.EndTime, isEver: element.IsEnable, ...element });

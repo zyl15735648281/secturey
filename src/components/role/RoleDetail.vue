@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="detailStyle">
     <el-dialog
       title="角色详情"
       :visible.sync="visible"
@@ -67,7 +67,7 @@ export default {
   },
   watch: {
     roleInfo(val) {
-      console.log(val);
+      // console.log(val);
     }
   },
   props: {
@@ -98,17 +98,19 @@ export default {
 </script>
 
 <style scope lang="less">
-ul {
-  border: 1px solid #e4e4e4;
-  height: calc(100% - 35px);
-  overflow: auto;
-  li {
-    padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
-    border-bottom: 1px dashed #e4e4e4;
-    list-style: none;
-    font-size: 14px;
+.detailStyle {
+  ul {
+    border: 1px solid #e4e4e4;
+    height: calc(100% - 35px);
+    overflow: auto;
+    li {
+      padding: 0 10px;
+      height: 30px;
+      line-height: 30px;
+      border-bottom: 1px dashed #e4e4e4;
+      list-style: none;
+      font-size: 14px;
+    }
   }
 }
 </style>

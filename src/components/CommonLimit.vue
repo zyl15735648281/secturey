@@ -1,5 +1,9 @@
 <template>
-  <div>CommonLimit</div>
+  <div>
+    <ul>
+      <!-- <li>liebiao </li> -->
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -8,6 +12,12 @@ export default {
   components: {},
   data() {
     return {};
+  },
+  props: {
+    moudleList: {
+      type: Array,
+      default: () => []
+    }
   }
 };
 </script>

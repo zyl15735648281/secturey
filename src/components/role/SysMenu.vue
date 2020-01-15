@@ -1,35 +1,35 @@
 <template>
   <div class="sysMenu">
-    <!-- <ul>
-      <li
-        v-for="(item,index) in list"
-        :key="item.id"
-        @click="switchTab(index)"
-        :class="{active: curtab === index}"
+    <el-tabs
+      type="border-card"
+      @tab-click="handleClick"
+    >
+      <el-tab-pane
+        :label="item.SystemName"
+        v-for="item in sysList"
+        :key="item.SystemId"
       >
-        {{item.name}}
-      </li>
-    </ul>
-
-    <template v-for="(item,index) in tabList">
-      <div
-        class="sysm-content"
-        v-if="curtab === index"
-        :key="item.id"
-      >
-        <p>{{item.title}}</p>
-        <el-checkbox
-          v-for="i in item.child"
-          :key="i.id"
-        >{{i.title}}</el-checkbox>
-
-      </div>
-    </template> -->
-
-    <el-tabs type="border-card">
-      <el-tab-pane :label="item.title" v-for="item in tabList" :key="item.id">{{
-        item.title
-      }}</el-tab-pane>
+        <el-tree
+          :data="relMoudleList"
+          node-key="id"
+          :props="defaultProps"
+          @node-click="handleNodeClick"
+        >
+          <span
+            class="custom-tree-node"
+            slot-scope="{ node, data }"
+          >
+            <span style="width:50%">{{data.name}}</span>
+            <span class="custom-tree-node-type">
+              <el-checkbox
+                @change="handleSwitchChecked(data)"
+                :checked="data.checked"
+              >{{data.Type}}</el-checkbox>
+            </span>
+          </span>
+          <!-- <el-checkbox>{{sys.Type}}</el-checkbox> -->
+        </el-tree>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -40,67 +40,32 @@ export default {
   components: {},
   data() {
     return {
-      list: [
-        {
-          id: "1",
-          name: "示踪"
-        },
-        {
-          id: "2",
-          name: "首页"
-        },
-        {
-          id: "3",
-          name: "查询"
-        },
-        {
-          id: "4",
-          name: "科研"
-        },
-        {
-          id: "5",
-          name: "示踪"
-        }
-      ],
-      tabList: [
-        {
-          id: "500",
-          title: "编码列表",
-          child: [
-            {
-              id: "11",
-              title: "加急"
-            },
-            {
-              id: "22",
-              title: "应用"
-            },
-            {
-              id: "33",
-              title: "加急1"
-            },
-            {
-              id: "44",
-              title: "加急2"
-            },
-            {
-              id: "55",
-              title: "加急3"
-            }
-          ]
-        },
-        {
-          id: "501",
-          title: "编码项目"
-        }
-      ],
-      curtab: 0
+      defaultProps: {
+        children: "treeChildren",
+        label: "name"
+      }
     };
+  },
+  props: {
+    sysList: {
+      type: Array,
+      default: () => []
+    },
+    relMoudleList: {
+      type: Array,
+      default: () => []
+    }
   },
   created() {},
   methods: {
-    switchTab(index) {
-      this.curtab = index;
+    handleClick(tab, e) {
+      this.$emit("watchTab", tab);
+    },
+    handleNodeClick(e) {
+      // console.log(e);
+    },
+    handleSwitchChecked(e) {
+      this.$emit("switchChecked", e);
     }
   }
 };
@@ -109,24 +74,37 @@ export default {
 <style scope lang="less">
 .sysMenu {
   margin-bottom: 10px;
+  .el-tabs--border-card > .el-tabs__header {
+    // background-color: #5ed0b1;
+    color: #111;
+  }
+  .el-tabs__content {
+    height: 110px;
+    overflow: auto;
+    padding: 10px;
+    .custom-tree-node {
+      width: 100%;
+      .custom-tree-node-type {
+        // width: 100%;
+        float: right;
+      }
+    }
+  }
   ul {
     width: 100%;
-    height: 40px;
-    background-color: rgb(204, 204, 204);
+    height: 100px;
+    background-color: #a7d06c;
+    overflow: auto;
     margin: 0;
     padding: 0;
     li {
-      float: left;
-      width: 100px;
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
-      font-size: 16px;
+      // float: left;
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      font-size: 14px;
       font-weight: 600;
       color: #111;
-    }
-    li:hover {
-      background-color: rgb(70, 68, 68);
     }
   }
   .sysm-content {

@@ -38,8 +38,9 @@
       >
         <el-table-column
           label="角色名称"
-          width="120"
+          width="150"
           align="center"
+          :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">
             <el-popover
@@ -90,6 +91,7 @@
           label="操作"
           width="250"
           align="center"
+          fixed="right"
         >
           <template slot-scope="scope">
             <a
@@ -126,12 +128,15 @@
       :mode="mode"
       :roleInfo="roleInfo"
       :dataPerList="dataPerList"
+      :sysList="sysList"
       :alreadyDataPerList="alreadyDataPerList"
+      :alreadyMoudleList="alreadyMoudleList"
       @closed="handleCloseRole"
       @addRole="handleAddRoleSuc"
       @editRole="handleEditRoleSuc"
     ></Edit>
     <Dialog @userBehavior="relDelRole"></Dialog>
+
     <RoleDetail
       :visible="roleDelVisible"
       :roleInfo="roleInfo"
@@ -143,6 +148,8 @@
       :mode="allocationMode"
       :visible="aocAccVis"
       :tableList="accTableList"
+      @getalldata="handleGetalldata"
+      @getdata="handleGetdata"
       @closed="handleCloseAocAcc"
     ></AllocationAccount>
 
@@ -169,7 +176,8 @@ import {
   requestGetBaseRole,
   requestGetBaseScopeList,
   requestGetBaseUserList,
-  requestGetBaseDepartmentList
+  requestGetBaseDepartmentList,
+  requestGetTableSystemList
 } from "@/js/api";
 import { fmtStatus, formatterDate } from "@/js/format.js";
 import { pageData, frzzyQuery } from "@/js/utils.js";
@@ -193,6 +201,8 @@ export default {
       alreadyDataPerList: [],
       alreadyRoleList: [],
       accTableList: [],
+      sysList: [],
+      alreadyMoudleList: [],
       status: "2", // 状态
       loading: false,
       roleName: "", // 角色名称
@@ -202,14 +212,39 @@ export default {
       aocAccVis: false,
       perPage: 10,
       currentPage: 1,
-      allocationMode: "account"
+      allocationMode: ""
     };
   },
   computed: {},
   mounted() {
     this.getRoleList();
+    this.getSysList();
   },
   methods: {
+    // 获取系统名称列表
+    async getSysList() {
+      const res = await requestGetTableSystemList({
+        name: "",
+        environmentId: "",
+        isEnable: 2
+      });
+      if (res.status === 200) {
+        this.sysList = res.data;
+      }
+    },
+    handleGetalldata() {
+      if (this.allocationMode === "分配用户") {
+        return this.getAllUsers();
+      } else {
+        return this.getAllDep();
+      }
+    },
+    handleGetdata(e) {
+      let tempList;
+      tempList = frzzyQuery(e, this.accTableList);
+      this.accTableList = tempList;
+      return this.accTableList;
+    },
     // 姓名列表模糊查询
     handleFilterRoleName() {
       if (this.roleName === "") return this.getRoleList();
@@ -229,7 +264,6 @@ export default {
         name: "",
         state: 2
       });
-      console.log(res);
       if (res.status === 200) {
         this.accTableList = res.data;
       }
@@ -257,6 +291,7 @@ export default {
         this.cacheRoleList = this.roleList.slice(0, this.perPage);
       }
     },
+    // 获取数据权限列表
     async getDataPerList() {
       const res = await requestGetBaseScopeList({
         name: "",
@@ -310,7 +345,10 @@ export default {
       if (res.status === 200) {
         this.roleInfo = res.data;
       }
+      console.log(this.roleInfo);
       this.alreadyDataPerList = this.roleInfo.baseRoleScopeModels;
+
+      this.alreadyMoudleList = this.roleInfo.baseRoleModuleModels.map(r => ({ checked: true, ...r }));
     },
     handleAddRoleSuc() {
       this.getRoleList();

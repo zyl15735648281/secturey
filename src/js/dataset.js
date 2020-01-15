@@ -1,5 +1,29 @@
 // 下拉框选项数据
 
+// 类型
+export const roleType = [{
+  name: "dev-示踪系统",
+  value: 0
+}, {
+  name: "首页录入",
+  value: 1
+}, {
+  name: "科研调阅",
+  value: 2
+}, {
+  name: "示踪系统",
+  value: 3
+}, {
+  name: "配置系统",
+  value: 4
+}, {
+  name: "科研审批",
+  value: 5
+}, {
+  name: "权限平台",
+  value: 6
+}];
+
 // 1.标题为姓名的下拉框
 export const nameDataset = [{
   value: "0",

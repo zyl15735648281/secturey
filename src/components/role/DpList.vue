@@ -7,10 +7,10 @@
         v-for="item in alreadyDataPerList"
         :key="item.ScopeId"
       >
-        {{item.Name}}
+        {{item.Name || item.ScopeName}}
         <i
           class="el-icon-circle-close fr"
-          @click="handleRemoveAleadyDP"
+          @click="handleRemoveAleadyDP(item)"
         ></i>
       </li>
     </ul>

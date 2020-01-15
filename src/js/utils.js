@@ -66,3 +66,23 @@ export function frzzyQuery (searchText, list, mode) {
 
   return list;
 }
+// 递归每一层的深度
+export function treeList (arr) {
+  let res = JSON.parse(JSON.stringify(arr));
+  res.forEach((node) => {
+    node = outsideList(node);
+  });
+  return res;
+}
+
+// 循环每一层的外层数据
+export function outsideList (nodeInfo) {
+  nodeInfo.checked = false;
+  if (nodeInfo.treeChildren.length === 0) {
+    return;
+  }
+
+  nodeInfo.treeChildren.forEach(treeNode => {
+    treeNode = outsideList(treeNode);
+  });
+}

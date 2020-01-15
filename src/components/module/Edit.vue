@@ -280,7 +280,7 @@ export default {
         });
         return false;
       }
-      if (this.mdInfo.Name === undefined || this.mdInfo.Name === "") {
+      if (this.mdInfo.name === undefined || this.mdInfo.name === "") {
         this.$message({
           type: "waring",
           message: "请输入菜单名称"

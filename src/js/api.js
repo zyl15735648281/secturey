@@ -65,6 +65,13 @@ export const requestDeleteBaseRole = data => createAPI("/DeleteBaseRole", "post"
 // 角色管理获取列表
 export const requestGetBaseRoleList = data => createAPI("/GetBaseRoleList", "post", data);
 
+// 角色列表下面分配部门/ 部门的添加/修改
+export const requestBaseDepartmentRole = data => createAPI("/GetBaseRoleList", "post", data);
+// 角色列表下面的分配用户/ 用户的角色添加 / 修改;
+export const requestBaseUserRole = data => createAPI("/BaseUserRole", "post", data);
+// 获取用户角色列表;
+export const requestGetBaseUserRoleList = data => createAPI("/GetBaseUserRoleList", "post", data);
+
 // 模块管理相关接口
 // 模块管理添加/修改
 export const requestBaseModule = data => createAPI("/BaseModule", "post", data);
@@ -99,10 +106,6 @@ export const requestDeleteBaseGroupRole = data => createAPI("/DeleteBaseGroupRol
 export const requestDeleteBaseUserGroup = data => createAPI("/DeleteBaseUserGroup", "post", data);
 // 删除用户角色;
 export const requestDeleteBaseUserRole = data => createAPI("/DeleteBaseUserRole", "post", data);
-// 用户的角色添加 / 修改;
-export const requestBaseUserRole = data => createAPI("/BaseUserRole", "post", data);
-// 获取用户角色列表;
-export const requestGetBaseUserRoleList = data => createAPI("/GetBaseUserRoleList", "post", data);
 
 // 获取资源配置系统
 export const requestGetTableSystemList = data => createAPIConfig("GetTableSystemList", "post", data);

@@ -102,6 +102,7 @@
             label="操作"
             width="350"
             align="center"
+            fixed="right"
           >
             <template slot-scope="scope">
               <a
